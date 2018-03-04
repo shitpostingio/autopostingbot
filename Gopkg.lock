@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/BurntSushi/toml"
+  packages = ["."]
+  revision = "b26d9c308763d68093482582cea63d69be07a0f0"
+  version = "v0.3.0"
+
+[[projects]]
   name = "github.com/go-telegram-bot-api/telegram-bot-api"
   packages = ["."]
   revision = "2022d04b94f50056a09962b1ac81cdd821d20a55"
@@ -16,6 +22,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "bad7967c6acaf77c51865092cdfa44e3cb1c5c6049fca5d568bc8b308fe087a7"
+  inputs-digest = "6e831f71ee344d33e737a98d100c94df0ae82f229aaedf53566be60eefb05307"
   solver-name = "gps-cdcl"
   solver-version = 1
