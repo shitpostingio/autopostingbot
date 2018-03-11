@@ -38,6 +38,12 @@ func (c Config) WebHookURL() string {
 	return "https://" + c.Domain + ":" + port + "/" + c.BotToken + "/updates"
 }
 
+// WebHookPath returns only the relative path where Telegram will send
+// updates
+func (c Config) WebHookPath() string {
+	return "/" + c.BotToken + "/updates"
+}
+
 // ReadConfigFile reads a configuration file and returns its Config instance
 func ReadConfigFile(path string) (Config, error) {
 	var conf Config
