@@ -1,3 +1,3 @@
-# Configuration files testing folder
+# File di testing per config.go
 
-This folder contains some configuration files used by the test suite.
+Questa cartella contiene file `.toml` usati per il testing di (`config.go`)[../config.go]
