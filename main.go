@@ -2,13 +2,13 @@ package main
 
 import (
 	"flag"
-	"log"
 	"net/http"
 
 	"github.com/fatih/color"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"gitlab.com/shitposting/autoposting-bot/command"
 	"gitlab.com/shitposting/autoposting-bot/utility"
 )
 
@@ -19,10 +19,15 @@ var (
 	// config file path, if not specified it will read
 	// ./config.toml
 	configFilePath string
-	Version        string
-	Build          string
-	err            error
-	debug          bool
+
+	// Version is the autoposting-bot version, a compile-time value
+	Version string
+
+	// Build is the git tag for the current version
+	Build string
+
+	err   error
+	debug bool
 )
 
 func main() {
@@ -56,7 +61,10 @@ func main() {
 	go startServer()
 
 	for update := range updates {
-		log.Printf("%+v\n", update)
+		err := command.Handle(update, bot)
+		if err != nil {
+			utility.PrettyError(err)
+		}
 	}
 
 }
