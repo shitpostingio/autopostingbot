@@ -1,10 +1,7 @@
 package database
 
 import (
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	// _ "github.com/jinzhu/gorm/dialects/postgres"
-	// _ "github.com/jinzhu/gorm/dialects/sqlite"
-	// _ "github.com/jinzhu/gorm/dialects/mssql"
+	_ "github.com/jinzhu/gorm/dialects/sqlite" // We need SQLite to perform migrations
 )
 
 func run() {
