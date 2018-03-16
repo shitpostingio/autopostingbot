@@ -20,8 +20,6 @@ func TestCategoryMayBeRelatedToPosts(t *testing.T) {
 
 func TestCategoryHasUniqueName(t *testing.T) {
 	t.Log("A Category should not be created if another one has the same name")
-	category := Category{Name: "foo"}
-	anotherCategory := Category{Name: "foo"}
 
 	db, err := gorm.Open("sqlite3", ":memory:")
 	if err != nil {
@@ -29,9 +27,9 @@ func TestCategoryHasUniqueName(t *testing.T) {
 	}
 
 	db.CreateTable(&Category{})
-	db.Create(&category)
+	db.Create(&Category{Name: "foo"})
 
-	if err := db.Create(&anotherCategory).Error; err == nil {
+	if err := db.Create(&Category{Name: "foo"}).Error; err == nil {
 		t.Errorf("Expected false, got true when creating another category with the same name")
 	}
 
