@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // We need SQLite to perform migrations
 )
 
@@ -15,4 +16,24 @@ func TestCategoryMayBeRelatedToPosts(t *testing.T) {
 	if kind != reflect.Slice {
 		t.Errorf("Expected slice, found %s instead.", kind)
 	}
+}
+
+func TestCategoryHasUniqueName(t *testing.T) {
+	t.Log("A Category should not be created if another one has the same name")
+	category := Category{Name: "foo"}
+	anotherCategory := Category{Name: "foo"}
+
+	db, err := gorm.Open("sqlite3", ":memory:")
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	db.CreateTable(&Category{})
+	db.Create(&category)
+
+	if err := db.Create(&anotherCategory).Error; err == nil {
+		t.Errorf("Expected false, got true when creating another category with the same name")
+	}
+
+	defer db.Close()
 }
