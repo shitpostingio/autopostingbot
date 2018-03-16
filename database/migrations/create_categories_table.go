@@ -10,7 +10,7 @@ func run() {
 	db.Set("gorm:table_options", "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci").CreateTable(&Category{})
 
 	// Add unique index for name
-	db.Model(&Post{}).AddUniqueIndex("categories_name_unique", "name")
+	db.Model(&Category{}).AddUniqueIndex("categories_name_unique", "name")
 }
 
 func drop() {
