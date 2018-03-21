@@ -1,19 +1,20 @@
-package database
+package migrations
 
 import (
-	_ "github.com/jinzhu/gorm/dialects/sqlite" // We need SQLite to perform migrations
+	"github.com/jinzhu/gorm"
+	"gitlab.com/shitposting/autoposting-bot/database/entities"
 )
 
-func run() {
-	// Create table for model `Post`
-	// will append "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" to the SQL statement when creating table `posts`
-	db.Set("gorm:table_options", "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci").CreateTable(&Post{})
+// CreatePosts will create table for model `Post`
+// will append "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" to the SQL statement when creating table `posts`
+func run(db *gorm.DB) {
+	db.Set("gorm:table_options", "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci").CreateTable(entities.Post{})
 
 	// Add Foreign key to reference the id on users table with cascade onupdate
-	db.Model(&Post{}).AddForeignKey("user_id", "users(id)", "RESTRICT", "CASCADE")
+	db.Model(entities.Post{}).AddForeignKey("user_id", "users(id)", "RESTRICT", "CASCADE")
 }
 
-func drop() {
-	// Drop Post table
-	db.DropTableIfExists(&Post{})
+// DropPosts will drop the Posts table
+func DropPosts(db *gorm.DB) {
+	db.DropTableIfExists(entities.Post{})
 }
