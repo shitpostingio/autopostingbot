@@ -20,6 +20,7 @@ type Config struct {
 	TLS              bool
 	TLSCertPath      string
 	TLSKeyPath       string
+	DatabasePath     string
 }
 
 // BindString returns IP+Port, in a suitable syntax for http.ListenAndServe
@@ -74,6 +75,10 @@ func ReadConfigFile(path string) (Config, error) {
 		conf.IP = "127.0.0.1"
 	}
 
+	// If we don't have a DatabasePath, use the default value
+	if conf.DatabasePath == "" {
+		conf.DatabasePath = "./autopostingbot.db"
+	}
 	return conf, nil
 }
 

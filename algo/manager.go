@@ -22,7 +22,8 @@ type Manager struct {
 
 // ManagerConfig is the configuration wanted for a given Manager instance.
 // While BotAPIInstance is necessary, DatabasePath is not: if not present,
-// Manager will try to load an existing database from ./autopostingbot.db.
+// Manager will try to load an existing database from ./autopostingbot.db,
+// as per config.go.
 type ManagerConfig struct {
 	DatabasePath   string
 	BotAPIInstance *tgbotapi.BotAPI
@@ -30,10 +31,6 @@ type ManagerConfig struct {
 
 // NewManager returns a new Manager instance
 func NewManager(mc ManagerConfig) (m Manager, err error) {
-	if mc.DatabasePath == "" {
-		mc.DatabasePath = "./autopostingbot.db"
-	}
-
 	m = Manager{
 		botAPI:     mc.BotAPIInstance,
 		AddChannel: make(chan tgbotapi.Update),
