@@ -1,6 +1,11 @@
 package algo
 
-func Algo(c []string) int64 {
+import (
+	"gitlab.com/shitposting/autoposting-bot/database/entities"
+)
+
+// postsPerHour decides how many posts we have to push in an hour timespan
+func postsPerHour(c []entities.Post) int64 {
 	k := float64(len(c)) / float64(24)
 	if k == 0 {
 		return 0
@@ -11,5 +16,4 @@ func Algo(c []string) int64 {
 	}
 
 	return int64(k)
-
 }
