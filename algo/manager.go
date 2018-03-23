@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"gitlab.com/shitposting/autoposting-bot/database/entities"
+
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/jinzhu/gorm"
 )
@@ -14,10 +16,12 @@ import (
 //  - database updates
 //  - algorithm lifecycle
 type Manager struct {
-	botAPI     *tgbotapi.BotAPI
-	db         *gorm.DB
-	AddChannel chan tgbotapi.Update
-	postSignal chan time.Time
+	botAPI           *tgbotapi.BotAPI
+	db               *gorm.DB
+	AddChannel       chan tgbotapi.Update
+	hourlyPostSignal <-chan time.Time
+	hourlyPostRate   time.Duration
+	postSignal       <-chan time.Time
 }
 
 // ManagerConfig is the configuration wanted for a given Manager instance.
@@ -36,11 +40,20 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 		AddChannel: make(chan tgbotapi.Update),
 	}
 
+	// Initialize gorm
+	m.db, err = gorm.Open("sqlite3", mc.DatabasePath)
+
 	// TODO: invoke algorithm to check when we'll have to post another photo,
 	// and initialize postSignal with the output of time.After()
 
-	// Initialize gorm
-	m.db, err = gorm.Open("sqlite3", mc.DatabasePath)
+	// Calculate the hourly post rate on the current post availability
+	m.calculateHourlyPostRate()
+
+	// Initialize the calculation signal
+	m.hourlyPostSignal = time.After(1 * time.Hour)
+
+	// Initialize the postSignal on the hourlyRate
+	m.postSignal = time.After(m.hourlyPostRate * time.Minute)
 
 	// Start the manager lifecycle
 	go m.managerLifecycle()
@@ -50,13 +63,29 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 
 // managerLifecycle is the function we run indefinitely in a goroutine.
 // It handles incoming updates, and the posting routine.
-func (m Manager) managerLifecycle() {
+func (m *Manager) managerLifecycle() {
 	for {
 		select {
 		case newUpdate := <-m.AddChannel:
 			fmt.Println(newUpdate)
 		case <-m.postSignal:
 			fmt.Println("gotta post!")
+			// reinitialize the posting signal with the
+			m.postSignal = time.After(m.hourlyPostRate)
+		case <-m.hourlyPostSignal:
+			// calculate the new hourly post rate
+			m.calculateHourlyPostRate()
+
+			// see you in an hour!
+			m.hourlyPostSignal = time.After(1 * time.Hour)
 		}
 	}
+}
+
+// calculateHourlyPostRate calculate the hourly post rate, and saves it in the Manager
+// instance.
+func (m *Manager) calculateHourlyPostRate() {
+	var postsQueue []entities.Post
+	m.db.Find(&postsQueue)
+	m.hourlyPostRate = time.Duration(60 / postsPerHour(postsQueue))
 }
