@@ -1,10 +1,13 @@
 package algo
 
 import (
+	"errors"
 	"fmt"
+	"sort"
 	"time"
 
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
+	"gitlab.com/shitposting/autoposting-bot/utility"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/jinzhu/gorm"
@@ -17,8 +20,9 @@ import (
 //  - algorithm lifecycle
 type Manager struct {
 	botAPI           *tgbotapi.BotAPI
+	channelID        int64
 	db               *gorm.DB
-	AddChannel       chan tgbotapi.Update
+	AddChannel       chan entities.Post
 	hourlyPostSignal <-chan time.Time
 	hourlyPostRate   time.Duration
 	postSignal       <-chan time.Time
@@ -31,13 +35,20 @@ type Manager struct {
 type ManagerConfig struct {
 	DatabasePath   string
 	BotAPIInstance *tgbotapi.BotAPI
+	ChannelID      int64
 }
 
 // NewManager returns a new Manager instance
 func NewManager(mc ManagerConfig) (m Manager, err error) {
+	if mc.ChannelID == 0 {
+		err = errors.New("ChannelID is empty")
+		return
+	}
+
 	m = Manager{
 		botAPI:     mc.BotAPIInstance,
-		AddChannel: make(chan tgbotapi.Update),
+		channelID:  mc.ChannelID,
+		AddChannel: make(chan entities.Post),
 	}
 
 	// Initialize gorm
@@ -71,16 +82,25 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 func (m *Manager) managerLifecycle() {
 	for {
 		select {
-		case newUpdate := <-m.AddChannel:
-			fmt.Println(newUpdate)
+		case newPost := <-m.AddChannel:
+			utility.GreenLog("got a new media to add!")
+			// add to the database
+			m.db.Create(&newPost)
 		case <-m.postSignal:
-			fmt.Println("gotta post!")
-			// reinitialize the posting signal with the
+			utility.GreenLog("it's time to post!")
+			wtp, err := m.whatToPost()
+			if err != nil {
+				utility.PrettyError(err)
+				continue
+			}
+
+			m.popAndPost(wtp)
+			utility.GreenLog("all done!")
 			m.postSignal = time.After(m.hourlyPostRate)
 		case <-m.hourlyPostSignal:
+			utility.YellowLog("calculating the hourly posting rate...")
 			// calculate the new hourly post rate
 			m.calculateHourlyPostRate()
-
 			// see you in an hour!
 			m.hourlyPostSignal = time.After(1 * time.Hour)
 		}
@@ -100,4 +120,40 @@ func (m *Manager) calculateHourlyPostRate() {
 	}
 
 	m.hourlyPostRate = 0
+}
+
+// whatToPost returns the oldest media in the queue
+func (m *Manager) whatToPost() (entities.Post, error) {
+	var postsQueue []entities.Post
+	m.db.Find(&postsQueue)
+	sort.Sort(entities.Posts(postsQueue))
+
+	if len(postsQueue) <= 0 {
+		return entities.Post{}, errors.New("no element to post has been found")
+	}
+
+	return postsQueue[0], nil
+
+}
+
+// popAndPost removes entity from the database and post it to the Telegram channel
+// identified by Manager.channelID
+func (m *Manager) popAndPost(entity entities.Post) error {
+	caption := "@shitpost"
+	if entity.Caption != "" {
+		caption = fmt.Sprintf("%s\n@shitpost", entity.Caption)
+	}
+
+	photoConfig := tgbotapi.NewPhotoShare(m.channelID, entity.Media)
+	photoConfig.Caption = caption
+
+	_, err := m.botAPI.Send(photoConfig)
+
+	// checking if there's an error here gives us the chance to remove the posted
+	// entity if everything was ok - if it wasn't, the error will be handled on the caller
+	// level.
+	if err == nil {
+		m.db.Delete(&entity)
+	}
+	return err
 }
