@@ -115,7 +115,7 @@ func iCanUseThis(update tgbotapi.Update) bool {
 	var users []entities.User
 
 	// TODO: fix this with proper gorm implementation
-	db.Find(users)
+	db.Find(&users)
 
 	for _, user := range users {
 		if user.TelegramID == destID {
