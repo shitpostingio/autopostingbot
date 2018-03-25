@@ -5,9 +5,11 @@ import (
 	"net/http"
 
 	"gitlab.com/shitposting/autoposting-bot/algo"
+	"gitlab.com/shitposting/autoposting-bot/database/entities"
 
 	"github.com/fatih/color"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"gitlab.com/shitposting/autoposting-bot/command"
 	"gitlab.com/shitposting/autoposting-bot/utility"
@@ -28,6 +30,8 @@ var (
 	Build string
 
 	manager algo.Manager
+
+	db *gorm.DB
 
 	err   error
 	debug bool
@@ -71,13 +75,23 @@ func main() {
 		utility.PrettyFatal(err)
 	}
 
+	// Initialize gorm
+	db, err = gorm.Open("sqlite3", config.DatabasePath)
+	if err != nil {
+		utility.PrettyFatal(err)
+	}
+
 	go startServer()
 
 	for update := range updates {
-		err := command.Handle(update, bot, &manager)
-		if err != nil {
-			utility.PrettyError(err)
-		}
+		go func(update tgbotapi.Update, bot *tgbotapi.BotAPI, manager algo.Manager) {
+			if iCanUseThis(update) {
+				err := command.Handle(update, bot, &manager)
+				if err != nil {
+					utility.PrettyError(err)
+				}
+			}
+		}(update, bot, manager)
 	}
 
 }
@@ -94,4 +108,20 @@ func startServer() {
 	}
 
 	go utility.PrettyFatal(http.ListenAndServe(config.BindString(), nil))
+}
+
+func iCanUseThis(update tgbotapi.Update) bool {
+	destID := update.Message.From.ID
+	var users []entities.User
+
+	// TODO: fix this with proper gorm implementation
+	db.Find(users)
+
+	for _, user := range users {
+		if user.TelegramID == destID {
+			return true
+		}
+	}
+
+	return false
 }
