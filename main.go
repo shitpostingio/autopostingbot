@@ -2,12 +2,12 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net/http"
 
 	"gitlab.com/shitposting/autoposting-bot/algo"
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
 
-	"github.com/fatih/color"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -39,8 +39,9 @@ var (
 
 func main() {
 	setupCLIParams()
-	color.Green("Shitposting autoposting-bot version %s, build %s", Version, Build)
-	color.Yellow("INFO - reading configuration file located at %s", configFilePath)
+
+	utility.GreenLog(fmt.Sprintf("Shitposting autoposting-bot version %s, build %s\n", Version, Build))
+	utility.YellowLog(fmt.Sprintf("INFO - reading configuration file located at %s", configFilePath))
 	config, err = ReadConfigFile(configFilePath)
 	if err != nil {
 		utility.PrettyFatal(err)
@@ -55,7 +56,8 @@ func main() {
 	// should we activate debug output?
 	bot.Debug = debug
 
-	color.Yellow("Authorized on account %s", bot.Self.UserName)
+	//utility.YellowLog
+	utility.YellowLog(fmt.Sprintf("Authorized on account %s", bot.Self.UserName))
 
 	// set webhook to an adequate value
 	_, err = bot.SetWebhook(tgbotapi.NewWebhook(config.WebHookURL()))
