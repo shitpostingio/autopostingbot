@@ -67,9 +67,7 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 	m.hourlyPostSignal = time.After(1 * time.Hour)
 
 	// Initialize the postSignal on the hourlyRate
-	if m.hourlyPostRate != 0 {
-		m.postSignal = time.After(m.hourlyPostRate * time.Minute)
-	}
+	m.setUpPostSignal()
 
 	// Start the manager lifecycle
 	go m.managerLifecycle()
@@ -101,6 +99,10 @@ func (m *Manager) managerLifecycle() {
 			utility.YellowLog("calculating the hourly posting rate...")
 			// calculate the new hourly post rate
 			m.calculateHourlyPostRate()
+
+			// set up the posting signal, even if we already did that before
+			m.setUpPostSignal()
+
 			// see you in an hour!
 			m.hourlyPostSignal = time.After(1 * time.Hour)
 		}
@@ -120,6 +122,13 @@ func (m *Manager) calculateHourlyPostRate() {
 	}
 
 	m.hourlyPostRate = 0
+}
+
+// setUpPostSignal sets up the posting signal if there's something to post
+func (m *Manager) setUpPostSignal() {
+	if m.hourlyPostRate != 0 {
+		m.postSignal = time.After(m.hourlyPostRate * time.Minute)
+	}
 }
 
 // whatToPost returns the oldest media in the queue
