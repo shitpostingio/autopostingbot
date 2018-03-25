@@ -63,7 +63,7 @@ func main() {
 
 	manager, err = algo.NewManager(algo.ManagerConfig{
 		DatabasePath:   config.DatabasePath,
-		ChannelID:      int64(config.ChannelID)-1001330627059,
+		ChannelID:      int64(config.ChannelID),
 		BotAPIInstance: bot,
 	})
 
