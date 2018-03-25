@@ -4,6 +4,8 @@ import (
 	"flag"
 	"net/http"
 
+	"gitlab.com/shitposting/autoposting-bot/algo"
+
 	"github.com/fatih/color"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -24,6 +26,8 @@ var (
 
 	// Build is the git tag for the current version
 	Build string
+
+	manager algo.Manager
 
 	err   error
 	debug bool
@@ -56,6 +60,16 @@ func main() {
 	}
 
 	updates := bot.ListenForWebhook(config.WebHookPath())
+
+	manager, err = algo.NewManager(algo.ManagerConfig{
+		DatabasePath:   config.DatabasePath,
+		ChannelID:      config.ChannelID,
+		BotAPIInstance: bot,
+	})
+
+	if err != nil {
+		utility.PrettyFatal(err)
+	}
 
 	go startServer()
 
