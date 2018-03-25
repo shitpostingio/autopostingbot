@@ -63,7 +63,7 @@ func main() {
 
 	manager, err = algo.NewManager(algo.ManagerConfig{
 		DatabasePath:   config.DatabasePath,
-		ChannelID:      config.ChannelID,
+		ChannelID:      int64(config.ChannelID),
 		BotAPIInstance: bot,
 	})
 
@@ -74,7 +74,7 @@ func main() {
 	go startServer()
 
 	for update := range updates {
-		err := command.Handle(update, bot)
+		err := command.Handle(update, bot, &manager)
 		if err != nil {
 			utility.PrettyError(err)
 		}
