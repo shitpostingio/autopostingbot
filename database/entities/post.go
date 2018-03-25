@@ -14,3 +14,18 @@ type Post struct {
 	Categories []Category `gorm:"many2many:category_posts;"` // Post has and belongs to many categories, use `category_posts` as join table
 	CreatedAt  time.Time  // Timestamp of the creation inside the database
 }
+
+// Posts is a collection of Post, which implements the sort interface
+type Posts []Post
+
+func (p Posts) Len() int {
+	return len(p)
+}
+
+func (p Posts) Less(i, j int) bool {
+	return p[i].CreatedAt.Before(p[j].CreatedAt)
+}
+
+func (p Posts) Swap(i, j int) {
+	p[i], p[j] = p[j], p[i]
+}
