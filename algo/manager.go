@@ -42,6 +42,9 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 
 	// Initialize gorm
 	m.db, err = gorm.Open("sqlite3", mc.DatabasePath)
+	if err != nil {
+		return
+	}
 
 	// TODO: invoke algorithm to check when we'll have to post another photo,
 	// and initialize postSignal with the output of time.After()
@@ -53,7 +56,9 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 	m.hourlyPostSignal = time.After(1 * time.Hour)
 
 	// Initialize the postSignal on the hourlyRate
-	m.postSignal = time.After(m.hourlyPostRate * time.Minute)
+	if m.hourlyPostRate != 0 {
+		m.postSignal = time.After(m.hourlyPostRate * time.Minute)
+	}
 
 	// Start the manager lifecycle
 	go m.managerLifecycle()
@@ -87,5 +92,12 @@ func (m *Manager) managerLifecycle() {
 func (m *Manager) calculateHourlyPostRate() {
 	var postsQueue []entities.Post
 	m.db.Find(&postsQueue)
-	m.hourlyPostRate = time.Duration(60 / postsPerHour(postsQueue))
+
+	ppH := postsPerHour(postsQueue)
+	if ppH > 0 {
+		m.hourlyPostRate = time.Duration(60 / ppH)
+		return
+	}
+
+	m.hourlyPostRate = 0
 }
