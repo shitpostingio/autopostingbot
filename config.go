@@ -21,6 +21,7 @@ type Config struct {
 	TLSCertPath      string
 	TLSKeyPath       string
 	DatabasePath     string
+	ChannelID        int
 }
 
 // BindString returns IP+Port, in a suitable syntax for http.ListenAndServe
@@ -54,6 +55,8 @@ func ReadConfigFile(path string) (Config, error) {
 
 	if conf.BotToken == "" { // Missing bot token
 		return buildErrorMessage("missing Bot token")
+	} else if conf.ChannelID == 0 {
+		return buildErrorMessage("missing Telegram channel identifier")
 	} else if !conf.ReverseProxy && !isStandardPort(conf.Port) { // Not running behind a reverse proxy, and using non-standard port
 		return buildErrorMessage("cannot use non-standard port when ReverseProxy is disabled")
 	} else if conf.ReverseProxy && conf.ReverseProxyPort == 0 { // Running behind a reverse proxy, but its port has not been defined
