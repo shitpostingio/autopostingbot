@@ -1,7 +1,8 @@
-package main
+package config
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -20,8 +21,16 @@ type Config struct {
 	TLS              bool
 	TLSCertPath      string
 	TLSKeyPath       string
-	DatabasePath     string
+	DatabaseName     string
+	DatabaseUsername string
+	DatabasePassword string
+	DatabaseAddress  string
 	ChannelID        int
+}
+
+// DatabaseConnectionString returns a well-formatted database connection string for MySQL
+func (c Config) DatabaseConnectionString() string {
+	return fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True", c.DatabaseUsername, c.DatabasePassword, c.DatabaseAddress, c.DatabaseName)
 }
 
 // BindString returns IP+Port, in a suitable syntax for http.ListenAndServe
@@ -55,6 +64,12 @@ func ReadConfigFile(path string) (Config, error) {
 
 	if conf.BotToken == "" { // Missing bot token
 		return buildErrorMessage("missing Bot token")
+	} else if conf.DatabaseUsername == "" {
+		return buildErrorMessage("missing database username")
+	} else if conf.DatabasePassword == "" {
+		return buildErrorMessage("missing database password")
+	} else if conf.DatabaseName == "" {
+		return buildErrorMessage("missing database name")
 	} else if conf.ChannelID == 0 {
 		return buildErrorMessage("missing Telegram channel identifier")
 	} else if !conf.ReverseProxy && !isStandardPort(conf.Port) { // Not running behind a reverse proxy, and using non-standard port
@@ -78,10 +93,11 @@ func ReadConfigFile(path string) (Config, error) {
 		conf.IP = "127.0.0.1"
 	}
 
-	// If we don't have a DatabasePath, use the default value
-	if conf.DatabasePath == "" {
-		conf.DatabasePath = "./autopostingbot.db"
+	// If we don't have a DatabaseAddress, set it to localhost
+	if conf.DatabaseAddress == "" {
+		conf.DatabaseAddress = "127.0.0.1:3306"
 	}
+
 	return conf, nil
 }
 
