@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strings"
 	"time"
 
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
@@ -33,7 +34,7 @@ type Manager struct {
 // Manager will try to load an existing database from ./autopostingbot.db,
 // as per config.go.
 type ManagerConfig struct {
-	DatabasePath   string
+	DatabaseString string
 	BotAPIInstance *tgbotapi.BotAPI
 	ChannelID      int64
 }
@@ -52,7 +53,7 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 	}
 
 	// Initialize gorm
-	m.db, err = gorm.Open("sqlite3", mc.DatabasePath)
+	m.db, err = gorm.Open("mysql", mc.DatabaseString)
 	if err != nil {
 		return
 	}
@@ -62,6 +63,9 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 
 	// Calculate the hourly post rate on the current post availability
 	m.calculateHourlyPostRate()
+
+	// Print the hourly posting rate in seconds
+	utility.YellowLog("Initial hourly posting rate set to " + (m.hourlyPostRate * time.Second).String())
 
 	// Initialize the calculation signal
 	m.hourlyPostSignal = time.After(1 * time.Hour)
@@ -82,6 +86,19 @@ func (m *Manager) managerLifecycle() {
 		select {
 		case newPost := <-m.AddChannel:
 			utility.GreenLog("got a new media to add!")
+			// find the user id based on the telegram id
+			var user entities.User
+			m.db.Where("telegram_id = ?", newPost.UserID).First(&user)
+
+			// if no user with said telegram_id was found, throw an error
+			if user.ID == 0 {
+				utility.PrettyError(fmt.Errorf("cannot find user_id for telegram_id %d", newPost.UserID))
+				continue
+			}
+
+			// set the entity id to the database's user id
+			newPost.UserID = user.ID
+
 			// add to the database
 			m.db.Create(&newPost)
 		case <-m.postSignal:
@@ -150,6 +167,7 @@ func (m *Manager) whatToPost() (entities.Post, error) {
 func (m *Manager) popAndPost(entity entities.Post) error {
 	caption := "@shitpost"
 	if entity.Caption != "" {
+		entity.Caption = strings.TrimSpace(strings.Split(entity.Caption, "@shitpost")[0])
 		caption = fmt.Sprintf("%s\n@shitpost", entity.Caption)
 	}
 
