@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"gitlab.com/shitposting/autoposting-bot/algo"
+	"gitlab.com/shitposting/autoposting-bot/utility"
 )
 
 // Handle e` il punto di entrata per il parsing e l'organizzazione dell'azione del bot
@@ -19,9 +20,11 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 	switch {
 	case msg.Video != nil:
 		saveMedia(msg.Video.FileID, msg.Caption, Video, manager, msg.From.ID)
+		utility.SendTelegramReply(update, api, "Added!")
 	case msg.Photo != nil:
 		photos := *msg.Photo
 		saveMedia(photos[len(photos)-1].FileID, msg.Caption, Photo, manager, msg.From.ID)
+		utility.SendTelegramReply(update, api, "Added!")
 	}
 
 	return nil
