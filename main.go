@@ -6,18 +6,19 @@ import (
 	"net/http"
 
 	"gitlab.com/shitposting/autoposting-bot/algo"
+	cfg "gitlab.com/shitposting/autoposting-bot/config"
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"gitlab.com/shitposting/autoposting-bot/command"
 	"gitlab.com/shitposting/autoposting-bot/utility"
 )
 
 var (
 	// parsed config file
-	config Config
+	config cfg.Config
 
 	// config file path, if not specified it will read
 	// ./config.toml
@@ -42,7 +43,7 @@ func main() {
 
 	utility.GreenLog(fmt.Sprintf("Shitposting autoposting-bot version %s, build %s\n", Version, Build))
 	utility.YellowLog(fmt.Sprintf("INFO - reading configuration file located at %s", configFilePath))
-	config, err = ReadConfigFile(configFilePath)
+	config, err = cfg.ReadConfigFile(configFilePath)
 	if err != nil {
 		utility.PrettyFatal(err)
 	}
@@ -68,9 +69,9 @@ func main() {
 	updates := bot.ListenForWebhook(config.WebHookPath())
 
 	manager, err = algo.NewManager(algo.ManagerConfig{
-		DatabasePath:   config.DatabasePath,
 		ChannelID:      int64(config.ChannelID),
 		BotAPIInstance: bot,
+		DatabaseString: config.DatabaseConnectionString(),
 	})
 
 	if err != nil {
@@ -78,7 +79,7 @@ func main() {
 	}
 
 	// Initialize gorm
-	db, err = gorm.Open("sqlite3", config.DatabasePath)
+	db, err = gorm.Open("mysql", config.DatabaseConnectionString())
 	if err != nil {
 		utility.PrettyFatal(err)
 	}
