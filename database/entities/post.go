@@ -6,7 +6,7 @@ import (
 
 // Post Entity
 type Post struct {
-	ID         uint
+	ID         uint       `gorm:"primary_key"`
 	UserID     uint       `gorm:"index"`                     // Foreign key (belongs to), tag `index` will create index for this column
 	Type       string     `gorm:"type:varchar(191)"`         // Type from telegram API
 	Media      string     `gorm:"type:longtext"`             // The URL of the media from telegram API
