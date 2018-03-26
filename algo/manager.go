@@ -64,8 +64,8 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 	// Calculate the hourly post rate on the current post availability
 	m.calculateHourlyPostRate()
 
-	// Print the hourly posting rate in seconds
-	utility.YellowLog("Initial hourly posting rate set to " + (m.hourlyPostRate * time.Second).String())
+	// Print the hourly posting rate in minutes
+	utility.YellowLog("Initial hourly posting rate set to " + (m.hourlyPostRate * time.Minute).String())
 
 	// Initialize the calculation signal
 	m.hourlyPostSignal = time.After(1 * time.Hour)
@@ -111,7 +111,7 @@ func (m *Manager) managerLifecycle() {
 
 			m.popAndPost(wtp)
 			utility.GreenLog("all done!")
-			m.postSignal = time.After(m.hourlyPostRate)
+			m.setUpPostSignal()
 		case <-m.hourlyPostSignal:
 			utility.YellowLog("calculating the hourly posting rate...")
 			// calculate the new hourly post rate
@@ -134,7 +134,7 @@ func (m *Manager) calculateHourlyPostRate() {
 
 	ppH := postsPerHour(postsQueue)
 	if ppH > 0 {
-		m.hourlyPostRate = time.Duration(60 / ppH)
+		m.hourlyPostRate = time.Duration(60/ppH) * time.Second
 		return
 	}
 
