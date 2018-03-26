@@ -15,6 +15,6 @@ const (
 )
 
 // saveMedia sends the media identified by the fileID to the Manager
-func saveMedia(fileID string, caption string, mediaType MediaType, manager *algo.Manager) {
-	manager.AddChannel <- entities.Post{Media: fileID, Caption: caption}
+func saveMedia(fileID string, caption string, mediaType MediaType, manager *algo.Manager, userID int) {
+	manager.AddChannel <- entities.Post{Media: fileID, Caption: caption, UserID: uint(userID)}
 }

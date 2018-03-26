@@ -18,10 +18,10 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 
 	switch {
 	case msg.Video != nil:
-		saveMedia(msg.Video.FileID, msg.Caption, Video, manager)
+		saveMedia(msg.Video.FileID, msg.Caption, Video, manager, msg.From.ID)
 	case msg.Photo != nil:
 		photos := *msg.Photo
-		saveMedia(photos[len(photos)-1].FileID, msg.Caption, Photo, manager)
+		saveMedia(photos[len(photos)-1].FileID, msg.Caption, Photo, manager, msg.From.ID)
 	}
 
 	return nil
