@@ -109,8 +109,11 @@ func (m *Manager) managerLifecycle() {
 				continue
 			}
 
-			m.popAndPost(wtp)
-			utility.GreenLog("all done!")
+			if err := m.popAndPost(wtp); err != nil {
+				utility.PrettyError(err)
+			} else {
+				utility.GreenLog("all done!")
+			}
 			m.setUpPostSignal()
 		case <-m.hourlyPostSignal:
 			utility.YellowLog("calculating the hourly posting rate...")
