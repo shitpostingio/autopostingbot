@@ -8,7 +8,7 @@ import (
 
 // PrettyError prints an error with a pleasant red text color
 func PrettyError(err error) {
-	color.Red("ERROR - %s", err.Error())
+	log.Println(color.RedString("ERROR - %s", err.Error()))
 }
 
 // PrettyFatal prints an error with a pleasant red text color, then exits
