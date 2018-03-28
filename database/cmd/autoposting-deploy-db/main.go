@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 
+	"gitlab.com/shitposting/autoposting-bot/database/entities"
+
 	"gitlab.com/shitposting/autoposting-bot/config"
 	"gitlab.com/shitposting/autoposting-bot/database/migrations"
 
@@ -39,4 +41,11 @@ func main() {
 	migrations.CreateCategories(db)
 	// Create Posts table
 	migrations.CreatePosts(db)
+
+	// Create image and video categories
+	image := entities.Category{Name: "image"}
+	video := entities.Category{Name: "video"}
+	db.Create(&image)
+	db.Create(&video)
+
 }
