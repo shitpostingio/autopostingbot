@@ -114,6 +114,7 @@ func (m *Manager) managerLifecycle() {
 
 			if err := m.popAndPost(wtp); err != nil {
 				utility.PrettyError(err)
+				utility.PrettyError(fmt.Errorf("on media with ID %s", wtp.Media))
 			} else {
 				utility.GreenLog("all done!")
 			}
