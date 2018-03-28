@@ -23,7 +23,7 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 		utility.SendTelegramReply(update, api, "Added!")
 	case msg.Photo != nil:
 		photos := *msg.Photo
-		saveMedia(photos[len(photos)-1].FileID, msg.Caption, Photo, manager, msg.From.ID)
+		saveMedia(photos[len(photos)-1].FileID, msg.Caption, Image, manager, msg.From.ID)
 		utility.SendTelegramReply(update, api, "Added!")
 	}
 

@@ -3,6 +3,7 @@ package algo
 import (
 	"errors"
 	"fmt"
+	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -23,11 +24,13 @@ type Manager struct {
 	botAPI           *tgbotapi.BotAPI
 	channelID        int64
 	db               *gorm.DB
-	AddChannel       chan entities.Post
+	AddImageChannel  chan entities.Post
+	AddVideoChannel  chan entities.Post
 	hourlyPostSignal <-chan time.Time
 	hourlyPostRate   time.Duration
 	postSignal       <-chan time.Time
 	debug            bool
+	regexpShitpost   *regexp.Regexp
 }
 
 // ManagerConfig is the configuration wanted for a given Manager instance.
@@ -41,6 +44,13 @@ type ManagerConfig struct {
 	Debug          bool
 }
 
+// Variables holding the two categories we're using, to distinguish
+// between images and video media types.
+var (
+	videoCategory entities.Category
+	imageCategory entities.Category
+)
+
 // NewManager returns a new Manager instance
 func NewManager(mc ManagerConfig) (m Manager, err error) {
 	if mc.ChannelID == 0 {
@@ -48,11 +58,15 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 		return
 	}
 
+	// Initialize the @Shitpost handle detection regex
+	m.regexpShitpost = regexp.MustCompile(`(\@shitpost)|(\@Shitpost)`)
+
 	m = Manager{
-		botAPI:     mc.BotAPIInstance,
-		channelID:  mc.ChannelID,
-		AddChannel: make(chan entities.Post),
-		debug:      mc.Debug,
+		botAPI:          mc.BotAPIInstance,
+		channelID:       mc.ChannelID,
+		AddImageChannel: make(chan entities.Post),
+		AddVideoChannel: make(chan entities.Post),
+		debug:           mc.Debug,
 	}
 
 	// Initialize gorm
@@ -61,8 +75,19 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 		return
 	}
 
-	// TODO: invoke algorithm to check when we'll have to post another photo,
-	// and initialize postSignal with the output of time.After()
+	// Get and initialize the categories
+	m.db.Where("name = ?", "image").Take(&imageCategory)
+	m.db.Where("name = ?", "video").Take(&videoCategory)
+	if imageCategory.Name != "image" || videoCategory.Name != "video" {
+		err = errors.New("cannot load video and/or image categories identities from the database")
+
+		if m.debug {
+			utility.BlueLog(fmt.Sprintf("imageCategory = %s", imageCategory))
+			utility.BlueLog(fmt.Sprintf("videoCategory = %s", videoCategory))
+		}
+
+		return
+	}
 
 	// Calculate the hourly post rate on the current post availability
 	m.calculateHourlyPostRate()
@@ -87,20 +112,27 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 func (m *Manager) managerLifecycle() {
 	for {
 		select {
-		case newPost := <-m.AddChannel:
-			utility.GreenLog("got a new media to add!")
-			// find the user id based on the telegram id
-			var user entities.User
-			m.db.Where("telegram_id = ?", newPost.UserID).First(&user)
-
-			// if no user with said telegram_id was found, throw an error
-			if user.ID == 0 {
-				utility.PrettyError(fmt.Errorf("cannot find user_id for telegram_id %d", newPost.UserID))
-				continue
+		case newPost := <-m.AddVideoChannel:
+			utility.GreenLog("got a new video to add!")
+			userID, err := getUserID(m.db, int(newPost.UserID))
+			if err != nil {
+				utility.PrettyFatal(err)
 			}
 
-			// set the entity id to the database's user id
-			newPost.UserID = user.ID
+			newPost.UserID = uint(userID)
+			newPost.Categories = []entities.Category{videoCategory}
+
+			// add to the database
+			m.db.Create(&newPost)
+		case newPost := <-m.AddImageChannel:
+			utility.GreenLog("got a new image to add!")
+			userID, err := getUserID(m.db, int(newPost.UserID))
+			if err != nil {
+				utility.PrettyFatal(err)
+			}
+
+			newPost.UserID = uint(userID)
+			newPost.Categories = []entities.Category{imageCategory}
 
 			// add to the database
 			m.db.Create(&newPost)
@@ -134,6 +166,21 @@ func (m *Manager) managerLifecycle() {
 	}
 }
 
+// getUserID gets the database user ID for each Telegram user
+func getUserID(db *gorm.DB, id int) (int, error) {
+	// find the user id based on the telegram id
+	var user entities.User
+	db.Where("telegram_id = ?", id).First(&user)
+
+	// if no user with said telegram_id was found, throw an error
+	if user.ID == 0 {
+		return 0, fmt.Errorf("cannot find user_id for telegram_id %d", id)
+	}
+
+	// return the correct user ID
+	return int(user.ID), nil
+}
+
 // calculateHourlyPostRate calculate the hourly post rate, and saves it in the Manager
 // instance.
 func (m *Manager) calculateHourlyPostRate() {
@@ -147,7 +194,11 @@ func (m *Manager) calculateHourlyPostRate() {
 	}
 
 	if ppH > 0 {
-		m.hourlyPostRate = time.Duration(ppH/60) * time.Minute
+		if 60/ppH <= 0 {
+			m.hourlyPostRate = time.Duration(1) * time.Minute
+		} else {
+			m.hourlyPostRate = time.Duration(60/ppH) * time.Minute
+		}
 
 		if m.debug {
 			utility.BlueLog(fmt.Sprintf("hourly post rate: %d", m.hourlyPostRate))
@@ -184,14 +235,40 @@ func (m *Manager) whatToPost() (entities.Post, error) {
 func (m *Manager) popAndPost(entity entities.Post) error {
 	caption := "@shitpost"
 	if entity.Caption != "" {
-		entity.Caption = strings.TrimSpace(strings.Split(entity.Caption, "@shitpost")[0])
+		entity.Caption = strings.TrimSpace(entity.Caption)
+
+		// For each match of either @shitpost or @Shitpost, remove it from the final
+		// caption
+		for _, match := range m.regexpShitpost.FindAllString(entity.Caption, -1) {
+			strings.Replace(entity.Caption, match, "", -1)
+		}
 		caption = fmt.Sprintf("%s\n@shitpost", entity.Caption)
 	}
 
-	photoConfig := tgbotapi.NewPhotoShare(m.channelID, entity.Media)
-	photoConfig.Caption = caption
+	predefinedCategory := entities.Category{}
+	var err error
 
-	_, err := m.botAPI.Send(photoConfig)
+	for _, category := range entity.Categories {
+		if category.Name == imageCategory.Name {
+			predefinedCategory = imageCategory
+			break
+		}
+
+		if category.Name == videoCategory.Name {
+			predefinedCategory = videoCategory
+			break
+		}
+	}
+
+	switch predefinedCategory.Name {
+	case imageCategory.Name:
+		tgImage := tgbotapi.NewPhotoShare(m.channelID, entity.Media)
+		tgImage.Caption = caption
+		_, err = m.botAPI.Send(tgImage)
+	case videoCategory.Name:
+		tgVideo := tgbotapi.NewVideoShare(m.channelID, entity.Media)
+		_, err = m.botAPI.Send(tgVideo)
+	}
 
 	// checking if there's an error here gives us the chance to remove the posted
 	// entity if everything was ok - if it wasn't, the error will be handled on the caller

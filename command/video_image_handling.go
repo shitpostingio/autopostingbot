@@ -10,11 +10,30 @@ type MediaType int
 
 //go:generate stringer -type=MediaType
 const (
-	Photo MediaType = iota
+	Image MediaType = iota
 	Video
 )
 
 // saveMedia sends the media identified by the fileID to the Manager
 func saveMedia(fileID string, caption string, mediaType MediaType, manager *algo.Manager, userID int) {
-	manager.AddChannel <- entities.Post{Media: fileID, Caption: caption, UserID: uint(userID)}
+	switch mediaType {
+	case Image:
+		manager.AddImageChannel <- entities.Post{
+			Media:   fileID,
+			Caption: caption,
+			UserID:  uint(userID),
+			Categories: []entities.Category{
+				entities.Category{Name: "image"},
+			},
+		}
+	case Video:
+		manager.AddVideoChannel <- entities.Post{
+			Media:   fileID,
+			Caption: caption,
+			UserID:  uint(userID),
+			Categories: []entities.Category{
+				entities.Category{Name: "video"},
+			},
+		}
+	}
 }
