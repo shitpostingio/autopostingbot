@@ -15,3 +15,8 @@ func GreenLog(s string) {
 func YellowLog(s string) {
 	log.Println(color.YellowString(s))
 }
+
+// BlueString is a log.Println with blue in it
+func BlueLog(s string) {
+	log.Println(color.BlueString(s))
+}

@@ -27,6 +27,7 @@ type Manager struct {
 	hourlyPostSignal <-chan time.Time
 	hourlyPostRate   time.Duration
 	postSignal       <-chan time.Time
+	debug            bool
 }
 
 // ManagerConfig is the configuration wanted for a given Manager instance.
@@ -37,6 +38,7 @@ type ManagerConfig struct {
 	DatabaseString string
 	BotAPIInstance *tgbotapi.BotAPI
 	ChannelID      int64
+	Debug          bool
 }
 
 // NewManager returns a new Manager instance
@@ -50,6 +52,7 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 		botAPI:     mc.BotAPIInstance,
 		channelID:  mc.ChannelID,
 		AddChannel: make(chan entities.Post),
+		debug:      mc.Debug,
 	}
 
 	// Initialize gorm
@@ -114,6 +117,7 @@ func (m *Manager) managerLifecycle() {
 			} else {
 				utility.GreenLog("all done!")
 			}
+
 			m.setUpPostSignal()
 		case <-m.hourlyPostSignal:
 			utility.YellowLog("calculating the hourly posting rate...")
@@ -136,8 +140,17 @@ func (m *Manager) calculateHourlyPostRate() {
 	m.db.Find(&postsQueue)
 
 	ppH := postsPerHour(postsQueue)
+
+	if m.debug {
+		utility.BlueLog(fmt.Sprintf("posts per hour: %d", ppH))
+	}
+
 	if ppH > 0 {
-		m.hourlyPostRate = time.Duration(60/ppH) * time.Minute
+		m.hourlyPostRate = time.Duration(ppH/60) * time.Minute
+
+		if m.debug {
+			utility.BlueLog(fmt.Sprintf("hourly post rate: %d", m.hourlyPostRate))
+		}
 		return
 	}
 

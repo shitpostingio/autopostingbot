@@ -72,6 +72,7 @@ func main() {
 		ChannelID:      int64(config.ChannelID),
 		BotAPIInstance: bot,
 		DatabaseString: config.DatabaseConnectionString(),
+		Debug:          debug,
 	})
 
 	if err != nil {
