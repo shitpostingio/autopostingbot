@@ -282,6 +282,7 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 	// entity if everything was ok - if it wasn't, the error will be handled on the caller
 	// level.
 	if err == nil {
+		m.db.Model(&entity).Association("categories").Delete(entity.Categories)
 		m.db.Delete(&entity)
 	}
 	return err
