@@ -30,7 +30,7 @@ type Config struct {
 
 // DatabaseConnectionString returns a well-formatted database connection string for MySQL
 func (c Config) DatabaseConnectionString() string {
-	return fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True", c.DatabaseUsername, c.DatabasePassword, c.DatabaseAddress, c.DatabaseName)
+	return fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4,utf8&parseTime=True", c.DatabaseUsername, c.DatabasePassword, c.DatabaseAddress, c.DatabaseName)
 }
 
 // BindString returns IP+Port, in a suitable syntax for http.ListenAndServe
