@@ -240,7 +240,7 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 		// For each match of either @shitpost or @Shitpost, remove it from the final
 		// caption
 		for _, match := range m.regexpShitpost.FindAllString(entity.Caption, -1) {
-			strings.Replace(entity.Caption, match, "", -1)
+			entity.Caption = strings.Replace(entity.Caption, match, "", -1)
 		}
 		caption = fmt.Sprintf("%s\n@shitpost", entity.Caption)
 	}
