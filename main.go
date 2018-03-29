@@ -89,10 +89,12 @@ func main() {
 
 	for update := range updates {
 		go func(update tgbotapi.Update, bot *tgbotapi.BotAPI, manager algo.Manager) {
-			if iCanUseThis(update) {
-				err := command.Handle(update, bot, &manager)
-				if err != nil {
-					utility.PrettyError(err)
+			if update.Message != nil && update.Message.From != nil {
+				if iCanUseThis(update) {
+					err := command.Handle(update, bot, &manager)
+					if err != nil {
+						utility.PrettyError(err)
+					}
 				}
 			}
 		}(update, bot, manager)
