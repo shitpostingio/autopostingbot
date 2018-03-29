@@ -21,15 +21,16 @@ import (
 //  - database updates
 //  - algorithm lifecycle
 type Manager struct {
-	botAPI           *tgbotapi.BotAPI
-	channelID        int64
-	db               *gorm.DB
-	AddImageChannel  chan entities.Post
-	AddVideoChannel  chan entities.Post
-	hourlyPostSignal <-chan time.Time
-	hourlyPostRate   time.Duration
-	postSignal       <-chan time.Time
-	debug            bool
+	botAPI             *tgbotapi.BotAPI
+	channelID          int64
+	db                 *gorm.DB
+	AddImageChannel    chan entities.Post
+	AddVideoChannel    chan entities.Post
+	ModifyMediaChannel chan entities.Post
+	hourlyPostSignal   <-chan time.Time
+	hourlyPostRate     time.Duration
+	postSignal         <-chan time.Time
+	debug              bool
 }
 
 // ManagerConfig is the configuration wanted for a given Manager instance.
@@ -58,11 +59,12 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 	}
 
 	m = Manager{
-		botAPI:          mc.BotAPIInstance,
-		channelID:       mc.ChannelID,
-		AddImageChannel: make(chan entities.Post),
-		AddVideoChannel: make(chan entities.Post),
-		debug:           mc.Debug,
+		botAPI:             mc.BotAPIInstance,
+		channelID:          mc.ChannelID,
+		AddImageChannel:    make(chan entities.Post),
+		AddVideoChannel:    make(chan entities.Post),
+		ModifyMediaChannel: make(chan entities.Post),
+		debug:              mc.Debug,
 	}
 
 	// Initialize gorm
@@ -124,11 +126,26 @@ func (m *Manager) managerLifecycle() {
 
 	for {
 		select {
+		case modifiedPost := <-m.ModifyMediaChannel:
+			var entity entities.Post
+			id, err := getUserID(m.db, int(modifiedPost.UserID))
+			if err != nil {
+				utility.PrettyError(err)
+			}
+			m.db.Where("media = ? AND user_id = ?", modifiedPost.Media, id).First(&entity)
+
+			if entity.Media == "" { // an empty media ID means no entity with said ID was found
+				utility.PrettyError(fmt.Errorf("someone tried to update the caption for media with id %s, but i don't know any", modifiedPost.Media))
+				continue
+			}
+
+			entity.Caption = modifiedPost.Caption
+			m.db.Save(&entity)
 		case newPost := <-m.AddVideoChannel:
 			utility.GreenLog("got a new video to add!")
 			userID, err := getUserID(m.db, int(newPost.UserID))
 			if err != nil {
-				utility.PrettyFatal(err)
+				utility.PrettyError(err)
 			}
 
 			newPost.UserID = uint(userID)

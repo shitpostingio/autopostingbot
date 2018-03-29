@@ -89,12 +89,17 @@ func main() {
 
 	for update := range updates {
 		go func(update tgbotapi.Update, bot *tgbotapi.BotAPI, manager algo.Manager) {
+			realUpdate := &tgbotapi.Message{}
 			if update.Message != nil && update.Message.From != nil {
-				if iCanUseThis(update) {
-					err := command.Handle(update, bot, &manager)
-					if err != nil {
-						utility.PrettyError(err)
-					}
+				realUpdate = update.Message
+			} else if update.EditedMessage != nil && update.EditedMessage.From != nil {
+				realUpdate = update.EditedMessage
+			}
+
+			if iCanUseThis(realUpdate) {
+				err := command.Handle(update, bot, &manager)
+				if err != nil {
+					utility.PrettyError(err)
 				}
 			}
 		}(update, bot, manager)
@@ -116,8 +121,8 @@ func startServer() {
 	go utility.PrettyFatal(http.ListenAndServe(config.BindString(), nil))
 }
 
-func iCanUseThis(update tgbotapi.Update) bool {
-	destID := update.Message.From.ID
+func iCanUseThis(message *tgbotapi.Message) bool {
+	destID := message.From.ID
 	var users []entities.User
 
 	// TODO: fix this with proper gorm implementation

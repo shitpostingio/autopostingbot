@@ -37,3 +37,9 @@ func saveMedia(fileID string, caption string, mediaType MediaType, manager *algo
 		}
 	}
 }
+
+// modifyMedia sends the new entity identified by its fileID to the manager, to be
+// modified in the database structure
+func modifyMedia(fileID string, caption string, manager *algo.Manager, userID int) {
+	manager.ModifyMediaChannel <- entities.Post{Media: fileID, Caption: caption, UserID: uint(userID)}
+}
