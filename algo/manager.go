@@ -3,7 +3,7 @@ package algo
 import (
 	"errors"
 	"fmt"
-	"regexp"
+	"os"
 	"sort"
 	"strings"
 	"time"
@@ -30,7 +30,6 @@ type Manager struct {
 	hourlyPostRate   time.Duration
 	postSignal       <-chan time.Time
 	debug            bool
-	regexpShitpost   *regexp.Regexp
 }
 
 // ManagerConfig is the configuration wanted for a given Manager instance.
@@ -58,9 +57,6 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 		return
 	}
 
-	// Initialize the @Shitpost handle detection regex
-	m.regexpShitpost = regexp.MustCompile(`(\@shitpost)|(\@Shitpost)`)
-
 	m = Manager{
 		botAPI:          mc.BotAPIInstance,
 		channelID:       mc.ChannelID,
@@ -76,16 +72,10 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 	}
 
 	// Get and initialize the categories
-	m.db.Where("name = ?", "image").Take(&imageCategory)
-	m.db.Where("name = ?", "video").Take(&videoCategory)
+	m.db.Where("name = ?", "image").First(&imageCategory)
+	m.db.Where("name = ?", "video").First(&videoCategory)
 	if imageCategory.Name != "image" || videoCategory.Name != "video" {
 		err = errors.New("cannot load video and/or image categories identities from the database")
-
-		if m.debug {
-			utility.BlueLog(fmt.Sprintf("imageCategory = %s", imageCategory))
-			utility.BlueLog(fmt.Sprintf("videoCategory = %s", videoCategory))
-		}
-
 		return
 	}
 
@@ -110,6 +100,28 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 // managerLifecycle is the function we run indefinitely in a goroutine.
 // It handles incoming updates, and the posting routine.
 func (m *Manager) managerLifecycle() {
+
+	// if -debug is specified, immediately send a post and exit
+	if m.debug {
+		utility.GreenLog("it's time to post!")
+		wtp, err := m.whatToPost()
+		if err != nil {
+			utility.PrettyError(err)
+
+		}
+
+		if err := m.popAndPost(wtp); err != nil {
+			utility.PrettyError(err)
+			utility.PrettyError(fmt.Errorf("on media with ID %s", wtp.Media))
+		} else {
+			fmt.Println(wtp)
+			utility.GreenLog("all done!")
+		}
+
+		os.Exit(0)
+	}
+	m.setUpPostSignal()
+
 	for {
 		select {
 		case newPost := <-m.AddVideoChannel:
@@ -205,7 +217,6 @@ func (m *Manager) calculateHourlyPostRate() {
 		}
 		return
 	}
-
 	m.hourlyPostRate = 0
 }
 
@@ -219,7 +230,7 @@ func (m *Manager) setUpPostSignal() {
 // whatToPost returns the oldest media in the queue
 func (m *Manager) whatToPost() (entities.Post, error) {
 	var postsQueue []entities.Post
-	m.db.Find(&postsQueue)
+	m.db.Preload("Categories").Find(&postsQueue)
 	sort.Sort(entities.Posts(postsQueue))
 
 	if len(postsQueue) <= 0 {
@@ -236,12 +247,8 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 	caption := "@shitpost"
 	if entity.Caption != "" {
 		entity.Caption = strings.TrimSpace(entity.Caption)
-
-		// For each match of either @shitpost or @Shitpost, remove it from the final
-		// caption
-		for _, match := range m.regexpShitpost.FindAllString(entity.Caption, -1) {
-			entity.Caption = strings.Replace(entity.Caption, match, "", -1)
-		}
+		entity.Caption = strings.Replace(entity.Caption, "@Shitpost", "", -1)
+		entity.Caption = strings.Replace(entity.Caption, "@shitpost", "", -1)
 		caption = fmt.Sprintf("%s\n@shitpost", entity.Caption)
 	}
 
@@ -267,6 +274,7 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 		_, err = m.botAPI.Send(tgImage)
 	case videoCategory.Name:
 		tgVideo := tgbotapi.NewVideoShare(m.channelID, entity.Media)
+		tgVideo.Caption = caption
 		_, err = m.botAPI.Send(tgVideo)
 	}
 
