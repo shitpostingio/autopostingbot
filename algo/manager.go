@@ -249,7 +249,7 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 		entity.Caption = strings.TrimSpace(entity.Caption)
 		entity.Caption = strings.Replace(entity.Caption, "@Shitpost", "", -1)
 		entity.Caption = strings.Replace(entity.Caption, "@shitpost", "", -1)
-		caption = fmt.Sprintf("%s\n@shitpost", entity.Caption)
+		caption = fmt.Sprintf("%s\n\n@shitpost", entity.Caption)
 	}
 
 	predefinedCategory := entities.Category{}
