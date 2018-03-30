@@ -5,9 +5,9 @@ import (
 )
 
 // SendTelegramReply replies with a text to the specified update
-func SendTelegramReply(update tgbotapi.Update, bot *tgbotapi.BotAPI, text string) {
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, text)
-	msg.ReplyToMessageID = update.Message.MessageID
+func SendTelegramReply(chatID int, messageID int, bot *tgbotapi.BotAPI, text string) {
+	msg := tgbotapi.NewMessage(int64(chatID), text)
+	msg.ReplyToMessageID = messageID
 
 	bot.Send(msg)
 }
