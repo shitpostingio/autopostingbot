@@ -2,6 +2,8 @@ package entities
 
 import (
 	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
 // Post Entity
@@ -16,25 +18,25 @@ type Post struct {
 }
 
 // IsVideo returns true if p is a video, false otherwise.
-func (p Post) IsVideo() bool {
-	for _, cat := range p.Categories {
-		if cat.Name == "video" {
-			return true
-		}
+func (p Post) IsVideo(db *gorm.DB) bool {
+	var c Category
+	db.Where("name = ?", "video").First(c)
+	if c.Name == "" {
+		return false
 	}
 
-	return false
+	return true
 }
 
 // IsImage returns true if p is an image, false otherwise.
-func (p Post) IsImage() bool {
-	for _, cat := range p.Categories {
-		if cat.Name == "image" {
-			return true
-		}
+func (p Post) IsImage(db *gorm.DB) bool {
+	var c Category
+	db.Where("name = ?", "image").First(c)
+	if c.Name == "" {
+		return false
 	}
 
-	return false
+	return true
 }
 
 // Posts is a collection of Post, which implements the sort interface
