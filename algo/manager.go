@@ -276,27 +276,13 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 		caption = fmt.Sprintf("%s\n\n@shitpost", entity.Caption)
 	}
 
-	predefinedCategory := entities.Category{}
 	var err error
-
-	for _, category := range entity.Categories {
-		if category.Name == imageCategory.Name {
-			predefinedCategory = imageCategory
-			break
-		}
-
-		if category.Name == videoCategory.Name {
-			predefinedCategory = videoCategory
-			break
-		}
-	}
-
-	switch predefinedCategory.Name {
-	case imageCategory.Name:
+	switch {
+	case entity.IsImage():
 		tgImage := tgbotapi.NewPhotoShare(m.channelID, entity.Media)
 		tgImage.Caption = caption
 		_, err = m.botAPI.Send(tgImage)
-	case videoCategory.Name:
+	case entity.IsVideo():
 		tgVideo := tgbotapi.NewVideoShare(m.channelID, entity.Media)
 		tgVideo.Caption = caption
 		_, err = m.botAPI.Send(tgVideo)

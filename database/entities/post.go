@@ -6,14 +6,35 @@ import (
 
 // Post Entity
 type Post struct {
-	ID     uint   `gorm:"primary_key"`
-	UserID uint   `gorm:"index"`             // Foreign key (belongs to), tag `index` will create index for this column
-	Type   string `gorm:"type:varchar(191)"` // Type from telegram API
-	Media  string `gorm:"type:longtext"`     // The URL of the media from telegram API
-	//Caption    string     `gorm:"type:varchar(192)"`         // The caption of the current post, aka the test under the media
+	ID         uint       `gorm:"primary_key"`
+	UserID     uint       `gorm:"index"`             // Foreign key (belongs to), tag `index` will create index for this column
+	Type       string     `gorm:"type:varchar(191)"` // Type from telegram API
+	Media      string     `gorm:"type:longtext"`     // The URL of the media from telegram API
 	Caption    string     `sql:"type:varchar(192) CHARACTER SET utf8 COLLATE utf8_unicode_ci"`
 	Categories []Category `gorm:"many2many:category_posts;"` // Post has and belongs to many categories, use `category_posts` as join table
 	CreatedAt  time.Time  // Timestamp of the creation inside the database
+}
+
+// IsVideo returns true if p is a video, false otherwise.
+func (p Post) IsVideo() bool {
+	for _, cat := range p.Categories {
+		if cat.Name == "video" {
+			return true
+		}
+	}
+
+	return false
+}
+
+// IsImage returns true if p is an image, false otherwise.
+func (p Post) IsImage() bool {
+	for _, cat := range p.Categories {
+		if cat.Name == "image" {
+			return true
+		}
+	}
+
+	return false
 }
 
 // Posts is a collection of Post, which implements the sort interface
