@@ -166,6 +166,9 @@ func (m *Manager) managerLifecycle() {
 			// add to the database
 			m.db.Create(&newPost)
 		case <-m.postSignal:
+			// setup the post signal first
+			m.setUpPostSignal()
+			
 			utility.GreenLog("it's time to post!")
 			wtp, err := m.whatToPost()
 			if err != nil {
@@ -179,8 +182,6 @@ func (m *Manager) managerLifecycle() {
 			} else {
 				utility.GreenLog("all done!")
 			}
-
-			m.setUpPostSignal()
 		case <-m.hourlyPostSignal:
 			utility.YellowLog("calculating the hourly posting rate...")
 			// calculate the new hourly post rate
