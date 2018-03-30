@@ -89,14 +89,7 @@ func main() {
 
 	for update := range updates {
 		go func(update tgbotapi.Update, bot *tgbotapi.BotAPI, manager algo.Manager) {
-			realUpdate := &tgbotapi.Message{}
-			if update.Message != nil && update.Message.From != nil {
-				realUpdate = update.Message
-			} else if update.EditedMessage != nil && update.EditedMessage.From != nil {
-				realUpdate = update.EditedMessage
-			}
-
-			if iCanUseThis(realUpdate) {
+			if iCanUseThis(update) {
 				err := command.Handle(update, bot, &manager)
 				if err != nil {
 					utility.PrettyError(err)
@@ -121,17 +114,20 @@ func startServer() {
 	go utility.PrettyFatal(http.ListenAndServe(config.BindString(), nil))
 }
 
-func iCanUseThis(message *tgbotapi.Message) bool {
-	destID := message.From.ID
+func iCanUseThis(update tgbotapi.Update) bool {
+	realUpdate := &tgbotapi.Message{}
+	if update.Message != nil && update.Message.From != nil {
+		realUpdate = update.Message
+	} else if update.EditedMessage != nil && update.EditedMessage.From != nil {
+		realUpdate = update.EditedMessage
+	}
+
+	destID := realUpdate.From.ID
 	var users []entities.User
 
-	// TODO: fix this with proper gorm implementation
-	db.Find(&users)
-
-	for _, user := range users {
-		if user.TelegramID == destID {
-			return true
-		}
+	db.Where("telegram_id = ?", destID).Find(&users)
+	if len(users) > 0 {
+		return true
 	}
 
 	return false
