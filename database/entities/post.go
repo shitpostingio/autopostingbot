@@ -20,7 +20,7 @@ type Post struct {
 // IsVideo returns true if p is a video, false otherwise.
 func (p Post) IsVideo(db *gorm.DB) bool {
 	var c Category
-	db.Where("name = ?", "video").First(c)
+	db.Where("name = ?", "video").First(&c)
 	if c.Name == "" {
 		return false
 	}
@@ -31,7 +31,7 @@ func (p Post) IsVideo(db *gorm.DB) bool {
 // IsImage returns true if p is an image, false otherwise.
 func (p Post) IsImage(db *gorm.DB) bool {
 	var c Category
-	db.Where("name = ?", "image").First(c)
+	db.Where("name = ?", "image").First(&c)
 	if c.Name == "" {
 		return false
 	}
