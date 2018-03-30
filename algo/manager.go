@@ -278,11 +278,11 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 
 	var err error
 	switch {
-	case entity.IsImage():
+	case entity.IsImage(m.db):
 		tgImage := tgbotapi.NewPhotoShare(m.channelID, entity.Media)
 		tgImage.Caption = caption
 		_, err = m.botAPI.Send(tgImage)
-	case entity.IsVideo():
+	case entity.IsVideo(m.db):
 		tgVideo := tgbotapi.NewVideoShare(m.channelID, entity.Media)
 		tgVideo.Caption = caption
 		_, err = m.botAPI.Send(tgVideo)
