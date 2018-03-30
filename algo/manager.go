@@ -24,9 +24,9 @@ type Manager struct {
 	botAPI             *tgbotapi.BotAPI
 	channelID          int64
 	db                 *gorm.DB
-	AddImageChannel    chan entities.Post
-	AddVideoChannel    chan entities.Post
-	ModifyMediaChannel chan entities.Post
+	AddImageChannel    chan MediaPayload
+	AddVideoChannel    chan MediaPayload
+	ModifyMediaChannel chan MediaPayload
 	hourlyPostSignal   <-chan time.Time
 	hourlyPostRate     time.Duration
 	postSignal         <-chan time.Time
@@ -42,6 +42,14 @@ type ManagerConfig struct {
 	BotAPIInstance *tgbotapi.BotAPI
 	ChannelID      int64
 	Debug          bool
+}
+
+// MediaPayload holds informations about who sent an entity, and what was
+// the message id.
+type MediaPayload struct {
+	ChatID    int
+	MessageID int
+	Entity    entities.Post
 }
 
 // Variables holding the two categories we're using, to distinguish
@@ -61,9 +69,9 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 	m = Manager{
 		botAPI:             mc.BotAPIInstance,
 		channelID:          mc.ChannelID,
-		AddImageChannel:    make(chan entities.Post),
-		AddVideoChannel:    make(chan entities.Post),
-		ModifyMediaChannel: make(chan entities.Post),
+		AddImageChannel:    make(chan MediaPayload),
+		AddVideoChannel:    make(chan MediaPayload),
+		ModifyMediaChannel: make(chan MediaPayload),
 		debug:              mc.Debug,
 	}
 
@@ -128,43 +136,58 @@ func (m *Manager) managerLifecycle() {
 		select {
 		case modifiedPost := <-m.ModifyMediaChannel:
 			var entity entities.Post
-			id, err := getUserID(m.db, int(modifiedPost.UserID))
+			id, err := getUserID(m.db, int(modifiedPost.Entity.UserID))
 			if err != nil {
 				utility.PrettyError(err)
 			}
-			m.db.Where("media = ? AND user_id = ?", modifiedPost.Media, id).First(&entity)
+			m.db.Where("media = ? AND user_id = ?", modifiedPost.Entity.Media, id).First(&entity)
 
 			if entity.Media == "" { // an empty media ID means no entity with said ID was found
-				utility.PrettyError(fmt.Errorf("someone tried to update the caption for media with id %s, but i don't know any", modifiedPost.Media))
+				utility.PrettyError(fmt.Errorf("someone tried to update the caption for media with id %s, but i don't know any", modifiedPost.Entity.Media))
 				continue
 			}
 
-			entity.Caption = modifiedPost.Caption
+			entity.Caption = modifiedPost.Entity.Caption
 			m.db.Save(&entity)
+			utility.SendTelegramReply(modifiedPost.ChatID, modifiedPost.MessageID, m.botAPI, "Modified!")
 		case newPost := <-m.AddVideoChannel:
 			utility.GreenLog("got a new video to add!")
-			userID, err := getUserID(m.db, int(newPost.UserID))
+
+			// if we have a duplicate, write a log message and stop
+			if m.checkDuplicate(newPost) {
+				continue
+			}
+
+			userID, err := getUserID(m.db, int(newPost.Entity.UserID))
 			if err != nil {
 				utility.PrettyError(err)
 			}
 
-			newPost.UserID = uint(userID)
-			newPost.Categories = []entities.Category{videoCategory}
+			newPost.Entity.UserID = uint(userID)
+			newPost.Entity.Categories = []entities.Category{videoCategory}
 
 			// add to the database
-			m.db.Create(&newPost)
+			m.db.Create(&newPost.Entity)
+			utility.SendTelegramReply(newPost.ChatID, newPost.MessageID, m.botAPI, "Video added!")
 		case newPost := <-m.AddImageChannel:
 			utility.GreenLog("got a new image to add!")
-			userID, err := getUserID(m.db, int(newPost.UserID))
+
+			// if we have a duplicate, write a log message and stop
+			if m.checkDuplicate(newPost) {
+				continue
+			}
+
+			userID, err := getUserID(m.db, int(newPost.Entity.UserID))
 			if err != nil {
 				utility.PrettyFatal(err)
 			}
 
-			newPost.UserID = uint(userID)
-			newPost.Categories = []entities.Category{imageCategory}
+			newPost.Entity.UserID = uint(userID)
+			newPost.Entity.Categories = []entities.Category{imageCategory}
 
 			// add to the database
-			m.db.Create(&newPost)
+			m.db.Create(&newPost.Entity)
+			utility.SendTelegramReply(newPost.ChatID, newPost.MessageID, m.botAPI, "Image added!")
 		case <-m.postSignal:
 			// setup the post signal first
 			m.setUpPostSignal()
@@ -296,4 +319,31 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 		m.db.Delete(&entity)
 	}
 	return err
+}
+
+// isDuplicate returns true if post has been already added before
+// false otherwise.
+func (m Manager) isDuplicate(post entities.Post) bool {
+	var duplicate entities.Post
+	m.db.Where("media = ?", post.Media).First(&duplicate)
+
+	if duplicate.Media != "" {
+		return true
+	}
+
+	return false
+}
+
+// checkDuplicate checks whether post has already been added to the database,
+// and if yes, it will communicate it to the user
+func (m Manager) checkDuplicate(post MediaPayload) bool {
+	dup := m.isDuplicate(post.Entity)
+
+	if dup {
+		msg := fmt.Sprintf("user %d tried to re-add media %s, which is already present in the database", post.Entity.UserID, post.Entity.Media)
+		utility.SendTelegramReply(post.ChatID, post.MessageID, m.botAPI, "	Duplicate.")
+		utility.YellowLog(msg)
+	}
+
+	return dup
 }
