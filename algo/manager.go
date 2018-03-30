@@ -85,7 +85,7 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 	m.calculateHourlyPostRate()
 
 	// Print the hourly posting rate in minutes
-	utility.YellowLog("Initial hourly posting rate set to " + (m.hourlyPostRate).String())
+	utility.YellowLog("Initial hourly posting rate set to " + m.hourlyPostRate.String())
 
 	// Initialize the calculation signal
 	m.hourlyPostSignal = time.After(1 * time.Hour)
@@ -168,8 +168,10 @@ func (m *Manager) managerLifecycle() {
 		case <-m.postSignal:
 			// setup the post signal first
 			m.setUpPostSignal()
-			
+
 			utility.GreenLog("it's time to post!")
+
+			// could not find anything to post
 			wtp, err := m.whatToPost()
 			if err != nil {
 				utility.PrettyError(err)
@@ -177,11 +179,13 @@ func (m *Manager) managerLifecycle() {
 			}
 
 			if err := m.popAndPost(wtp); err != nil {
+				// posting did not go well...
 				utility.PrettyError(err)
 				utility.PrettyError(fmt.Errorf("on media with ID %s", wtp.Media))
-			} else {
-				utility.GreenLog("all done!")
+				continue
 			}
+
+			utility.GreenLog("all done!")
 		case <-m.hourlyPostSignal:
 			utility.YellowLog("calculating the hourly posting rate...")
 			// calculate the new hourly post rate
@@ -189,6 +193,8 @@ func (m *Manager) managerLifecycle() {
 
 			// set up the posting signal, even if we already did that before
 			m.setUpPostSignal()
+
+			utility.YellowLog(fmt.Sprintf("new hourly posting rate: %s", m.hourlyPostRate.String()))
 
 			// see you in an hour!
 			m.hourlyPostSignal = time.After(1 * time.Hour)
