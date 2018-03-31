@@ -19,24 +19,26 @@ type Post struct {
 
 // IsVideo returns true if p is a video, false otherwise.
 func (p Post) IsVideo(db *gorm.DB) bool {
-	var c Category
-	db.Where("name = ?", "video").First(&c)
-	if c.Name == "" {
-		return false
+	db.Preload("Categories").Where("media = ?", p.Media).First(&p)
+	for _, cat := range p.Categories {
+		if cat.Name == "video" {
+			return true
+		}
 	}
 
-	return true
+	return false
 }
 
 // IsImage returns true if p is an image, false otherwise.
 func (p Post) IsImage(db *gorm.DB) bool {
-	var c Category
-	db.Where("name = ?", "image").First(&c)
-	if c.Name == "" {
-		return false
+	db.Preload("Categories").Where("media = ?", p.Media).First(&p)
+	for _, cat := range p.Categories {
+		if cat.Name == "image" {
+			return true
+		}
 	}
 
-	return true
+	return false
 }
 
 // Posts is a collection of Post, which implements the sort interface
