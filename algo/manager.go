@@ -253,10 +253,11 @@ func (m *Manager) calculateHourlyPostRate() {
 	}
 
 	if ppH > 0 {
-		if 60/ppH <= 0 {
+		hourlyRate := 60 / ppH
+		if hourlyRate <= 0 {
 			m.hourlyPostRate = time.Duration(1) * time.Minute
 		} else {
-			m.hourlyPostRate = time.Duration(60/ppH) * time.Minute
+			m.hourlyPostRate = time.Duration(hourlyRate) * time.Minute
 		}
 
 		if m.debug {
