@@ -250,6 +250,7 @@ func getUserID(db *gorm.DB, id int) (int, error) {
 func (m *Manager) calculateHourlyPostRate() {
 	var postsQueue []entities.Post
 	m.db.Find(&postsQueue)
+	postsQueue = cleanFromPosted(postsQueue)
 
 	ppH := postsPerHour(postsQueue)
 
