@@ -124,7 +124,6 @@ func (m *Manager) managerLifecycle() {
 			utility.PrettyError(err)
 			utility.PrettyError(fmt.Errorf("on media with ID %s", wtp.Media))
 		} else {
-			fmt.Println(wtp)
 			utility.GreenLog("all done!")
 		}
 
@@ -139,6 +138,7 @@ func (m *Manager) managerLifecycle() {
 			id, err := getUserID(m.db, int(modifiedPost.Entity.UserID))
 			if err != nil {
 				utility.PrettyError(err)
+				continue
 			}
 			m.db.Where("media = ? AND user_id = ?", modifiedPost.Entity.Media, id).First(&entity)
 
@@ -161,6 +161,7 @@ func (m *Manager) managerLifecycle() {
 			userID, err := getUserID(m.db, int(newPost.Entity.UserID))
 			if err != nil {
 				utility.PrettyError(err)
+				continue
 			}
 
 			newPost.Entity.UserID = uint(userID)
@@ -179,7 +180,8 @@ func (m *Manager) managerLifecycle() {
 
 			userID, err := getUserID(m.db, int(newPost.Entity.UserID))
 			if err != nil {
-				utility.PrettyFatal(err)
+				utility.PrettyError(err)
+				continue
 			}
 
 			newPost.Entity.UserID = uint(userID)
@@ -211,11 +213,14 @@ func (m *Manager) managerLifecycle() {
 			utility.GreenLog("all done!")
 		case <-m.hourlyPostSignal:
 			utility.YellowLog("calculating the hourly posting rate...")
+			lastPostingRate := m.hourlyPostRate
 			// calculate the new hourly post rate
 			m.calculateHourlyPostRate()
 
-			// set up the posting signal, even if we already did that before
-			m.setUpPostSignal()
+			// set up the post signal if the last hourlyPostSignal was zero
+			if lastPostingRate <= 0 {
+				m.setUpPostSignal()
+			}
 
 			utility.YellowLog(fmt.Sprintf("new hourly posting rate: %s", m.hourlyPostRate.String()))
 
@@ -261,7 +266,7 @@ func (m *Manager) calculateHourlyPostRate() {
 		}
 
 		if m.debug {
-			utility.BlueLog(fmt.Sprintf("hourly post rate: %d", m.hourlyPostRate))
+			utility.BlueLog(fmt.Sprintf("hourly post rate: %s", m.hourlyPostRate))
 		}
 		return
 	}
@@ -279,6 +284,7 @@ func (m *Manager) setUpPostSignal() {
 func (m *Manager) whatToPost() (entities.Post, error) {
 	var postsQueue []entities.Post
 	m.db.Preload("Categories").Find(&postsQueue)
+	postsQueue = cleanFromPosted(postsQueue)
 	sort.Sort(entities.Posts(postsQueue))
 
 	if len(postsQueue) <= 0 {
@@ -316,8 +322,8 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 	// entity if everything was ok - if it wasn't, the error will be handled on the caller
 	// level.
 	if err == nil {
-		m.db.Model(&entity).Association("categories").Delete(entity.Categories)
-		m.db.Delete(&entity)
+		entity.PostedAt = time.Now()
+		m.db.Save(&entity)
 	}
 	return err
 }
@@ -347,4 +353,16 @@ func (m Manager) checkDuplicate(post MediaPayload) bool {
 	}
 
 	return dup
+}
+
+// cleanFromPosted removes all the posted entities.Post from a given array of such
+// elements.
+func cleanFromPosted(e []entities.Post) []entities.Post {
+	for index, element := range e {
+		if (time.Time{}) != element.PostedAt {
+			e = append(e[:index], e[index+1:]...)
+		}
+	}
+
+	return e
 }

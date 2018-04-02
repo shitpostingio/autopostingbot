@@ -15,6 +15,7 @@ type Post struct {
 	Caption    string     `sql:"type:varchar(192) CHARACTER SET utf8 COLLATE utf8_unicode_ci"`
 	Categories []Category `gorm:"many2many:category_posts;"` // Post has and belongs to many categories, use `category_posts` as join table
 	CreatedAt  time.Time  // Timestamp of the creation inside the database
+	PostedAt   time.Time  `gorm:"default:null"` // Timestampo of the successful post on the channel
 }
 
 // IsVideo returns true if p is a video, false otherwise.
