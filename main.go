@@ -120,6 +120,8 @@ func iCanUseThis(update tgbotapi.Update) bool {
 		realUpdate = update.Message
 	} else if update.EditedMessage != nil && update.EditedMessage.From != nil {
 		realUpdate = update.EditedMessage
+	} else {
+		return false
 	}
 
 	destID := realUpdate.From.ID
