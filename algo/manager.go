@@ -113,23 +113,12 @@ func (m *Manager) managerLifecycle() {
 
 	// if -debug is specified, immediately send a post and exit
 	if m.debug {
-		utility.GreenLog("it's time to post!")
-		wtp, err := m.whatToPost()
+		err := m.doPost()
 		if err != nil {
 			utility.PrettyError(err)
-
 		}
-
-		if err := m.popAndPost(wtp); err != nil {
-			utility.PrettyError(err)
-			utility.PrettyError(fmt.Errorf("on media with ID %s", wtp.Media))
-		} else {
-			utility.GreenLog("all done!")
-		}
-
 		os.Exit(0)
 	}
-	m.setUpPostSignal()
 
 	for {
 		select {
@@ -191,26 +180,10 @@ func (m *Manager) managerLifecycle() {
 			m.db.Create(&newPost.Entity)
 			utility.SendTelegramReply(newPost.ChatID, newPost.MessageID, m.botAPI, "Image added!")
 		case <-m.postSignal:
-			// setup the post signal first
-			m.setUpPostSignal()
-
-			utility.GreenLog("it's time to post!")
-
-			// could not find anything to post
-			wtp, err := m.whatToPost()
+			err := m.doPost()
 			if err != nil {
 				utility.PrettyError(err)
-				continue
 			}
-
-			if err := m.popAndPost(wtp); err != nil {
-				// posting did not go well...
-				utility.PrettyError(err)
-				utility.PrettyError(fmt.Errorf("on media with ID %s", wtp.Media))
-				continue
-			}
-
-			utility.GreenLog("all done!")
 		case <-m.hourlyPostSignal:
 			utility.YellowLog("calculating the hourly posting rate...")
 			lastPostingRate := m.hourlyPostRate
@@ -228,6 +201,32 @@ func (m *Manager) managerLifecycle() {
 			m.hourlyPostSignal = time.After(1 * time.Hour)
 		}
 	}
+}
+
+func (m Manager) doPost() error {
+	// setup the post signal first
+	m.setUpPostSignal()
+
+	utility.GreenLog("it's time to post!")
+
+	// could not find anything to post
+	wtp, err := m.whatToPost()
+	if err != nil {
+		return err
+	}
+
+	if err := m.popAndPost(wtp); err != nil {
+		// posting did not go well...
+		// mark that media with the error flag
+		wtp.HasError = true
+		m.db.Save(&wtp)
+
+		return fmt.Errorf("%s on media with ID %s", err, wtp.Media)
+	}
+
+	utility.GreenLog("all done!")
+
+	return nil
 }
 
 // getUserID gets the database user ID for each Telegram user
@@ -249,7 +248,7 @@ func getUserID(db *gorm.DB, id int) (int, error) {
 // instance.
 func (m *Manager) calculateHourlyPostRate() {
 	var postsQueue []entities.Post
-	m.db.Find(&postsQueue)
+	m.db.Not("has_error", 1).Find(&postsQueue)
 	postsQueue = cleanFromPosted(postsQueue)
 
 	ppH := postsPerHour(postsQueue)
@@ -284,7 +283,7 @@ func (m *Manager) setUpPostSignal() {
 // whatToPost returns the oldest media in the queue
 func (m *Manager) whatToPost() (entities.Post, error) {
 	var postsQueue []entities.Post
-	m.db.Preload("Categories").Find(&postsQueue)
+	m.db.Preload("Categories").Not("has_error", 1).Find(&postsQueue)
 	postsQueue = cleanFromPosted(postsQueue)
 	sort.Sort(entities.Posts(postsQueue))
 
