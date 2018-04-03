@@ -191,7 +191,8 @@ func (m *Manager) managerLifecycle() {
 			m.calculateHourlyPostRate()
 
 			// set up the post signal if the last hourlyPostSignal was zero
-			if lastPostingRate <= 0 {
+			// and only if lastPostingRate is not 1
+			if lastPostingRate <= 0 || lastPostingRate != 1 {
 				m.setUpPostSignal()
 			}
 
@@ -203,7 +204,7 @@ func (m *Manager) managerLifecycle() {
 	}
 }
 
-func (m Manager) doPost() error {
+func (m *Manager) doPost() error {
 	// setup the post signal first
 	m.setUpPostSignal()
 
@@ -285,6 +286,7 @@ func (m *Manager) whatToPost() (entities.Post, error) {
 	var postsQueue []entities.Post
 	m.db.Preload("Categories").Not("has_error", 1).Find(&postsQueue)
 	postsQueue = cleanFromPosted(postsQueue)
+
 	sort.Sort(entities.Posts(postsQueue))
 
 	if len(postsQueue) <= 0 {
@@ -292,7 +294,6 @@ func (m *Manager) whatToPost() (entities.Post, error) {
 	}
 
 	return postsQueue[0], nil
-
 }
 
 // popAndPost removes entity from the database and post it to the Telegram channel
