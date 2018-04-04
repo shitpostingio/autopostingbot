@@ -359,11 +359,12 @@ func (m Manager) checkDuplicate(post MediaPayload) bool {
 // cleanFromPosted removes all the posted entities.Post from a given array of such
 // elements.
 func cleanFromPosted(e []entities.Post) []entities.Post {
-	for index, element := range e {
-		if (time.Time{}).Equal(element.PostedAt) {
-			e = append(e[:index], e[index+1:]...)
-		}
-	}
+  t := []entities.Post{}
+  for _, element := range e {
+    if (time.Time{}).Equal(element.PostedAt) {
+      t = append(t, element)
+    }
+  }
 
-	return e
+  return t
 }
