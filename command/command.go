@@ -35,6 +35,11 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 	case msg.Photo != nil:
 		photos := *msg.Photo
 		saveMedia(photos[len(photos)-1].FileID, msg.Caption, Image, manager, msg.From.ID, msg.MessageID, int(msg.Chat.ID))
+	case msg.Text != "":
+		msgSplit := strings(msg.Text, " ")
+		if msgSplit[0] == "/status"{
+			getStatus()
+		}
 	}
 
 	return nil
