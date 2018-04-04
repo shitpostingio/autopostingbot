@@ -360,7 +360,7 @@ func (m Manager) checkDuplicate(post MediaPayload) bool {
 // elements.
 func cleanFromPosted(e []entities.Post) []entities.Post {
 	for index, element := range e {
-		if (time.Time{}) != element.PostedAt {
+		if (time.Time{}).Equal(element.PostedAt) {
 			e = append(e[:index], e[index+1:]...)
 		}
 	}
