@@ -14,6 +14,12 @@
   version = "v1.6.0"
 
 [[projects]]
+  name = "github.com/go-sql-driver/mysql"
+  packages = ["."]
+  revision = "a0583e0143b1624142adab07e0e97fe106d99561"
+  version = "v1.3"
+
+[[projects]]
   name = "github.com/go-telegram-bot-api/telegram-bot-api"
   packages = ["."]
   revision = "2022d04b94f50056a09962b1ac81cdd821d20a55"
@@ -23,6 +29,7 @@
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
+    "dialects/mysql",
     "dialects/sqlite"
   ]
   revision = "6ed508ec6a4ecb3531899a69cbc746ccf65a4166"
@@ -67,6 +74,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "214f92e52c7d558433622d10bf16e881a0b671afe550622565d1c2076162a3f5"
+  inputs-digest = "b79a472268fe5cfd3a33a2db5a97ade7770362b1f24529fbb512c01001bdd098"
   solver-name = "gps-cdcl"
   solver-version = 1
