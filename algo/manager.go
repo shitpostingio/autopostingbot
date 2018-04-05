@@ -371,6 +371,6 @@ func cleanFromPosted(e []entities.Post) []entities.Post {
 
 func getStatus() {
 	var postsQueue []entities.Post
-	statusText := "hourly post rate: %s", m.hourlyPostRate, " Images to Post: %s", len(postsQueue)
+	statusText := "hourly post rate: %s", m.hourlyPostRate, " Images to Post: %d", len(postsQueue)
 	utility.SendTelegramReply(newPost.ChatID, newPost.MessageID, m.botAPI, statusText)
 }
