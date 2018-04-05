@@ -23,7 +23,7 @@ import (
 type Manager struct {
 	botAPI             *tgbotapi.BotAPI
 	channelID          int64
-	db                 *gorm.DB
+	db                 *gorm.
 	AddImageChannel    chan MediaPayload
 	AddVideoChannel    chan MediaPayload
 	ModifyMediaChannel chan MediaPayload
@@ -31,6 +31,11 @@ type Manager struct {
 	hourlyPostRate     time.Duration
 	postSignal         <-chan time.Time
 	debug              bool
+}
+
+type StatusInfo struct {
+	postNumber int64
+	postPerHour string
 }
 
 // ManagerConfig is the configuration wanted for a given Manager instance.
@@ -369,8 +374,15 @@ func cleanFromPosted(e []entities.Post) []entities.Post {
   return t
 }
 
-func getStatus() {
+func (m Manager) getStatus() s StatusInfo {
 	var postsQueue []entities.Post
-	statusText := "hourly post rate: %s", m.hourlyPostRate, " Images to Post: %d", len(postsQueue)
-	utility.SendTelegramReply(newPost.ChatID, newPost.MessageID, m.botAPI, statusText)
+	m.db.Not("has_error", 1).Find(&postsQueue)
+	postsQueue = cleanFromPosted(postsQueue)
+	
+	s = StatusInfo {
+		postNumber: postsQueue,
+		postPerHour: m.hourlyPostRate,
+	}
+
+	return s
 }
