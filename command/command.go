@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"gitlab.com/shitposting/autoposting-bot/algo"
+	"gitlab.com/shitposting/autoposting-bot/utility"
 )
 
 // Handle e` il punto di entrata per il parsing e l'organizzazione dell'azione del bot
@@ -38,7 +39,10 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 	case msg.Text != "":
 		msgSplit := strings(msg.Text, " ")
 		if msgSplit[0] == "/status"{
-			getStatus()
+			s := Manager.GetStatus()
+			msgText := "Post rate %s " + s.postPerHour + "Memes to post: %d" + s.postNumber
+
+			utility.SendTelegramReply(update.ChatID, msg.MessageID, m.botAPI, msgText)
 		}
 	}
 
