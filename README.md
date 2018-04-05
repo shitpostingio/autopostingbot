@@ -67,6 +67,13 @@ Move to the home of the project and execute autoposting-deploy-database by typin
 ./autoposting-deploy-database
 ```
 
+After that, login in the `mysql` CLI as your DB user, and execute these queries:
+
+```
+ALTER DATABASE autopostingbot CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+ALTER TABLE posts CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
 The bot will reply only to the users who knows, so to do this it needs to now your id (get it by sending a message to @rawdatabot). Execute 
 
 ```
