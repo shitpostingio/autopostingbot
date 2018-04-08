@@ -23,7 +23,7 @@ import (
 type Manager struct {
 	botAPI             *tgbotapi.BotAPI
 	channelID          int64
-	db                 *gorm.
+	db                 *gorm.DB
 	AddImageChannel    chan MediaPayload
 	AddVideoChannel    chan MediaPayload
 	ModifyMediaChannel chan MediaPayload
@@ -33,9 +33,12 @@ type Manager struct {
 	debug              bool
 }
 
+// StatusInfo gets informations about the bot's work. 
+// It helps to monitor the current status of the bot returning informations
+// like the number of posts or the posts' rate in an hour.
 type StatusInfo struct {
-	postNumber int64
-	postPerHour string
+	PostNumber int64
+	PostPerHour string
 }
 
 // ManagerConfig is the configuration wanted for a given Manager instance.
@@ -374,15 +377,22 @@ func cleanFromPosted(e []entities.Post) []entities.Post {
   return t
 }
 
-func (m Manager) getStatus() s StatusInfo {
+func (m Manager) GetStatus() (s StatusInfo) {
 	var postsQueue []entities.Post
 	m.db.Not("has_error", 1).Find(&postsQueue)
 	postsQueue = cleanFromPosted(postsQueue)
 	
 	s = StatusInfo {
-		postNumber: postsQueue,
-		postPerHour: m.hourlyPostRate,
+		PostNumber: int64(len(postsQueue)),
+		PostPerHour: m.hourlyPostRate.String(),
 	}
 
-	return s
+	return 
+}
+
+func  (m Manager) SendStatusInfo(messageID int, chatID int) {
+	s := m.GetStatus()
+	msgText := fmt.Sprintf("\xF0\x9F\x95\x9C Post rate: %s \n\xF0\x9F\x93\x8B Memes enqueued: %d \n \n \n\xE2\x9E\xA1 You're Welcome my ni\xF0\x9F\x85\xB1\xF0\x9F\x85\xB1a", s.PostPerHour, s.PostNumber)
+	
+	utility.SendTelegramReply(chatID, messageID, m.botAPI, msgText)
 }
