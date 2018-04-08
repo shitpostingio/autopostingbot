@@ -192,7 +192,7 @@ func (m *Manager) managerLifecycle() {
 
 			// set up the post signal if the last hourlyPostSignal was zero
 			// and only if lastPostingRate is not 1
-			if lastPostingRate <= 0 || lastPostingRate != 1 {
+			if lastPostingRate <= 0{
 				m.setUpPostSignal()
 			}
 
@@ -206,7 +206,7 @@ func (m *Manager) managerLifecycle() {
 
 func (m *Manager) doPost() error {
 	// setup the post signal first
-	m.setUpPostSignal()
+	defer m.setUpPostSignal()
 
 	utility.GreenLog("it's time to post!")
 
