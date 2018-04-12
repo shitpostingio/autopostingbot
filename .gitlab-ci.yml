@@ -1,13 +1,5 @@
 image: golang:latest
 
-cache:
-  paths:
-    - /apt-cache
-    - /go/src/github.com
-    - /go/src/golang.org
-    - /go/src/google.golang.org
-    - /go/src/gopkg.in
-
 variables:
   REPO_NAME: "gitlab.com/shitposting/autoposting-bot"
 
@@ -21,7 +13,6 @@ before_script:
   - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
   - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
   - cd $GOPATH/src/$REPO_NAME
-  - make dep
 
 stages:
   - format
