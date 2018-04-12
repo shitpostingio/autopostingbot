@@ -2,7 +2,7 @@ package command
 
 import (
 	"errors"
-
+	"strings"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"gitlab.com/shitposting/autoposting-bot/algo"
 )
@@ -35,6 +35,11 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 	case msg.Photo != nil:
 		photos := *msg.Photo
 		saveMedia(photos[len(photos)-1].FileID, msg.Caption, Image, manager, msg.From.ID, msg.MessageID, int(msg.Chat.ID))
+	case msg.Text != "":
+		msgSplit := strings.Split(msg.Text, " ")
+		if msgSplit[0] == "/status"{
+			manager.SendStatusInfo(msg.MessageID, int(msg.Chat.ID))
+		}
 	}
 
 	return nil
