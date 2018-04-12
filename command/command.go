@@ -2,9 +2,6 @@ package command
 
 import (
 	"errors"
-	"fmt"
-	"os/exec"
-	"strings"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"gitlab.com/shitposting/autoposting-bot/algo"
@@ -38,40 +35,7 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 	case msg.Photo != nil:
 		photos := *msg.Photo
 		saveMedia(photos[len(photos)-1].FileID, msg.Caption, Image, manager, msg.From.ID, msg.MessageID, int(msg.Chat.ID))
-	case msg.Text != "":
-		arg := update.Message.CommandArguments()
-
-		fmt.Println(arg)
-
-		if path, err := getVideo(arg); err == nil {
-			fmt.Println("path is " + path)
-		}
 	}
 
 	return nil
-}
-
-func getVideo(url string) (path string, err error) {
-	var stdoutStderr []byte
-	cmd := exec.Command("youtube-dl", "-f", "mp4", "-o", "%(id)s.%(ext)s", url)
-	stdoutStderr, err = cmd.CombinedOutput()
-
-	if err != nil {
-		return
-	}
-
-	fmt.Printf("%s\n", stdoutStderr)
-	temp := string(stdoutStderr)
-	log := strings.Split(temp, "\n")
-
-	for _, element := range log {
-		if strings.HasPrefix(element, "ERROR: ") {
-			temp := strings.Split(element, ". ")
-			err = errors.New(temp[1])
-		} else if strings.HasPrefix(element, "[download] Destination: ") {
-			temp := strings.Trim(element, "[download] Destination: ")
-			path = temp
-		}
-	}
-	return
 }
