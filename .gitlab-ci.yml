@@ -9,7 +9,7 @@ cache:
     - /go/src/gopkg.in
 
 variables:
-  REPO_NAME:gitlab.com/shitposting/autoposting-bot
+  REPO_NAME: "gitlab.com/shitposting/autoposting-bot"
 
 # The problem is that to be able to use go get, one needs to put
 # the repository in the $GOPATH. So for example if your gitlab domain
@@ -24,11 +24,11 @@ before_script:
   - make dep
 
 stages:
-    - format
-    - test
-    - build
+  - format
+  - test
+  - build
 
-format:
+fmt:
   stage: format
   script:
     - go fmt $(go list ./... | grep -v /vendor/)
@@ -38,21 +38,21 @@ race_detector:
   stage: test
   script:
     - go test -race -short $(go list ./... | grep -v /vendor/)
-    
+
 memory_sanitizer:
   stage: test
   script:
     - go test -msan -short $(go list ./... | grep -v /vendor/)
-    
+
 lint_code:
   stage: test
   script:
     - golint -set_exit_status $(go list ./... | grep -v /vendor/)
-    
+
 compile:
-    stage: build
-    script:
-      - go build -i -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/mybinary
-    artifacts:
-      paths:
-        - autoposting-bot
+  stage: build
+  script:
+    - go build -i -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/mybinary
+  artifacts:
+    paths:
+      - autoposting-bot
