@@ -21,33 +21,33 @@ before_script:
   - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
   - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
   - cd $GOPATH/src/$REPO_NAME
+  - go get -u golang.org/x/lint/golint
 
 stages:
-    - format
-    - test
-    - build
+  - format
+  - test
+  - build
 
 format:
-    stage: format
-    script:
-      - go fmt $(go list ./... | grep -v /vendor/)
-      - go vet $(go list ./... | grep -v /vendor/)
+  stage: format
+  script:
+    - go fmt $(go list ./... | grep -v /vendor/)
+    - go vet $(go list ./... | grep -v /vendor/)
 
 race_detector:
   stage: test
   script:
     - go test -race -short $(go list ./... | grep -v /vendor/)
-    
-memory_sanitizer:
-  stage: test
-  script:
-    - go test -msan -short $(go list ./... | grep -v /vendor/)
-    
+
+#memory_sanitizer:
+#stage: test
+#script:
+#- go test -msan -short $(go list ./... | grep -v /vendor/)
 lint_code:
   stage: test
   script:
     - golint -set_exit_status $(go list ./... | grep -v /vendor/)
-    
+
 compile:
   stage: build
   script:
