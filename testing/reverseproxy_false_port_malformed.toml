@@ -1,7 +1,0 @@
-# Telegram bot token
-BotToken = "000000000:abcdefghijklmnopqrstuvwxyz123456789"
-Port = 880
-ReverseProxy = false
-IP = "127.0.0.1"
-Domain = "shitposting.io"
-TLS = false
