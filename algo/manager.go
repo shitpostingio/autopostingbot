@@ -200,7 +200,7 @@ func (m *Manager) managerLifecycle() {
 
 			// set up the post signal if the last hourlyPostSignal was zero
 			// and only if lastPostingRate is not 1
-			if lastPostingRate <= 0{
+			if lastPostingRate <= 0 {
 				m.setUpPostSignal()
 			}
 
@@ -383,10 +383,8 @@ func (m Manager) GetStatus() (s StatusInfo) {
 	m.db.Not("has_error", 1).Find(&postsQueue)
 	postsQueue = cleanFromPosted(postsQueue)
 
-	s = StatusInfo{
-		PostNumber:  int64(len(postsQueue)),
-		PostPerHour: m.hourlyPostRate.String(),
-	}
+	s.PostNumber = int64(len(postsQueue))
+	s.PostPerHour = m.hourlyPostRate.String()
 
 	return
 }
