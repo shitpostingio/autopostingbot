@@ -68,13 +68,13 @@ var (
 )
 
 // NewManager returns a new Manager instance
-func NewManager(mc ManagerConfig) (m Manager, err error) {
+func NewManager(mc ManagerConfig) (m *Manager, err error) {
 	if mc.ChannelID == 0 {
 		err = errors.New("ChannelID is empty")
 		return
 	}
 
-	m = Manager{
+	mm := Manager{
 		botAPI:             mc.BotAPIInstance,
 		channelID:          mc.ChannelID,
 		AddImageChannel:    make(chan MediaPayload),
@@ -84,34 +84,35 @@ func NewManager(mc ManagerConfig) (m Manager, err error) {
 	}
 
 	// Initialize gorm
-	m.db, err = gorm.Open("mysql", mc.DatabaseString)
+	mm.db, err = gorm.Open("mysql", mc.DatabaseString)
 	if err != nil {
 		return
 	}
 
 	// Get and initialize the categories
-	m.db.Where("name = ?", "image").First(&imageCategory)
-	m.db.Where("name = ?", "video").First(&videoCategory)
+	mm.db.Where("name = ?", "image").First(&imageCategory)
+	mm.db.Where("name = ?", "video").First(&videoCategory)
 	if imageCategory.Name != "image" || videoCategory.Name != "video" {
 		err = errors.New("cannot load video and/or image categories identities from the database")
 		return
 	}
 
 	// Calculate the hourly post rate on the current post availability
-	m.calculateHourlyPostRate()
+	mm.calculateHourlyPostRate()
 
 	// Print the hourly posting rate in minutes
-	utility.YellowLog("Initial hourly posting rate set to " + m.hourlyPostRate.String())
+	utility.YellowLog("Initial hourly posting rate set to " + mm.hourlyPostRate.String())
 
 	// Initialize the calculation signal
-	m.hourlyPostSignal = time.After(1 * time.Hour)
+	mm.hourlyPostSignal = time.After(1 * time.Hour)
 
 	// Initialize the postSignal on the hourlyRate
-	m.setUpPostSignal()
+	mm.setUpPostSignal()
 
 	// Start the manager lifecycle
-	go m.managerLifecycle()
+	go mm.managerLifecycle()
 
+	m = &mm
 	return
 }
 
@@ -279,7 +280,7 @@ func (m *Manager) calculateHourlyPostRate() {
 		}
 		return
 	}
-	m.hourlyPostRate = 0
+	m.hourlyPostRate = time.Duration(0) * time.Minute
 }
 
 // setUpPostSignal sets up the posting signal if there's something to post
@@ -378,7 +379,7 @@ func cleanFromPosted(e []entities.Post) []entities.Post {
 }
 
 // GetStatus returns informations about bot's current inner status
-func (m Manager) GetStatus() (s StatusInfo) {
+func (m *Manager) GetStatus() (s StatusInfo) {
 	var postsQueue []entities.Post
 	m.db.Not("has_error", 1).Find(&postsQueue)
 	postsQueue = cleanFromPosted(postsQueue)
@@ -390,7 +391,7 @@ func (m Manager) GetStatus() (s StatusInfo) {
 }
 
 // SendStatusInfo sends a formatted StatusInfo to the user who requested it
-func (m Manager) SendStatusInfo(messageID int, chatID int) {
+func (m *Manager) SendStatusInfo(messageID int, chatID int) {
 	s := m.GetStatus()
 	msgText := fmt.Sprintf("\xF0\x9F\x95\x9C Post rate: %s \n\xF0\x9F\x93\x8B Memes enqueued: %d \n \n \n\xE2\x9E\xA1 You're Welcome my ni\xF0\x9F\x85\xB1\xF0\x9F\x85\xB1a", s.PostPerHour, s.PostNumber)
 

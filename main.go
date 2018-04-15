@@ -30,7 +30,7 @@ var (
 	// Build is the git tag for the current version
 	Build string
 
-	manager algo.Manager
+	manager *algo.Manager
 
 	db *gorm.DB
 
@@ -88,9 +88,9 @@ func main() {
 	go startServer()
 
 	for update := range updates {
-		go func(update tgbotapi.Update, bot *tgbotapi.BotAPI, manager algo.Manager) {
+		go func(update tgbotapi.Update, bot *tgbotapi.BotAPI, manager *algo.Manager) {
 			if iCanUseThis(update) {
-				err := command.Handle(update, bot, &manager)
+				err := command.Handle(update, bot, manager)
 				if err != nil {
 					utility.PrettyError(err)
 				}
