@@ -186,6 +186,13 @@ func (m *Manager) managerLifecycle() {
 			newPost.Entity.UserID = uint(userID)
 			newPost.Entity.Categories = []entities.Category{imageCategory}
 
+			hash, err := fingerprinting.GetPhotoFingerprint(m.botAPI, newPost.Entity.Media)
+			if err != nil {
+				utility.PrettyError(fmt.Errorf("cannot calculate hash for image with ID %s, proceeding without one", newPost.Entity.Media))
+			}
+
+			newPost.Entity.ImageHash = hash
+
 			// add to the database
 			m.db.Create(&newPost.Entity)
 			utility.SendTelegramReply(newPost.ChatID, newPost.MessageID, m.botAPI, "Image added!")
