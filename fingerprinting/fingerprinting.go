@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"image/jpeg"
 	"io"
-	"log"
 	"net/http"
 	"os"
 
@@ -12,25 +11,22 @@ import (
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-//handleImageFingerprinting handles the fingerprinting of a photo given its fileID
-func handleImageFingerprinting(bot *tgbotapi.BotAPI, fileID string) (fingerprint string, err error) {
+//GetPhotoFingerprint calculates a image hash for a given FileID, and returns it as string
+func GetPhotoFingerprint(bot *tgbotapi.BotAPI, fileID string) (fingerprint string, err error) {
 
 	imageDownloadURL, err := bot.GetFileDirectURL(fileID)
 	if err != nil {
-		log.Println("Unable to get file direct URL for fileid: ", fileID)
 		return
 	}
 
 	filePath := fileID + ".jpg"
 	err = downloadFile(filePath, imageDownloadURL)
 	if err != nil {
-		log.Println("Unable to download picture with fileid: ", fileID)
 		return
 	}
 
 	fingerprint, err = getImageFingerprint(filePath)
 	if err != nil {
-		log.Println("Unable to get fingerprint for image with fileid: ", fileID)
 		return
 	}
 
@@ -75,19 +71,16 @@ func getImageFingerprint(filepath string) (fingerprint string, err error) {
 	file, err := os.Open(filepath)
 	defer file.Close()
 	if err != nil {
-		log.Println("Unable to open file ", filepath, err)
 		return "", err
 	}
 
 	img, err := jpeg.Decode(file)
 	if err != nil {
-		log.Println("Unable to decode file ", filepath, err)
 		return "", err
 	}
 
 	hash, err := goimagehash.PerceptionHash(img)
 	if err != nil {
-		log.Println("Unable to get hash for file: ", filepath, err)
 		return "", err
 	}
 
