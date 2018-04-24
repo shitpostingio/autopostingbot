@@ -11,7 +11,7 @@ import (
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-//GetPhotoFingerprint calculates a image hash for a given FileID, and returns it as string
+// GetPhotoFingerprint calculates a image hash for a given FileID, and returns it as string
 func GetPhotoFingerprint(bot *tgbotapi.BotAPI, fileID string) (fingerprint string, err error) {
 
 	imageDownloadURL, err := bot.GetFileDirectURL(fileID)
@@ -79,6 +79,10 @@ func getImageFingerprint(filepath string) (fingerprint string, err error) {
 		return "", err
 	}
 
+	// TODO: maybe we could use both PerceptionHash and AverageHash:
+	// 1 - calculate PerceptionHash
+	// 2 - calculate AverageHash
+	// 3 - calculate the SHA-512 of (PerceptionHash CONCAT AverageHash)
 	hash, err := goimagehash.PerceptionHash(img)
 	if err != nil {
 		return "", err
