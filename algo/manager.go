@@ -356,17 +356,14 @@ func (m Manager) isDuplicate(post entities.Post) (bool, error) {
 	}
 
 	var duplicate entities.Post
-	var nextGorm *gorm.DB
 
 	if post.IsImage(m.db) {
-		nextGorm = m.db.Where("media = ?", post.Media).Where("image_hash = ?", hash)
+		m.db.Where("image_hash = ?", hash).First(&duplicate)
 	} else {
-		nextGorm = m.db.Where("media = ?", post.Media)
+		m.db.Where("media = ?", post.Media).First(&duplicate)
 	}
 
-	nextGorm.First(&duplicate)
-
-	if duplicate.Media != "" {
+	if duplicate.Media != "" || duplicate.ImageHash != "" {
 		return true, nil
 	}
 
