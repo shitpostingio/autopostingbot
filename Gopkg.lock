@@ -9,19 +9,27 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/corona10/goimagehash"
-  packages = [
-    ".",
-    "etcs",
-    "transforms"
-  ]
-  revision = "7f23d56ee5d6e8aa45854868c8596932578337f2"
+  name = "github.com/dsoprea/go-logging"
+  packages = ["."]
+  revision = "ffdbd038bee54b0fe99dd8af832719a8e5ca8a0c"
+
+[[projects]]
+  name = "github.com/dsoprea/go-perceptualhash"
+  packages = ["."]
+  revision = "e1f1f925da70ff9fd38da3e078fb33269cbb53a2"
+  version = "1.0.0"
 
 [[projects]]
   name = "github.com/fatih/color"
   packages = ["."]
   revision = "507f6050b8568533fb3f5504de8e5205fa62a114"
   version = "v1.6.0"
+
+[[projects]]
+  name = "github.com/go-errors/errors"
+  packages = ["."]
+  revision = "a6af135bd4e28680facf08a3d206b454abc877a4"
+  version = "v1.0.1"
 
 [[projects]]
   name = "github.com/go-sql-driver/mysql"
@@ -70,16 +78,16 @@
   version = "v1.6.0"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/nfnt/resize"
-  packages = ["."]
-  revision = "83c6a9932646f83e3267f353373d47347b6036b2"
-
-[[projects]]
   name = "github.com/technoweenie/multipartstreamer"
   packages = ["."]
   revision = "a90a01d73ae432e2611d178c18367fbaa13e0154"
   version = "v1.0.1"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["context"]
+  revision = "5f9ae10d9af5b1c89ae6904293b14b064d4ada23"
 
 [[projects]]
   branch = "master"
@@ -90,6 +98,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "630b624317ebbec0937317c866db612e304fd59a002fae5fc6912a2d56149040"
+  inputs-digest = "35ce101bec23a968aa45147958a026355a630a2b546c6de87b3f94fc9cbcaf06"
   solver-name = "gps-cdcl"
   solver-version = 1
