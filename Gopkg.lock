@@ -8,6 +8,16 @@
   version = "v0.3.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/corona10/goimagehash"
+  packages = [
+    ".",
+    "etcs",
+    "transforms"
+  ]
+  revision = "7f23d56ee5d6e8aa45854868c8596932578337f2"
+
+[[projects]]
   name = "github.com/fatih/color"
   packages = ["."]
   revision = "507f6050b8568533fb3f5504de8e5205fa62a114"
@@ -60,6 +70,12 @@
   version = "v1.6.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/nfnt/resize"
+  packages = ["."]
+  revision = "83c6a9932646f83e3267f353373d47347b6036b2"
+
+[[projects]]
   name = "github.com/technoweenie/multipartstreamer"
   packages = ["."]
   revision = "a90a01d73ae432e2611d178c18367fbaa13e0154"
@@ -74,6 +90,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b79a472268fe5cfd3a33a2db5a97ade7770362b1f24529fbb512c01001bdd098"
+  inputs-digest = "630b624317ebbec0937317c866db612e304fd59a002fae5fc6912a2d56149040"
   solver-name = "gps-cdcl"
   solver-version = 1
