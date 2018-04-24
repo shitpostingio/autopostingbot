@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/corona10/goimagehash"
+	blockhash "github.com/dsoprea/go-perceptualhash"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
@@ -79,17 +79,7 @@ func getImageFingerprint(filepath string) (fingerprint string, err error) {
 		return "", err
 	}
 
-	// TODO: maybe we could use both PerceptionHash and AverageHash:
-	// 1 - calculate PerceptionHash
-	// 2 - calculate AverageHash
-	// 3 - calculate the SHA-512 of (PerceptionHash CONCAT AverageHash)
-	hash, err := goimagehash.PerceptionHash(img)
-	if err != nil {
-		return "", err
-	}
-
-	//We return a substring that removes p: from the hash
-	fingerprint = hash.ToString()
-	fingerprint = fingerprint[2:len(fingerprint)]
+	bHash := blockhash.NewBlockhash(img, 16)
+	fingerprint = bHash.Hexdigest()
 	return
 }
