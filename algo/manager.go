@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
+	"gitlab.com/shitposting/autoposting-bot/fingerprinting"
 	"gitlab.com/shitposting/autoposting-bot/utility"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
@@ -340,21 +341,33 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 
 // isDuplicate returns true if post has been already added before
 // false otherwise.
-func (m Manager) isDuplicate(post entities.Post) bool {
-	var duplicate entities.Post
-	m.db.Where("media = ?", post.Media).First(&duplicate)
-
-	if duplicate.Media != "" {
-		return true
+func (m Manager) isDuplicate(post entities.Post) (bool, error) {
+	// calculate the image hash
+	hash, err := fingerprinting.GetPhotoFingerprint(m.botAPI, post.Media)
+	if err != nil {
+		return false, err
 	}
 
-	return false
+	var duplicate entities.Post
+	m.db.Where("media = ?", post.Media).Where("image_hash = ?", hash).First(&duplicate)
+
+	if duplicate.Media != "" {
+		return true, nil
+	}
+
+	return false, nil
 }
 
 // checkDuplicate checks whether post has already been added to the database,
 // and if yes, it will communicate it to the user
 func (m Manager) checkDuplicate(post MediaPayload) bool {
-	dup := m.isDuplicate(post.Entity)
+	dup, err := m.isDuplicate(post.Entity)
+
+	if err != nil {
+		e := fmt.Errorf("error while trying to calculate hash for image with ID %s: %s", post.Entity.Media, err.Error())
+		utility.PrettyError(e)
+		return dup
+	}
 
 	if dup {
 		msg := fmt.Sprintf("user %d tried to re-add media %s, which is already present in the database", post.Entity.UserID, post.Entity.Media)
