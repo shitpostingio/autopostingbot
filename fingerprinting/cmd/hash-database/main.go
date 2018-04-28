@@ -41,11 +41,12 @@ func main() {
 
 	defer db.Close()
 	var duplicate []entities.Post
-	db.Where("image_hash = ?", "").Find(&duplicate)
+	db.Find(&duplicate)
+	fmt.Println(duplicate)
 
 	tx := db.Begin()
 	for _, post := range duplicate {
-		if !post.IsImage(db) {
+		if !post.IsImage(db) || post.MediaHash != "" {
 			continue
 		}
 		hash, err := fingerprinting.GetPhotoFingerprint(bot, post.Media)
@@ -54,7 +55,7 @@ func main() {
 			continue
 		}
 
-		post.ImageHash = hash
+		post.MediaHash = hash
 		tx.Save(&post)
 	}
 	tx.Commit()

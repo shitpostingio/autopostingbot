@@ -191,7 +191,7 @@ func (m *Manager) managerLifecycle() {
 				utility.PrettyError(fmt.Errorf("cannot calculate hash for image with ID %s, proceeding without one", newPost.Entity.Media))
 			}
 
-			newPost.Entity.ImageHash = hash
+			newPost.Entity.MediaHash = hash
 
 			// add to the database
 			m.db.Create(&newPost.Entity)
@@ -358,12 +358,12 @@ func (m Manager) isDuplicate(post entities.Post) (bool, error) {
 	var duplicate entities.Post
 
 	if post.IsImage(m.db) {
-		m.db.Where("image_hash = ?", hash).First(&duplicate)
+		m.db.Where("media_hash = ?", hash).First(&duplicate)
 	} else {
 		m.db.Where("media = ?", post.Media).First(&duplicate)
 	}
 
-	if duplicate.Media != "" || duplicate.ImageHash != "" {
+	if duplicate.Media != "" || duplicate.MediaHash != "" {
 		return true, nil
 	}
 
