@@ -8,10 +8,28 @@
   version = "v0.3.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/dsoprea/go-logging"
+  packages = ["."]
+  revision = "ffdbd038bee54b0fe99dd8af832719a8e5ca8a0c"
+
+[[projects]]
+  name = "github.com/dsoprea/go-perceptualhash"
+  packages = ["."]
+  revision = "e1f1f925da70ff9fd38da3e078fb33269cbb53a2"
+  version = "1.0.0"
+
+[[projects]]
   name = "github.com/fatih/color"
   packages = ["."]
   revision = "507f6050b8568533fb3f5504de8e5205fa62a114"
   version = "v1.6.0"
+
+[[projects]]
+  name = "github.com/go-errors/errors"
+  packages = ["."]
+  revision = "a6af135bd4e28680facf08a3d206b454abc877a4"
+  version = "v1.0.1"
 
 [[projects]]
   name = "github.com/go-sql-driver/mysql"
@@ -67,6 +85,12 @@
 
 [[projects]]
   branch = "master"
+  name = "golang.org/x/net"
+  packages = ["context"]
+  revision = "5f9ae10d9af5b1c89ae6904293b14b064d4ada23"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
   revision = "cc7307a45468e49eaf2997c890f14aa03a26917b"
@@ -74,6 +98,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b79a472268fe5cfd3a33a2db5a97ade7770362b1f24529fbb512c01001bdd098"
+  inputs-digest = "35ce101bec23a968aa45147958a026355a630a2b546c6de87b3f94fc9cbcaf06"
   solver-name = "gps-cdcl"
   solver-version = 1
