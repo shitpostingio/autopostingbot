@@ -397,3 +397,17 @@ func (m *Manager) SendStatusInfo(messageID int, chatID int) {
 
 	utility.SendTelegramReply(chatID, messageID, m.botAPI, msgText)
 }
+
+func (m *Manager) DeleteDis(replyFileID string, messageID int, chatID int, user string) {
+	var post entities.Post
+	m.db.Where("media = ?", replyFileID).First(&post)
+
+	if post.ID == 0 {
+		utility.YellowLog("Mannaggia DDDIO")
+	} else {
+		m.db.Delete(&post)
+		ConfirmDelete := fmt.Sprintf("Deleted post with ID: %d, deleted by: %s", int(post.ID), user)
+		utility.YellowLog(ConfirmDelete)
+		utility.SendTelegramReply(chatID, messageID, m.botAPI, "Deleted! \xF0\x9F\x9A\xAE")
+	}
+}
