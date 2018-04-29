@@ -398,6 +398,7 @@ func (m *Manager) SendStatusInfo(messageID int, chatID int) {
 	utility.SendTelegramReply(chatID, messageID, m.botAPI, msgText)
 }
 
+// DeleteDis deletes a photo from the Database 
 func (m *Manager) DeleteDis(replyFileID string, messageID int, chatID int, user string) {
 	var post entities.Post
 	m.db.Where("media = ?", replyFileID).First(&post)
