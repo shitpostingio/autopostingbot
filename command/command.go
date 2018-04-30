@@ -2,8 +2,7 @@ package command
 
 import (
 	"errors"
-	
-	
+
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"gitlab.com/shitposting/autoposting-bot/algo"
 )
@@ -41,9 +40,11 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 		case "status":
 			manager.SendStatusInfo(msg.MessageID, int(msg.Chat.ID))
 		case "delete":
-			if (msg.ReplyToMessage != nil && msg.ReplyToMessage.Photo != nil) {
+			if msg.ReplyToMessage != nil && msg.ReplyToMessage.Photo != nil {
 			photosID := *msg.ReplyToMessage.Photo
-			manager.DeleteDis(photosID[len(photosID)-1].FileID, msg.MessageID, int(msg.Chat.ID), msg.From.UserName)
+			manager.DeleteMedia(photosID[len(photosID)-1].FileID, msg.MessageID, int(msg.Chat.ID), msg.From.UserName)
+			} else if msg.ReplyToMessage != nil && msg.ReplyToMessage.Video != nil {
+			manager.DeleteMedia(msg.ReplyToMessage.Video.FileID, msg.MessageID, int(msg.Chat.ID), msg.From.UserName)
 			} else {
 				return nil
 			}
