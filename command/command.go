@@ -48,6 +48,17 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 			} else {
 				return nil
 			}
+		case "caption":
+			// Takes the caption via msg.CommandArguments and updates the caption saved in database
+			newcaption := msg.CommandArguments()
+			if msg.ReplyToMessage != nil && msg.ReplyToMessage.Photo != nil {
+				photosID := *msg.ReplyToMessage.Photo
+				modifyMedia(photosID[len(photosID)-1].FileID, newcaption, manager, msg.From.ID, msg.MessageID, int(msg.Chat.ID))
+			} else if msg.ReplyToMessage != nil && msg.ReplyToMessage.Video != nil {
+				modifyMedia(msg.ReplyToMessage.Video.FileID, newcaption, manager, msg.From.ID, msg.MessageID, int(msg.Chat.ID))
+				} else {
+					return nil
+				}
 		} 
 	}
 
