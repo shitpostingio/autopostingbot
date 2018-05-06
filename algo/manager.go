@@ -423,19 +423,38 @@ func (m *Manager) SendStatusInfo(messageID int, chatID int) {
 	utility.SendTelegramReply(chatID, messageID, m.botAPI, msgText)
 }
 
-// DeleteMedia deletes a media from the Database 
-func (m *Manager) DeleteMedia(replyFileID string, messageID int, chatID int, user string) {
+// DeleteMedia deletes a media from the Database
+func (m *Manager) DeleteMedia(msg *tgbotapi.Message) {
+
 	var post entities.Post
-	m.db.Where("media = ? AND isnull(posted_at)", replyFileID).First(&post)
+	var fileID string
+
+	if msg.ReplyToMessage == nil {
+		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, m.botAPI, "Not a reply!")
+		return
+	}
+
+	switch {
+	case msg.ReplyToMessage.Photo != nil:
+		photosID := *msg.ReplyToMessage.Photo
+		fileID = photosID[len(photosID)-1].FileID
+	case msg.ReplyToMessage.Video != nil:
+		fileID = msg.ReplyToMessage.Video.FileID
+	default:
+		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, m.botAPI, "Not a media!")
+		return
+	}
+
+	m.db.Where("media = ? AND isnull(posted_at)", fileID).First(&post)
 
 	// Since I have the var post, it has ID 0 if the query doesn't return any value, so I check the ID.
 	if post.ID == 0 {
 		utility.YellowLog("Can't delete post. Probabily File ID is invalid or it was already posted on channel")
-		utility.SendTelegramReply(chatID, messageID, m.botAPI, "I can't delete it")
+		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, m.botAPI, "I can't delete it")
 	} else {
 		m.db.Delete(&post)
-		ConfirmDelete := fmt.Sprintf("Deleted post with ID: %d, deleted by: %s", int(post.ID), user)
+		ConfirmDelete := fmt.Sprintf("Deleted post with ID: %d, deleted by: %s", int(post.ID), msg.From.UserName)
 		utility.YellowLog(ConfirmDelete)
-		utility.SendTelegramReply(chatID, messageID, m.botAPI, "Deleted! \xF0\x9F\x9A\xAE")
+		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, m.botAPI, "Deleted! \xF0\x9F\x9A\xAE")
 	}
 }
