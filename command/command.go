@@ -48,9 +48,9 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 	case msg.Text != "":
 		switch msg.Command() {
 		case "status":
-			manager.SendStatusInfo(msg.MessageID, int(msg.Chat.ID))
+			statusSignal(msg, manager)
 		case "delete":
-			manager.DeleteMedia(msg)
+			deleteMedia(msg, api, manager)
 		case "caption":
 			editCaption(msg, api, manager, false)
 		case "credit":
@@ -66,10 +66,12 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 // It is used both by caption and credit command in the bot.
 func editCaption(msg *tgbotapi.Message, api *tgbotapi.BotAPI, manager *algo.Manager, isCredit bool) {
 
-	var fileID, newcaption string
+	var newcaption string
 
-	if msg.ReplyToMessage == nil {
-		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, api, "Not a reply!")
+	fileID, err := checkReplyAndMedia(msg)
+
+	if err != nil {
+		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, api, err.Error())
 		return
 	}
 
@@ -77,17 +79,6 @@ func editCaption(msg *tgbotapi.Message, api *tgbotapi.BotAPI, manager *algo.Mana
 		newcaption = fmt.Sprintf("%s\n\n[By %s]", msg.CommandArguments(), msg.ReplyToMessage.ForwardFrom.FirstName)
 	} else {
 		newcaption = msg.CommandArguments()
-	}
-
-	switch {
-	case msg.ReplyToMessage.Photo != nil:
-		photosID := *msg.ReplyToMessage.Photo
-		fileID = photosID[len(photosID)-1].FileID
-	case msg.ReplyToMessage.Video != nil:
-		fileID = msg.ReplyToMessage.Video.FileID
-	default:
-		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, api, "Not a media!")
-		return
 	}
 
 	modifyMedia(fileID, newcaption, manager, msg.From.ID, msg.MessageID, int(msg.Chat.ID))

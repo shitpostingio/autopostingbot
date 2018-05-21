@@ -28,6 +28,8 @@ type Manager struct {
 	AddImageChannel    chan MediaPayload
 	AddVideoChannel    chan MediaPayload
 	ModifyMediaChannel chan MediaPayload
+	DeleteMediaChannel chan MediaPayload
+	StatusChannel      chan MediaPayload
 	hourlyPostSignal   <-chan time.Time
 	hourlyPostRate     time.Duration
 	postSignal         <-chan time.Time
@@ -81,6 +83,8 @@ func NewManager(mc ManagerConfig) (m *Manager, err error) {
 		AddImageChannel:    make(chan MediaPayload),
 		AddVideoChannel:    make(chan MediaPayload),
 		ModifyMediaChannel: make(chan MediaPayload),
+		DeleteMediaChannel: make(chan MediaPayload),
+		StatusChannel:      make(chan MediaPayload),
 		debug:              mc.Debug,
 	}
 
@@ -132,6 +136,30 @@ func (m *Manager) managerLifecycle() {
 
 	for {
 		select {
+		case deletedPost := <-m.DeleteMediaChannel:
+
+			var post entities.Post
+
+			m.db.Where("media = ? AND isnull(posted_at)", deletedPost.Entity.Media).First(&post)
+
+			// Since I have the var post, it has ID 0 if the query doesn't return any value, so I check the ID.
+			if post.ID == 0 {
+				utility.YellowLog("Can't delete post. Probably File ID is invalid or it was already posted on channel")
+				utility.SendTelegramReply(int(deletedPost.ChatID), deletedPost.MessageID, m.botAPI, "I can't delete it")
+			} else {
+				m.db.Delete(&post)
+				ConfirmDelete := fmt.Sprintf("Deleted post with ID: %d, deleted by: %d", int(post.ID), deletedPost.Entity.UserID)
+				utility.YellowLog(ConfirmDelete)
+				utility.SendTelegramReply(int(deletedPost.ChatID), deletedPost.MessageID, m.botAPI, "Deleted! \xF0\x9F\x9A\xAE")
+			}
+		case status := <-m.StatusChannel:
+
+			s := m.GetStatus()
+
+			msgText := fmt.Sprintf("\xF0\x9F\x95\x9C Post rate: %s \n\xF0\x9F\x93\x8B Memes enqueued: %d \n \n \n\xE2\x9E\xA1 You're Welcome my ni\xF0\x9F\x85\xB1\xF0\x9F\x85\xB1a", s.PostPerHour, s.PostNumber)
+
+			utility.SendTelegramReply(status.ChatID, status.MessageID, m.botAPI, msgText)
+
 		case modifiedPost := <-m.ModifyMediaChannel:
 			var entity entities.Post
 			id, err := getUserID(m.db, int(modifiedPost.Entity.UserID))
@@ -139,15 +167,16 @@ func (m *Manager) managerLifecycle() {
 				utility.PrettyError(err)
 				continue
 			}
-			m.db.Where("media = ? AND user_id = ?", modifiedPost.Entity.Media, id).First(&entity)
+			k := m.db.Where("media = ? AND user_id = ?", modifiedPost.Entity.Media, id).First(&entity)
 
 			if entity.Media == "" { // an empty media ID means no entity with said ID was found
 				utility.PrettyError(fmt.Errorf("someone tried to update the caption for media with id %s, but i don't know any", modifiedPost.Entity.Media))
 				continue
 			}
 
-			entity.Caption = modifiedPost.Entity.Caption
-			m.db.Save(&entity)
+			//entity.Caption = modifiedPost.Entity.Caption
+			//m.db.Save(&entity)
+			k.Update("caption", modifiedPost.Entity.Caption)
 			utility.SendTelegramReply(modifiedPost.ChatID, modifiedPost.MessageID, m.botAPI, "Modified!")
 		case newPost := <-m.AddVideoChannel:
 			utility.GreenLog("got a new video to add!")
@@ -413,48 +442,4 @@ func (m *Manager) GetStatus() (s StatusInfo) {
 	s.PostPerHour = m.hourlyPostRate.String()
 
 	return
-}
-
-// SendStatusInfo sends a formatted StatusInfo to the user who requested it
-func (m *Manager) SendStatusInfo(messageID int, chatID int) {
-	s := m.GetStatus()
-	msgText := fmt.Sprintf("\xF0\x9F\x95\x9C Post rate: %s \n\xF0\x9F\x93\x8B Memes enqueued: %d \n \n \n\xE2\x9E\xA1 You're Welcome my ni\xF0\x9F\x85\xB1\xF0\x9F\x85\xB1a", s.PostPerHour, s.PostNumber)
-
-	utility.SendTelegramReply(chatID, messageID, m.botAPI, msgText)
-}
-
-// DeleteMedia deletes a media from the Database
-func (m *Manager) DeleteMedia(msg *tgbotapi.Message) {
-
-	var post entities.Post
-	var fileID string
-
-	if msg.ReplyToMessage == nil {
-		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, m.botAPI, "Not a reply!")
-		return
-	}
-
-	switch {
-	case msg.ReplyToMessage.Photo != nil:
-		photosID := *msg.ReplyToMessage.Photo
-		fileID = photosID[len(photosID)-1].FileID
-	case msg.ReplyToMessage.Video != nil:
-		fileID = msg.ReplyToMessage.Video.FileID
-	default:
-		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, m.botAPI, "Not a media!")
-		return
-	}
-
-	m.db.Where("media = ? AND isnull(posted_at)", fileID).First(&post)
-
-	// Since I have the var post, it has ID 0 if the query doesn't return any value, so I check the ID.
-	if post.ID == 0 {
-		utility.YellowLog("Can't delete post. Probabily File ID is invalid or it was already posted on channel")
-		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, m.botAPI, "I can't delete it")
-	} else {
-		m.db.Delete(&post)
-		ConfirmDelete := fmt.Sprintf("Deleted post with ID: %d, deleted by: %s", int(post.ID), msg.From.UserName)
-		utility.YellowLog(ConfirmDelete)
-		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, m.botAPI, "Deleted! \xF0\x9F\x9A\xAE")
-	}
 }
