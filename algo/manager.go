@@ -174,8 +174,6 @@ func (m *Manager) managerLifecycle() {
 				continue
 			}
 
-			//entity.Caption = modifiedPost.Entity.Caption
-			//m.db.Save(&entity)
 			k.Update("caption", modifiedPost.Entity.Caption)
 			utility.SendTelegramReply(modifiedPost.ChatID, modifiedPost.MessageID, m.botAPI, "Modified!")
 		case newPost := <-m.AddVideoChannel:
