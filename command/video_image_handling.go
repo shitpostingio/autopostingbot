@@ -69,7 +69,7 @@ func modifyMedia(fileID string, caption string, manager *algo.Manager, userID in
 func checkReplyAndMedia(msg *tgbotapi.Message) (string, error) {
 
 	if msg.ReplyToMessage == nil {
-		err := errors.New("Not a reply!")
+		err := errors.New("not a reply")
 		return "", err
 	}
 
@@ -82,7 +82,7 @@ func checkReplyAndMedia(msg *tgbotapi.Message) (string, error) {
 		fileID := msg.ReplyToMessage.Video.FileID
 		return fileID, nil
 	default:
-		err := errors.New("Not a reply!")
+		err := errors.New("not a media")
 		return "", err
 	}
 }
