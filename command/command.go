@@ -2,7 +2,10 @@ package command
 
 import (
 	"errors"
-	"strings"
+	"fmt"
+
+	"gitlab.com/shitposting/autoposting-bot/utility"
+
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"gitlab.com/shitposting/autoposting-bot/algo"
 )
@@ -24,6 +27,13 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 		case editedMsg.Photo != nil:
 			photos := *editedMsg.Photo
 			modifyMedia(photos[len(photos)-1].FileID, editedMsg.Caption, manager, editedMsg.From.ID, editedMsg.MessageID, int(editedMsg.Chat.ID))
+		case editedMsg.Text != "":
+			switch editedMsg.Command() {
+			case "caption":
+				editCaption(editedMsg, api, manager, false)
+			case "credit":
+				editCaption(editedMsg, api, manager, true)
+			}
 		}
 
 		return nil
@@ -36,11 +46,40 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 		photos := *msg.Photo
 		saveMedia(photos[len(photos)-1].FileID, msg.Caption, Image, manager, msg.From.ID, msg.MessageID, int(msg.Chat.ID))
 	case msg.Text != "":
-		msgSplit := strings.Split(msg.Text, " ")
-		if msgSplit[0] == "/status"{
-			manager.SendStatusInfo(msg.MessageID, int(msg.Chat.ID))
+		switch msg.Command() {
+		case "status":
+			statusSignal(msg, manager)
+		case "delete":
+			deleteMedia(msg, api, manager)
+		case "caption":
+			editCaption(msg, api, manager, false)
+		case "credit":
+			editCaption(msg, api, manager, true)
 		}
+
 	}
 
 	return nil
+}
+
+// editCaption allows the user to edit the caption of a forwarded message or give the credit to the user.
+// It is used both by caption and credit command in the bot.
+func editCaption(msg *tgbotapi.Message, api *tgbotapi.BotAPI, manager *algo.Manager, isCredit bool) {
+
+	var newcaption string
+
+	fileID, err := checkReplyAndMedia(msg)
+
+	if err != nil {
+		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, api, err.Error())
+		return
+	}
+
+	if msg.ReplyToMessage.ForwardFrom != nil && isCredit == true {
+		newcaption = fmt.Sprintf("%s\n\n[By %s]", msg.CommandArguments(), msg.ReplyToMessage.ForwardFrom.FirstName)
+	} else {
+		newcaption = msg.CommandArguments()
+	}
+
+	modifyMedia(fileID, newcaption, manager, msg.From.ID, msg.MessageID, int(msg.Chat.ID))
 }

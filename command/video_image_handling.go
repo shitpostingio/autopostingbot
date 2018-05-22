@@ -1,8 +1,12 @@
 package command
 
 import (
+	"errors"
+
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"gitlab.com/shitposting/autoposting-bot/algo"
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
+	"gitlab.com/shitposting/autoposting-bot/utility"
 )
 
 // MediaType is the type of media we're dealing with
@@ -58,6 +62,56 @@ func modifyMedia(fileID string, caption string, manager *algo.Manager, userID in
 	manager.ModifyMediaChannel <- algo.MediaPayload{
 		ChatID:    chatID,
 		MessageID: messageID,
+		Entity:    e,
+	}
+}
+
+func checkReplyAndMedia(msg *tgbotapi.Message) (string, error) {
+
+	if msg.ReplyToMessage == nil {
+		err := errors.New("not a reply")
+		return "", err
+	}
+
+	switch {
+	case msg.ReplyToMessage.Photo != nil:
+		photosID := *msg.ReplyToMessage.Photo
+		fileID := photosID[len(photosID)-1].FileID
+		return fileID, nil
+	case msg.ReplyToMessage.Video != nil:
+		fileID := msg.ReplyToMessage.Video.FileID
+		return fileID, nil
+	default:
+		err := errors.New("not a media")
+		return "", err
+	}
+}
+
+func deleteMedia(msg *tgbotapi.Message, api *tgbotapi.BotAPI, manager *algo.Manager) {
+
+	fileID, err := checkReplyAndMedia(msg)
+
+	if err != nil {
+		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, api, err.Error())
+		return
+	}
+
+	e := entities.Post{Media: fileID, UserID: uint(msg.From.ID)}
+
+	manager.DeleteMediaChannel <- algo.MediaPayload{
+		ChatID:    int(msg.Chat.ID),
+		MessageID: msg.MessageID,
+		Entity:    e,
+	}
+
+}
+
+func statusSignal(msg *tgbotapi.Message, manager *algo.Manager) {
+	e := entities.Post{}
+
+	manager.StatusChannel <- algo.MediaPayload{
+		ChatID:    int(msg.Chat.ID),
+		MessageID: msg.MessageID,
 		Entity:    e,
 	}
 }
