@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"net/http"
 
 	"gitlab.com/shitposting/autoposting-bot/algo"
@@ -44,18 +45,19 @@ var (
 func main() {
 	setupCLIParams()
 
+	config, err = cfg.ReadConfigFile(configFilePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	l = loglogclient.NewClient(
 		loglogclient.Config{
-			SocketPath:    "/tmp/loglog.socket",
+			SocketPath:    config.SocketPath,
 			ApplicationID: "Autoposting-bot",
 		})
 
 	l.Info(fmt.Sprintf("Shitposting autoposting-bot version %s, build %s\n", Version, Build))
 	l.Info(fmt.Sprintf("INFO - reading configuration file located at %s", configFilePath))
-	config, err = cfg.ReadConfigFile(configFilePath)
-	if err != nil {
-		l.Err(err.Error())
-	}
 
 	// setup a Telegram bot API instance
 	bot, err := tgbotapi.NewBotAPI(config.BotToken)

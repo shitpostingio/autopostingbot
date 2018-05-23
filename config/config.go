@@ -26,6 +26,7 @@ type Config struct {
 	DatabasePassword string
 	DatabaseAddress  string
 	ChannelID        int
+	SocketPath       string
 }
 
 // DatabaseConnectionString returns a well-formatted database connection string for MySQL
@@ -86,6 +87,8 @@ func ReadConfigFile(path string) (Config, error) {
 		} else if conf.TLSKeyPath == "" { // ...and a TLS key path
 			return buildErrorMessage("missing TLS key path")
 		}
+	} else if conf.SocketPath == "" { // Check if the loglog's socket path is empty
+		return buildErrorMessage("missing socket path, trying the default path")
 	}
 
 	// If we run behind a reverse proxy, bind to localhost
@@ -96,6 +99,10 @@ func ReadConfigFile(path string) (Config, error) {
 	// If we don't have a DatabaseAddress, set it to localhost
 	if conf.DatabaseAddress == "" {
 		conf.DatabaseAddress = "127.0.0.1:3306"
+	}
+
+	if conf.SocketPath == "" {
+		conf.SocketPath = "/tmp/loglog.socket"
 	}
 
 	return conf, nil

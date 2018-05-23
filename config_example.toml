@@ -42,3 +42,6 @@ DatabasePassword = "password"
 
 # Database Address
 DatabaseAddress =  "127.0.0.1"
+
+# SocketPath
+SocketPath = "/tmp/loglog.socket"
