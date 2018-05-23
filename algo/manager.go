@@ -11,6 +11,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
 	"gitlab.com/shitposting/autoposting-bot/fingerprinting"
 	"gitlab.com/shitposting/autoposting-bot/utility"
+	"gitlab.com/shitposting/loglog/loglogclient"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/jinzhu/gorm"
@@ -34,6 +35,7 @@ type Manager struct {
 	hourlyPostRate     time.Duration
 	postSignal         <-chan time.Time
 	debug              bool
+	log                *loglogclient.LoglogClient
 }
 
 // StatusInfo holds informations about the bot's work.
@@ -53,6 +55,7 @@ type ManagerConfig struct {
 	BotAPIInstance *tgbotapi.BotAPI
 	ChannelID      int64
 	Debug          bool
+	Log            *loglogclient.LoglogClient
 }
 
 // MediaPayload holds informations about who sent an entity, and what was
@@ -86,6 +89,7 @@ func NewManager(mc ManagerConfig) (m *Manager, err error) {
 		DeleteMediaChannel: make(chan MediaPayload),
 		StatusChannel:      make(chan MediaPayload),
 		debug:              mc.Debug,
+		log:                mc.Log,
 	}
 
 	// Initialize gorm
@@ -106,7 +110,7 @@ func NewManager(mc ManagerConfig) (m *Manager, err error) {
 	mm.calculateHourlyPostRate()
 
 	// Print the hourly posting rate in minutes
-	utility.YellowLog("Initial hourly posting rate set to " + mm.hourlyPostRate.String())
+	mm.log.Info("Initial hourly posting rate set to " + mm.hourlyPostRate.String())
 
 	// Initialize the calculation signal
 	mm.hourlyPostSignal = time.After(1 * time.Hour)
@@ -129,7 +133,7 @@ func (m *Manager) managerLifecycle() {
 	if m.debug {
 		err := m.doPost()
 		if err != nil {
-			utility.PrettyError(err)
+			m.log.Err(err.Error())
 		}
 		os.Exit(0)
 	}
@@ -144,12 +148,12 @@ func (m *Manager) managerLifecycle() {
 
 			// Since I have the var post, it has ID 0 if the query doesn't return any value, so I check the ID.
 			if post.ID == 0 {
-				utility.YellowLog("Can't delete post. Probably File ID is invalid or it was already posted on channel")
+				m.log.Err("Can't delete post. Probably File ID is invalid or it was already posted on channel")
 				utility.SendTelegramReply(int(deletedPost.ChatID), deletedPost.MessageID, m.botAPI, "I can't delete it")
 			} else {
 				m.db.Delete(&post)
-				ConfirmDelete := fmt.Sprintf("Deleted post with ID: %d, deleted by: %d", int(post.ID), deletedPost.Entity.UserID)
-				utility.YellowLog(ConfirmDelete)
+				m.log.Info(fmt.Sprintf("Deleted post with ID: %d, deleted by: %d", int(post.ID), deletedPost.Entity.UserID))
+
 				utility.SendTelegramReply(int(deletedPost.ChatID), deletedPost.MessageID, m.botAPI, "Deleted! \xF0\x9F\x9A\xAE")
 			}
 		case status := <-m.StatusChannel:
@@ -164,13 +168,13 @@ func (m *Manager) managerLifecycle() {
 			var entity entities.Post
 			id, err := getUserID(m.db, int(modifiedPost.Entity.UserID))
 			if err != nil {
-				utility.PrettyError(err)
+				m.log.Err(err.Error())
 				continue
 			}
 			k := m.db.Where("media = ? AND user_id = ?", modifiedPost.Entity.Media, id).First(&entity)
 
 			if entity.Media == "" { // an empty media ID means no entity with said ID was found
-				utility.PrettyError(fmt.Errorf("someone tried to update the caption for media with id %s, but i don't know any", modifiedPost.Entity.Media))
+				m.log.Warn(fmt.Sprintf("someone tried to update the caption for media with id %s, but i don't know any", modifiedPost.Entity.Media))
 				continue
 			}
 
@@ -179,7 +183,7 @@ func (m *Manager) managerLifecycle() {
 			k.Update("caption", modifiedPost.Entity.Caption)
 			utility.SendTelegramReply(modifiedPost.ChatID, modifiedPost.MessageID, m.botAPI, "Modified!")
 		case newPost := <-m.AddVideoChannel:
-			utility.GreenLog("got a new video to add!")
+			m.log.Info("got a new video to add!")
 
 			// if we have a duplicate, write a log message and stop
 			if m.checkDuplicate(newPost) {
@@ -188,7 +192,7 @@ func (m *Manager) managerLifecycle() {
 
 			userID, err := getUserID(m.db, int(newPost.Entity.UserID))
 			if err != nil {
-				utility.PrettyError(err)
+				m.log.Warn(err.Error())
 				continue
 			}
 
@@ -199,7 +203,7 @@ func (m *Manager) managerLifecycle() {
 			m.db.Create(&newPost.Entity)
 			utility.SendTelegramReply(newPost.ChatID, newPost.MessageID, m.botAPI, "Video added!")
 		case newPost := <-m.AddImageChannel:
-			utility.GreenLog("got a new image to add!")
+			m.log.Info("got a new image to add!")
 
 			// if we have a duplicate, write a log message and stop
 			if m.checkDuplicate(newPost) {
@@ -208,7 +212,7 @@ func (m *Manager) managerLifecycle() {
 
 			userID, err := getUserID(m.db, int(newPost.Entity.UserID))
 			if err != nil {
-				utility.PrettyError(err)
+				m.log.Warn(err.Error())
 				continue
 			}
 
@@ -217,7 +221,7 @@ func (m *Manager) managerLifecycle() {
 
 			hash, err := fingerprinting.GetPhotoFingerprint(m.botAPI, newPost.Entity.Media)
 			if err != nil {
-				utility.PrettyError(fmt.Errorf("cannot calculate hash for image with ID %s, proceeding without one", newPost.Entity.Media))
+				m.log.Warn(fmt.Sprintf("cannot calculate hash for image with ID %s, proceeding without one", newPost.Entity.Media))
 			}
 
 			newPost.Entity.MediaHash = hash
@@ -228,10 +232,10 @@ func (m *Manager) managerLifecycle() {
 		case <-m.postSignal:
 			err := m.doPost()
 			if err != nil {
-				utility.PrettyError(err)
+				m.log.Err(err.Error())
 			}
 		case <-m.hourlyPostSignal:
-			utility.YellowLog("calculating the hourly posting rate...")
+			m.log.Info("calculating the hourly posting rate...")
 			lastPostingRate := m.hourlyPostRate
 			// calculate the new hourly post rate
 			m.calculateHourlyPostRate()
@@ -242,7 +246,7 @@ func (m *Manager) managerLifecycle() {
 				m.setUpPostSignal()
 			}
 
-			utility.YellowLog(fmt.Sprintf("new hourly posting rate: %s", m.hourlyPostRate.String()))
+			m.log.Info(fmt.Sprintf("new hourly posting rate: %s", m.hourlyPostRate.String()))
 
 			// see you in an hour!
 			m.hourlyPostSignal = time.After(1 * time.Hour)
@@ -254,7 +258,7 @@ func (m *Manager) doPost() error {
 	// setup the post signal first
 	defer m.setUpPostSignal()
 
-	utility.GreenLog("it's time to post!")
+	m.log.Info("it's time to post!")
 
 	// could not find anything to post
 	wtp, err := m.whatToPost()
@@ -271,7 +275,7 @@ func (m *Manager) doPost() error {
 		return fmt.Errorf("%s on media with ID %s", err, wtp.Media)
 	}
 
-	utility.GreenLog("all done!")
+	m.log.Info("all done!")
 
 	return nil
 }
@@ -301,7 +305,7 @@ func (m *Manager) calculateHourlyPostRate() {
 	ppH := postsPerHour(postsQueue)
 
 	if m.debug {
-		utility.BlueLog(fmt.Sprintf("posts per hour: %d", ppH))
+		m.log.Info(fmt.Sprintf("posts per hour: %d", ppH))
 	}
 
 	if ppH > 0 {
@@ -313,7 +317,7 @@ func (m *Manager) calculateHourlyPostRate() {
 		}
 
 		if m.debug {
-			utility.BlueLog(fmt.Sprintf("hourly post rate: %s", m.hourlyPostRate))
+			m.log.Info(fmt.Sprintf("hourly post rate: %s", m.hourlyPostRate))
 		}
 		return
 	}
@@ -405,15 +409,13 @@ func (m Manager) checkDuplicate(post MediaPayload) bool {
 	dup, err := m.isDuplicate(post.Entity)
 
 	if err != nil {
-		e := fmt.Errorf("error while trying to calculate hash for image with ID %s: %s", post.Entity.Media, err.Error())
-		utility.PrettyError(e)
+		m.log.Err(fmt.Sprintf("error while trying to calculate hash for image with ID %s: %s", post.Entity.Media, err.Error()))
 		return dup
 	}
 
 	if dup {
-		msg := fmt.Sprintf("user %d tried to re-add media %s, which is already present in the database", post.Entity.UserID, post.Entity.Media)
+		m.log.Warn(fmt.Sprintf("user %d tried to re-add media %s, which is already present in the database", post.Entity.UserID, post.Entity.Media))
 		utility.SendTelegramReply(post.ChatID, post.MessageID, m.botAPI, "	Duplicate.")
-		utility.YellowLog(msg)
 	}
 
 	return dup

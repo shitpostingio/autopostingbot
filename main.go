@@ -8,6 +8,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/algo"
 	cfg "gitlab.com/shitposting/autoposting-bot/config"
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
+	"gitlab.com/shitposting/loglog/loglogclient"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/jinzhu/gorm"
@@ -36,13 +37,22 @@ var (
 
 	err   error
 	debug bool
+
+	// Importing loglog client
+	l *loglogclient.LoglogClient
 )
 
 func main() {
 	setupCLIParams()
 
-	utility.GreenLog(fmt.Sprintf("Shitposting autoposting-bot version %s, build %s\n", Version, Build))
-	utility.YellowLog(fmt.Sprintf("INFO - reading configuration file located at %s", configFilePath))
+	l = loglogclient.NewClient(
+		loglogclient.Config{
+			SocketPath:    "/tmp/loglog.socket",
+			ApplicationID: "Autoposting-bot",
+		})
+
+	l.Info(fmt.Sprintf("Shitposting autoposting-bot version %s, build %s\n", Version, Build))
+	l.Info(fmt.Sprintf("INFO - reading configuration file located at %s", configFilePath))
 	config, err = cfg.ReadConfigFile(configFilePath)
 	if err != nil {
 		utility.PrettyFatal(err)
@@ -58,7 +68,7 @@ func main() {
 	bot.Debug = debug
 
 	//utility.YellowLog
-	utility.YellowLog(fmt.Sprintf("Authorized on account %s", bot.Self.UserName))
+	l.Info(fmt.Sprintf("Authorized on account %s", bot.Self.UserName))
 
 	// set webhook to an adequate value
 	_, err = bot.SetWebhook(tgbotapi.NewWebhook(config.WebHookURL()))
@@ -73,16 +83,17 @@ func main() {
 		BotAPIInstance: bot,
 		DatabaseString: config.DatabaseConnectionString(),
 		Debug:          debug,
+		Log:            l,
 	})
 
 	if err != nil {
-		utility.PrettyFatal(err)
+		l.Err(err.Error())
 	}
 
 	// Initialize gorm
 	db, err = gorm.Open("mysql", config.DatabaseConnectionString())
 	if err != nil {
-		utility.PrettyFatal(err)
+		l.Err(err.Error())
 	}
 
 	go startServer()
@@ -92,7 +103,7 @@ func main() {
 			if iCanUseThis(update) {
 				err := command.Handle(update, bot, manager)
 				if err != nil {
-					utility.PrettyError(err)
+					l.Err(err.Error())
 				}
 			}
 		}(update, bot, manager)
@@ -108,10 +119,10 @@ func setupCLIParams() {
 
 func startServer() {
 	if config.TLS {
-		go utility.PrettyFatal(http.ListenAndServeTLS(config.BindString(), config.TLSCertPath, config.TLSKeyPath, nil))
+		go l.Err((http.ListenAndServeTLS(config.BindString(), config.TLSCertPath, config.TLSKeyPath, nil)).Error())
 	}
 
-	go utility.PrettyFatal(http.ListenAndServe(config.BindString(), nil))
+	go l.Err((http.ListenAndServe(config.BindString(), nil)).Error())
 }
 
 func iCanUseThis(update tgbotapi.Update) bool {
