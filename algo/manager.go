@@ -148,12 +148,11 @@ func (m *Manager) managerLifecycle() {
 
 			// Since I have the var post, it has ID 0 if the query doesn't return any value, so I check the ID.
 			if post.ID == 0 {
-				m.log.Err("Can't delete post. Probably File ID is invalid or it was already posted on channel")
+				m.log.Warn("Can't delete post. Probably File ID is invalid or it was already posted on channel")
 				utility.SendTelegramReply(int(deletedPost.ChatID), deletedPost.MessageID, m.botAPI, "I can't delete it")
 			} else {
 				m.db.Delete(&post)
 				m.log.Info(fmt.Sprintf("Deleted post with ID: %d, deleted by: %d", int(post.ID), deletedPost.Entity.UserID))
-
 				utility.SendTelegramReply(int(deletedPost.ChatID), deletedPost.MessageID, m.botAPI, "Deleted! \xF0\x9F\x9A\xAE")
 			}
 		case status := <-m.StatusChannel:

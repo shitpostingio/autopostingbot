@@ -14,7 +14,6 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"gitlab.com/shitposting/autoposting-bot/command"
-	"gitlab.com/shitposting/autoposting-bot/utility"
 )
 
 var (
@@ -55,13 +54,13 @@ func main() {
 	l.Info(fmt.Sprintf("INFO - reading configuration file located at %s", configFilePath))
 	config, err = cfg.ReadConfigFile(configFilePath)
 	if err != nil {
-		utility.PrettyFatal(err)
+		l.Err(err.Error())
 	}
 
 	// setup a Telegram bot API instance
 	bot, err := tgbotapi.NewBotAPI(config.BotToken)
 	if err != nil {
-		utility.PrettyFatal(err)
+		l.Err(err.Error())
 	}
 
 	// should we activate debug output?
@@ -73,7 +72,7 @@ func main() {
 	// set webhook to an adequate value
 	_, err = bot.SetWebhook(tgbotapi.NewWebhook(config.WebHookURL()))
 	if err != nil {
-		utility.PrettyFatal(err)
+		l.Err(err.Error())
 	}
 
 	updates := bot.ListenForWebhook(config.WebHookPath())
