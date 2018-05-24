@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"gitlab.com/shitposting/autoposting-bot/algo"
 	cfg "gitlab.com/shitposting/autoposting-bot/config"
@@ -63,18 +64,19 @@ func main() {
 	bot, err := tgbotapi.NewBotAPI(config.BotToken)
 	if err != nil {
 		l.Err(err.Error())
+		os.Exit(1)
 	}
 
 	// should we activate debug output?
 	bot.Debug = debug
 
-	//utility.YellowLog
 	l.Info(fmt.Sprintf("Authorized on account %s", bot.Self.UserName))
 
 	// set webhook to an adequate value
 	_, err = bot.SetWebhook(tgbotapi.NewWebhook(config.WebHookURL()))
 	if err != nil {
 		l.Err(err.Error())
+		os.Exit(1)
 	}
 
 	updates := bot.ListenForWebhook(config.WebHookPath())
@@ -89,12 +91,14 @@ func main() {
 
 	if err != nil {
 		l.Err(err.Error())
+		os.Exit(1)
 	}
 
 	// Initialize gorm
 	db, err = gorm.Open("mysql", config.DatabaseConnectionString())
 	if err != nil {
 		l.Err(err.Error())
+		os.Exit(1)
 	}
 
 	go startServer()
