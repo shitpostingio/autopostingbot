@@ -6,8 +6,7 @@ import (
 
 	"gitlab.com/shitposting/autoposting-bot/config"
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
-
-	"gitlab.com/shitposting/autoposting-bot/utility"
+	"gitlab.com/shitposting/loglog/loglogclient"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -17,6 +16,9 @@ import (
 var (
 	userID         int
 	configFilePath string
+
+	// Importing loglog client
+	l *loglogclient.LoglogClient
 )
 
 func main() {
@@ -26,16 +28,22 @@ func main() {
 
 	cfg, err := config.ReadConfigFile(configFilePath)
 	if err != nil {
-		utility.PrettyFatal(err)
+		log.Fatal(err)
 	}
 
+	l = loglogclient.NewClient(
+		loglogclient.Config{
+			SocketPath:    cfg.SocketPath,
+			ApplicationID: "Autoposting-bot",
+		})
+
 	if userID == 0 {
-		log.Fatal("user ID is needed")
+		l.Warn("user ID is needed")
 	}
 
 	db, err := gorm.Open("mysql", cfg.DatabaseConnectionString())
 	if err != nil {
-		utility.PrettyFatal(err)
+		l.Err(err.Error())
 	}
 	defer db.Close()
 
