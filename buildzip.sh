@@ -21,7 +21,7 @@ for i in autoposting-*; do
 done
 
 cd $ROOTDIR
-cd fingerprinting/cmd/hash-database
+cd cmd/hash-database
 echo "[+] building hash-database..."
 go build
 mv hash-database ../../../$DEST
