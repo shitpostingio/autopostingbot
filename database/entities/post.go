@@ -17,7 +17,8 @@ type Post struct {
 	CreatedAt  time.Time  // Timestamp of the creation inside the database
 	PostedAt   time.Time  `gorm:"default:null"`  // Timestamp of the successful post on the channel
 	HasError   bool       `gorm:"default:false"` // If true, this Post had some kind of posting error
-	MediaHash  string     `gorm:"type:longtext"` // Hash of the media, calculated using the "fingerprinting" package for images
+	PHash      string     `gorm:"type:longtext"` // PerceptionHash for a photo
+	AHash      string     `gorm:"type:longtext"` // AverageHash for a photo
 }
 
 // IsVideo returns true if p is a video, false otherwise.

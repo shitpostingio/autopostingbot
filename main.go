@@ -12,7 +12,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
 	"gitlab.com/shitposting/loglog/loglogclient"
 
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/empetrone/telegram-bot-api"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"gitlab.com/shitposting/autoposting-bot/command"

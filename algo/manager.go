@@ -9,11 +9,11 @@ import (
 	"time"
 
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
-	"gitlab.com/shitposting/autoposting-bot/fingerprinting"
 	"gitlab.com/shitposting/autoposting-bot/utility"
+	"gitlab.com/shitposting/fingerprinting"
 	"gitlab.com/shitposting/loglog/loglogclient"
 
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/empetrone/telegram-bot-api"
 	"github.com/jinzhu/gorm"
 )
 
@@ -216,12 +216,13 @@ func (m *Manager) managerLifecycle() {
 			newPost.Entity.UserID = uint(userID)
 			newPost.Entity.Categories = []entities.Category{imageCategory}
 
-			hash, err := fingerprinting.GetPhotoFingerprint(m.botAPI, newPost.Entity.Media)
+			aHash, pHash, err := fingerprinting.GetPhotoFingerprint(m.botAPI, newPost.Entity.Media)
 			if err != nil {
 				m.log.Warn(fmt.Sprintf("cannot calculate hash for image with ID %s, proceeding without one", newPost.Entity.Media))
 			}
 
-			newPost.Entity.MediaHash = hash
+			newPost.Entity.PHash = pHash
+			newPost.Entity.AHash = aHash
 
 			// add to the database
 			m.db.Create(&newPost.Entity)
@@ -379,21 +380,33 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 // isDuplicate returns true if post has been already added before
 // false otherwise.
 func (m Manager) isDuplicate(post entities.Post) (bool, error) {
-	// calculate the image hash
-	hash, err := fingerprinting.GetPhotoFingerprint(m.botAPI, post.Media)
+
+	var videoDuplicate entities.Post
+	var hasSimilar bool
+	_, newPostPhash, err := fingerprinting.GetPhotoFingerprint(m.botAPI, post.Media)
 	if err != nil {
 		return false, err
 	}
 
-	var duplicate entities.Post
+	// populate the post with all the data we have in the database, if any
 
 	if post.IsImage(m.db) {
-		m.db.Where("media_hash = ?", hash).First(&duplicate)
+		hasSimilar = fingerprinting.HasSimilarEnoughPhoto(func() (string, []string) {
+			var photos []entities.Post
+			m.db.Select("id, media, p_hash").Find(&photos)
+			photosPhash := make([]string, len(photos))
+
+			for index, elem := range photos {
+				photosPhash[index] = elem.PHash
+			}
+
+			return newPostPhash, photosPhash
+		})
 	} else {
-		m.db.Where("media = ?", post.Media).First(&duplicate)
+		m.db.Where("media = ?", post.Media).First(&videoDuplicate)
 	}
 
-	if duplicate.Media != "" || duplicate.MediaHash != "" {
+	if videoDuplicate.Media != "" || hasSimilar {
 		return true, nil
 	}
 
