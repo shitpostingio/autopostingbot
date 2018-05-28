@@ -6,13 +6,14 @@ import (
 	"log"
 
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
+	"gitlab.com/shitposting/fingerprinting"
 	"gitlab.com/shitposting/loglog/loglogclient"
 
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/empetrone/telegram-bot-api"
 	"gitlab.com/shitposting/autoposting-bot/config"
-	"gitlab.com/shitposting/autoposting-bot/fingerprinting"
 
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 var (
@@ -34,7 +35,7 @@ func main() {
 	l = loglogclient.NewClient(
 		loglogclient.Config{
 			SocketPath:    cfg.SocketPath,
-			ApplicationID: "Autoposting-bot",
+			ApplicationID: "hash-database",
 		})
 
 	db, err := gorm.Open("mysql", cfg.DatabaseConnectionString())
@@ -54,16 +55,19 @@ func main() {
 
 	tx := db.Begin()
 	for _, post := range duplicate {
-		if !post.IsImage(db) || post.MediaHash != "" {
+		if !post.IsImage(db) {
 			continue
 		}
-		hash, err := fingerprinting.GetPhotoFingerprint(bot, post.Media)
+
+		log.Println("processing photo with ID", post.ID)
+		aHash, pHash, err := fingerprinting.GetPhotoFingerprint(bot, post.Media)
 		if err != nil {
 			l.Err(fmt.Sprintf("cannot calculate fingerprint for media with ID %s", post.Media))
 			continue
 		}
 
-		post.MediaHash = hash
+		post.AHash = aHash
+		post.PHash = pHash
 		tx.Save(&post)
 	}
 	tx.Commit()
