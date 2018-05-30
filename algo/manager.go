@@ -383,17 +383,16 @@ func (m Manager) isDuplicate(post entities.Post) (bool, error) {
 
 	var videoDuplicate entities.Post
 	var hasSimilar bool
-	_, newPostPhash, err := fingerprinting.GetPhotoFingerprint(m.botAPI, post.Media)
+	newPostAhash, newPostPhash, err := fingerprinting.GetPhotoFingerprint(m.botAPI, post.Media)
 	if err != nil {
 		return false, err
 	}
 
 	// populate the post with all the data we have in the database, if any
-
 	if post.IsImage(m.db) {
 		hasSimilar = fingerprinting.HasSimilarEnoughPhoto(func() (string, []string) {
 			var photos []entities.Post
-			m.db.Select("id, media, p_hash").Find(&photos)
+			m.db.Select("id, media, p_hash").Where("a_hash = ?", newPostAhash).Find(&photos)
 			photosPhash := make([]string, len(photos))
 
 			for index, elem := range photos {
