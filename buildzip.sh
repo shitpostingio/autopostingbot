@@ -1,5 +1,4 @@
 #!/bin/bash
-
 ROOTDIR=$(pwd)
 VERSION=$(grep "VERSION :=" Makefile | awk '{print $3}')
 DEST=autoposting-bot-v$VERSION
@@ -19,12 +18,11 @@ for i in autoposting-*; do
 	mv $i ../../../$DEST
 	cd ../
 done
-
 cd $ROOTDIR
 cd cmd/hash-database
 echo "[+] building hash-database..."
 go build
-mv hash-database ../../../$DEST
+mv hash-database ../../$DEST
 
 cd $ROOTDIR
 echo "[+] building tar.xz..."
