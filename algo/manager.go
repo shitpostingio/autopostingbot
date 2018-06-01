@@ -9,11 +9,11 @@ import (
 	"time"
 
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
-	"gitlab.com/shitposting/autoposting-bot/fingerprinting"
 	"gitlab.com/shitposting/autoposting-bot/utility"
+	"gitlab.com/shitposting/fingerprinting"
 	"gitlab.com/shitposting/loglog/loglogclient"
 
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/empetrone/telegram-bot-api"
 	"github.com/jinzhu/gorm"
 )
 
@@ -216,12 +216,13 @@ func (m *Manager) managerLifecycle() {
 			newPost.Entity.UserID = uint(userID)
 			newPost.Entity.Categories = []entities.Category{imageCategory}
 
-			hash, err := fingerprinting.GetPhotoFingerprint(m.botAPI, newPost.Entity.Media)
+			aHash, pHash, err := fingerprinting.GetPhotoFingerprint(m.botAPI, newPost.Entity.Media)
 			if err != nil {
 				m.log.Warn(fmt.Sprintf("cannot calculate hash for image with ID %s, proceeding without one", newPost.Entity.Media))
 			}
 
-			newPost.Entity.MediaHash = hash
+			newPost.Entity.PHash = pHash
+			newPost.Entity.AHash = aHash
 
 			// add to the database
 			m.db.Create(&newPost.Entity)
@@ -378,32 +379,50 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 
 // isDuplicate returns true if post has been already added before
 // false otherwise.
-func (m Manager) isDuplicate(post entities.Post) (bool, error) {
-	// calculate the image hash
-	hash, err := fingerprinting.GetPhotoFingerprint(m.botAPI, post.Media)
+func (m Manager) isDuplicate(post entities.Post) (bool, string, error) {
+
+	var videoDuplicate entities.Post
+	var hasSimilar bool
+	var dupePhoto string
+
+	newPostAhash, newPostPhash, err := fingerprinting.GetPhotoFingerprint(m.botAPI, post.Media)
 	if err != nil {
-		return false, err
+		return false, dupePhoto, err
 	}
 
-	var duplicate entities.Post
+	var photos []entities.Post
+	m.db.Select("id, media, p_hash").Where("a_hash = ?", newPostAhash).Find(&photos)
+	photosPhash := make([]string, len(photos))
+	for index, elem := range photos {
+		photosPhash[index] = elem.PHash
+	}
 
+	// populate the post with all the data we have in the database, if any
 	if post.IsImage(m.db) {
-		m.db.Where("media_hash = ?", hash).First(&duplicate)
+		hasSimilar, dupePhoto = fingerprinting.HasSimilarEnoughPhoto(func() (string, []string) {
+			return newPostPhash, photosPhash
+		})
 	} else {
-		m.db.Where("media = ?", post.Media).First(&duplicate)
+		m.db.Where("media = ?", post.Media).First(&videoDuplicate)
 	}
 
-	if duplicate.Media != "" || duplicate.MediaHash != "" {
-		return true, nil
+	for _, elem := range photos {
+		if elem.PHash == dupePhoto {
+			dupePhoto = elem.Media
+		}
 	}
 
-	return false, nil
+	if videoDuplicate.Media != "" || hasSimilar {
+		return true, dupePhoto, nil
+	}
+
+	return false, dupePhoto, nil
 }
 
 // checkDuplicate checks whether post has already been added to the database,
 // and if yes, it will communicate it to the user
 func (m Manager) checkDuplicate(post MediaPayload) bool {
-	dup, err := m.isDuplicate(post.Entity)
+	dup, dupImg, err := m.isDuplicate(post.Entity)
 
 	if err != nil {
 		m.log.Err(fmt.Sprintf("error while trying to calculate hash for image with ID %s: %s", post.Entity.Media, err.Error()))
@@ -412,7 +431,16 @@ func (m Manager) checkDuplicate(post MediaPayload) bool {
 
 	if dup {
 		m.log.Warn(fmt.Sprintf("user %d tried to re-add media %s, which is already present in the database", post.Entity.UserID, post.Entity.Media))
-		utility.SendTelegramReply(post.ChatID, post.MessageID, m.botAPI, "	Duplicate.")
+
+		msg := tgbotapi.NewPhotoShare(int64(post.ChatID), dupImg)
+		msg.Caption = "🚨 Duplicate detected! 🚨\nOriginal photo has been attached."
+		msg.BaseChat.ReplyToMessageID = post.MessageID
+
+		_, err := m.botAPI.Send(msg)
+		if err != nil {
+			m.log.Err(fmt.Sprintf("error while sending duplicate image report: %s", err.Error()))
+		}
+
 	}
 
 	return dup

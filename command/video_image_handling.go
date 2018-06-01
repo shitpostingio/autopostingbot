@@ -3,7 +3,7 @@ package command
 import (
 	"errors"
 
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/empetrone/telegram-bot-api"
 	"gitlab.com/shitposting/autoposting-bot/algo"
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
 	"gitlab.com/shitposting/autoposting-bot/utility"

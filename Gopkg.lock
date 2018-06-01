@@ -8,16 +8,20 @@
   version = "v0.3.0"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/dsoprea/go-logging"
-  packages = ["."]
-  revision = "ffdbd038bee54b0fe99dd8af832719a8e5ca8a0c"
+  name = "github.com/corona10/goimagehash"
+  packages = [
+    ".",
+    "etcs",
+    "transforms"
+  ]
+  revision = "190331714558be423e622b2c2fcdca9ec2882637"
+  version = "v0.2.0"
 
 [[projects]]
-  name = "github.com/dsoprea/go-perceptualhash"
+  name = "github.com/empetrone/telegram-bot-api"
   packages = ["."]
-  revision = "e1f1f925da70ff9fd38da3e078fb33269cbb53a2"
-  version = "1.0.0"
+  revision = "212b1541150cbfcc268fbeb3b15c14383e638409"
+  version = "4.6.2"
 
 [[projects]]
   name = "github.com/fatih/color"
@@ -26,22 +30,10 @@
   version = "v1.7.0"
 
 [[projects]]
-  name = "github.com/go-errors/errors"
-  packages = ["."]
-  revision = "a6af135bd4e28680facf08a3d206b454abc877a4"
-  version = "v1.0.1"
-
-[[projects]]
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
   revision = "a0583e0143b1624142adab07e0e97fe106d99561"
-  version = "v1.3"
-
-[[projects]]
-  name = "github.com/go-telegram-bot-api/telegram-bot-api"
-  packages = ["."]
-  revision = "2022d04b94f50056a09962b1ac81cdd821d20a55"
-  version = "v4.6.1"
+  version = "v1.3.0"
 
 [[projects]]
   name = "github.com/jinzhu/gorm"
@@ -74,14 +66,26 @@
 [[projects]]
   name = "github.com/mattn/go-sqlite3"
   packages = ["."]
-  revision = "6c771bb9887719704b210e87e934f08be014bdb1"
-  version = "v1.6.0"
+  revision = "323a32be5a2421b8c7087225079c6c900ec397cd"
+  version = "v1.7.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/nfnt/resize"
+  packages = ["."]
+  revision = "83c6a9932646f83e3267f353373d47347b6036b2"
 
 [[projects]]
   name = "github.com/technoweenie/multipartstreamer"
   packages = ["."]
   revision = "a90a01d73ae432e2611d178c18367fbaa13e0154"
   version = "v1.0.1"
+
+[[projects]]
+  branch = "master"
+  name = "gitlab.com/shitposting/fingerprinting"
+  packages = ["."]
+  revision = "9ce9e508485fa0ec828ecf702f0f30af97b28475"
 
 [[projects]]
   name = "gitlab.com/shitposting/loglog"
@@ -91,19 +95,13 @@
 
 [[projects]]
   branch = "master"
-  name = "golang.org/x/net"
-  packages = ["context"]
-  revision = "5f9ae10d9af5b1c89ae6904293b14b064d4ada23"
-
-[[projects]]
-  branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "cc7307a45468e49eaf2997c890f14aa03a26917b"
+  revision = "c11f84a56e43e20a78cee75a7c034031ecf57d1f"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2bebe6607ae6fbb7518a981f2b85a348e87dcd0d827adb094dacd230c58ecfaa"
+  inputs-digest = "547b581e21d1a66135be9739e980644c2a896b0e5468de389a2dcb6841e48f50"
   solver-name = "gps-cdcl"
   solver-version = 1

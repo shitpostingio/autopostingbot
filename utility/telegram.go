@@ -1,7 +1,7 @@
 package utility
 
 import (
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/empetrone/telegram-bot-api"
 )
 
 // SendTelegramReply replies with a text to the specified update

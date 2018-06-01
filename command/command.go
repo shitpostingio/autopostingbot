@@ -6,7 +6,7 @@ import (
 
 	"gitlab.com/shitposting/autoposting-bot/utility"
 
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/empetrone/telegram-bot-api"
 	"gitlab.com/shitposting/autoposting-bot/algo"
 )
 

@@ -26,13 +26,25 @@
 
 
 [[constraint]]
-  name = "github.com/go-telegram-bot-api/telegram-bot-api"
-  version = "4.6.1"
+  name = "github.com/BurntSushi/toml"
+  version = "0.3.0"
+
+[[constraint]]
+  name = "github.com/empetrone/telegram-bot-api"
+  version = "4.6.2"
+
+[[constraint]]
+  name = "github.com/jinzhu/gorm"
+  version = "1.9.1"
+
+[[constraint]]
+  branch = "master"
+  name = "gitlab.com/shitposting/fingerprinting"
+
+[[constraint]]
+  name = "gitlab.com/shitposting/loglog"
+  version = "1.0.1"
 
 [prune]
   go-tests = true
   unused-packages = true
-
-[[constraint]]
-  name = "github.com/BurntSushi/toml"
-  version = "0.3.0"
