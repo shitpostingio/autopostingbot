@@ -102,16 +102,17 @@ func GetImageFingerprint(filepath string) (aHash string, pHash string, err error
 	return
 }
 
-// HasSimilarEnoughPhoto returns true if there is a match between photos and photo
-func HasSimilarEnoughPhoto(dataFunc func() (photoHash string, photosHashes []string)) bool {
+// HasSimilarEnoughPhoto returns true if there is a match between photos and photo,
+// and returns the MediaID for the duplicate photo if found.
+func HasSimilarEnoughPhoto(dataFunc func() (photoHash string, photosHashes []string)) (bool, string) {
 	photoHash, photosHashes := dataFunc()
 	for _, currentPhoto := range photosHashes {
 		if PhotosAreSimilarEnough(photoHash, currentPhoto) {
-			return true
+			return true, currentPhoto
 		}
 	}
 
-	return false
+	return false, ""
 }
 
 // PhotosAreSimilarEnough returns true if the two PHashes are close enough (cutoff value: 6)

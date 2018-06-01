@@ -85,7 +85,7 @@
   branch = "master"
   name = "gitlab.com/shitposting/fingerprinting"
   packages = ["."]
-  revision = "4d5a2f558c8062de7282b3a558960e7e84f1ccd7"
+  revision = "9ce9e508485fa0ec828ecf702f0f30af97b28475"
 
 [[projects]]
   name = "gitlab.com/shitposting/loglog"
