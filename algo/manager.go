@@ -379,43 +379,50 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 
 // isDuplicate returns true if post has been already added before
 // false otherwise.
-func (m Manager) isDuplicate(post entities.Post) (bool, error) {
+func (m Manager) isDuplicate(post entities.Post) (bool, string, error) {
 
 	var videoDuplicate entities.Post
 	var hasSimilar bool
+	var dupePhoto string
+
 	newPostAhash, newPostPhash, err := fingerprinting.GetPhotoFingerprint(m.botAPI, post.Media)
 	if err != nil {
-		return false, err
+		return false, dupePhoto, err
+	}
+
+	var photos []entities.Post
+	m.db.Select("id, media, p_hash").Where("a_hash = ?", newPostAhash).Find(&photos)
+	photosPhash := make([]string, len(photos))
+	for index, elem := range photos {
+		photosPhash[index] = elem.PHash
 	}
 
 	// populate the post with all the data we have in the database, if any
 	if post.IsImage(m.db) {
-		hasSimilar = fingerprinting.HasSimilarEnoughPhoto(func() (string, []string) {
-			var photos []entities.Post
-			m.db.Select("id, media, p_hash").Where("a_hash = ?", newPostAhash).Find(&photos)
-			photosPhash := make([]string, len(photos))
-
-			for index, elem := range photos {
-				photosPhash[index] = elem.PHash
-			}
-
+		hasSimilar, dupePhoto = fingerprinting.HasSimilarEnoughPhoto(func() (string, []string) {
 			return newPostPhash, photosPhash
 		})
 	} else {
 		m.db.Where("media = ?", post.Media).First(&videoDuplicate)
 	}
 
-	if videoDuplicate.Media != "" || hasSimilar {
-		return true, nil
+	for _, elem := range photos {
+		if elem.PHash == dupePhoto {
+			dupePhoto = elem.Media
+		}
 	}
 
-	return false, nil
+	if videoDuplicate.Media != "" || hasSimilar {
+		return true, dupePhoto, nil
+	}
+
+	return false, dupePhoto, nil
 }
 
 // checkDuplicate checks whether post has already been added to the database,
 // and if yes, it will communicate it to the user
 func (m Manager) checkDuplicate(post MediaPayload) bool {
-	dup, err := m.isDuplicate(post.Entity)
+	dup, dupImg, err := m.isDuplicate(post.Entity)
 
 	if err != nil {
 		m.log.Err(fmt.Sprintf("error while trying to calculate hash for image with ID %s: %s", post.Entity.Media, err.Error()))
@@ -424,7 +431,16 @@ func (m Manager) checkDuplicate(post MediaPayload) bool {
 
 	if dup {
 		m.log.Warn(fmt.Sprintf("user %d tried to re-add media %s, which is already present in the database", post.Entity.UserID, post.Entity.Media))
-		utility.SendTelegramReply(post.ChatID, post.MessageID, m.botAPI, "	Duplicate.")
+
+		msg := tgbotapi.NewPhotoShare(int64(post.ChatID), dupImg)
+		msg.Caption = "🚨 Duplicate detected! 🚨\nOriginal photo has been attached."
+		msg.BaseChat.ReplyToMessageID = post.MessageID
+
+		_, err := m.botAPI.Send(msg)
+		if err != nil {
+			m.log.Err(fmt.Sprintf("error while sending duplicate image report: %s", err.Error()))
+		}
+
 	}
 
 	return dup
