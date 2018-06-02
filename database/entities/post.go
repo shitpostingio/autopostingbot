@@ -14,6 +14,7 @@ type Post struct {
 	Media      string     `gorm:"type:longtext"`     // The URL of the media from telegram API
 	Caption    string     `sql:"type:varchar(192) CHARACTER SET utf8 COLLATE utf8_unicode_ci"`
 	Categories []Category `gorm:"many2many:category_posts;"` // Post has and belongs to many categories, use `category_posts` as join table
+	MessageID  int        `gorm:"not null;unique"`           // Message identification string, that Telegram uses to handle forwards
 	CreatedAt  time.Time  // Timestamp of the creation inside the database
 	PostedAt   time.Time  `gorm:"default:null"`  // Timestamp of the successful post on the channel
 	HasError   bool       `gorm:"default:false"` // If true, this Post had some kind of posting error

@@ -356,15 +356,16 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 	}
 
 	var err error
+	var sentMessage tgbotapi.Message
 	switch {
 	case entity.IsImage(m.db):
 		tgImage := tgbotapi.NewPhotoShare(m.channelID, entity.Media)
 		tgImage.Caption = caption
-		_, err = m.botAPI.Send(tgImage)
+		sentMessage, err = m.botAPI.Send(tgImage)
 	case entity.IsVideo(m.db):
 		tgVideo := tgbotapi.NewVideoShare(m.channelID, entity.Media)
 		tgVideo.Caption = caption
-		_, err = m.botAPI.Send(tgVideo)
+		sentMessage, err = m.botAPI.Send(tgVideo)
 	}
 
 	// checking if there's an error here gives us the chance to remove the posted
@@ -372,6 +373,7 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 	// level.
 	if err == nil {
 		entity.PostedAt = time.Now()
+		entity.MessageID = sentMessage.MessageID
 		m.db.Save(&entity)
 	}
 	return err
