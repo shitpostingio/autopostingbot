@@ -13,8 +13,8 @@ import (
 	"gitlab.com/shitposting/fingerprinting"
 	"gitlab.com/shitposting/loglog/loglogclient"
 
-	"github.com/empetrone/telegram-bot-api"
 	"github.com/jinzhu/gorm"
+	"gitlab.com/shitposting/telegram-bot-api"
 )
 
 // Manager is the central point of input/output for @AntonioBusillo's algorithm.
@@ -360,10 +360,12 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 	case entity.IsImage(m.db):
 		tgImage := tgbotapi.NewPhotoShare(m.channelID, entity.Media)
 		tgImage.Caption = caption
+		tgImage.ParseMode = "Markdown"
 		_, err = m.botAPI.Send(tgImage)
 	case entity.IsVideo(m.db):
 		tgVideo := tgbotapi.NewVideoShare(m.channelID, entity.Media)
 		tgVideo.Caption = caption
+		tgVideo.ParseMode = "Markdown"
 		_, err = m.botAPI.Send(tgVideo)
 	}
 

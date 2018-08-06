@@ -3,10 +3,10 @@ package command
 import (
 	"errors"
 
-	"github.com/empetrone/telegram-bot-api"
 	"gitlab.com/shitposting/autoposting-bot/algo"
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
 	"gitlab.com/shitposting/autoposting-bot/utility"
+	"gitlab.com/shitposting/telegram-bot-api"
 )
 
 // MediaType is the type of media we're dealing with
