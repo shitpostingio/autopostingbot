@@ -15,7 +15,7 @@ import (
 // su un messaggio entrante.
 func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager) error {
 	if update.Message == nil && update.EditedMessage == nil {
-		return errors.New("update Message or EditedMessage body was nil, most likely an error on Telegram side")
+		return errors.New(updateBodyNilError)
 	}
 
 	msg := update.Message
@@ -109,7 +109,7 @@ func addOcCredit(msg *tgbotapi.Message, api *tgbotapi.BotAPI, manager *algo.Mana
 	words := strings.Fields(msg.CommandArguments())
 
 	if len(words) < 1 {
-		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, api, "No arguments in /credit!\n\n\xF0\x9F\x93\x96 Usage: /credit <name> <LINK(with http)> \\[OPTIONAL-CAPTION]\n\n\xE2\x9E\xA1 Use /thanks if you want to give credit for a forwarded content!")
+		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, api, creditWrongFormat)
 	} else {
 		var captionstatus bool
 
