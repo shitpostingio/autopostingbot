@@ -12,10 +12,10 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/database/entities"
 	"gitlab.com/shitposting/loglog/loglogclient"
 
-	"github.com/empetrone/telegram-bot-api"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"gitlab.com/shitposting/autoposting-bot/command"
+	"gitlab.com/shitposting/telegram-bot-api"
 )
 
 var (
@@ -31,6 +31,9 @@ var (
 
 	// Build is the git tag for the current version
 	Build string
+
+	// testing is a bool value to enable polling instead of webhook
+	testing bool
 
 	manager *algo.Manager
 
@@ -72,14 +75,13 @@ func main() {
 
 	l.Info(fmt.Sprintf("Authorized on account %s", bot.Self.UserName))
 
-	// set webhook to an adequate value
-	_, err = bot.SetWebhook(tgbotapi.NewWebhook(config.WebHookURL()))
-	if err != nil {
-		l.Err(err.Error())
-		os.Exit(1)
-	}
+	var updates tgbotapi.UpdatesChannel
 
-	updates := bot.ListenForWebhook(config.WebHookPath())
+	if testing {
+		updates = setPolling(bot)
+	} else {
+		updates = setWebhook(bot)
+	}
 
 	manager, err = algo.NewManager(algo.ManagerConfig{
 		ChannelID:      int64(config.ChannelID),
@@ -117,6 +119,7 @@ func main() {
 }
 
 func setupCLIParams() {
+	flag.BoolVar(&testing, "testing", false, "use polling instead of webhooks")
 	flag.StringVar(&configFilePath, "config", "./config.toml", "configuration file path")
 	flag.BoolVar(&debug, "debug", false, "activate all the debug features")
 	flag.Parse()
@@ -149,4 +152,53 @@ func iCanUseThis(update tgbotapi.Update) bool {
 	}
 
 	return false
+}
+
+func setPolling(bot *tgbotapi.BotAPI) tgbotapi.UpdatesChannel {
+
+	webhk, err := bot.GetWebhookInfo()
+
+	if err != nil {
+		l.Err(err.Error())
+	}
+
+	if webhk.IsSet() {
+
+		bot.RemoveWebhook()
+	}
+
+	u := tgbotapi.NewUpdate(0)
+	u.Timeout = 60
+	updates, err := bot.GetUpdatesChan(u)
+	if err != nil {
+		l.Err(err.Error())
+	}
+
+	return updates
+}
+
+func setWebhook(bot *tgbotapi.BotAPI) tgbotapi.UpdatesChannel {
+
+	go startServer()
+
+	webhk, err := bot.GetWebhookInfo()
+
+	if err != nil {
+		l.Err(err.Error())
+	}
+
+	if webhk.IsSet() {
+		updates := bot.ListenForWebhook(config.WebHookPath())
+		return updates
+	}
+
+	_, err = bot.SetWebhook(tgbotapi.NewWebhook(config.WebHookURL()))
+	if err != nil {
+		l.Err(err.Error())
+	}
+
+	updates := bot.ListenForWebhook(config.WebHookPath())
+
+	return updates
+
 }
