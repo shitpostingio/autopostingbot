@@ -54,6 +54,8 @@ func main() {
 	// Create image and video categories
 	image := entities.Category{Name: "image"}
 	video := entities.Category{Name: "video"}
+	gif := entities.Category{Name: "gif"}
+	db.Create(&gif)
 	db.Create(&image)
 	db.Create(&video)
 
