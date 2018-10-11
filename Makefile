@@ -5,6 +5,10 @@ SHELL := /bin/bash
 TARGET := $(shell echo $${PWD\#\#*/})
 .DEFAULT_GOAL: $(TARGET)
 
+.EXPORT_ALL_VARIABLES:
+GOOS = linux
+GOARCH = amd64
+
 VERSION := 1.4.0
 BUILD := `git rev-parse HEAD`
 
