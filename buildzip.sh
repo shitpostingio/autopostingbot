@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ROOTDIR=$(pwd)
 VERSION=$(grep "VERSION :=" Makefile | awk '{print $3}')
 DEST=autoposting-bot-v$VERSION
