@@ -13,8 +13,8 @@ import (
 	"gitlab.com/shitposting/fingerprinting"
 	"gitlab.com/shitposting/loglog/loglogclient"
 
-	"github.com/empetrone/telegram-bot-api"
 	"github.com/jinzhu/gorm"
+	"gitlab.com/shitposting/telegram-bot-api"
 )
 
 // Manager is the central point of input/output for @AntonioBusillo's algorithm.
@@ -102,7 +102,7 @@ func NewManager(mc ManagerConfig) (m *Manager, err error) {
 	mm.db.Where("name = ?", "image").First(&imageCategory)
 	mm.db.Where("name = ?", "video").First(&videoCategory)
 	if imageCategory.Name != "image" || videoCategory.Name != "video" {
-		err = errors.New("cannot load video and/or image categories identities from the database")
+		err = errors.New(imageCategoryError)
 		return
 	}
 
@@ -148,7 +148,7 @@ func (m *Manager) managerLifecycle() {
 
 			// Since I have the var post, it has ID 0 if the query doesn't return any value, so I check the ID.
 			if post.ID == 0 {
-				m.log.Warn("Can't delete post. Probably File ID is invalid or it was already posted on channel")
+				m.log.Warn(logErrorDelete)
 				utility.SendTelegramReply(int(deletedPost.ChatID), deletedPost.MessageID, m.botAPI, "I can't delete it")
 			} else {
 				m.db.Delete(&post)
@@ -338,7 +338,7 @@ func (m *Manager) whatToPost() (entities.Post, error) {
 	sort.Sort(entities.Posts(postsQueue))
 
 	if len(postsQueue) <= 0 {
-		return entities.Post{}, errors.New("no element to post has been found")
+		return entities.Post{}, errors.New(noPostError)
 	}
 
 	return postsQueue[0], nil
@@ -360,10 +360,12 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 	switch {
 	case entity.IsImage(m.db):
 		tgImage := tgbotapi.NewPhotoShare(m.channelID, entity.Media)
+		tgImage.ParseMode = "Markdown"
 		tgImage.Caption = caption
 		sentMessage, err = m.botAPI.Send(tgImage)
 	case entity.IsVideo(m.db):
 		tgVideo := tgbotapi.NewVideoShare(m.channelID, entity.Media)
+		tgVideo.ParseMode = "Markdown"
 		tgVideo.Caption = caption
 		sentMessage, err = m.botAPI.Send(tgVideo)
 	}

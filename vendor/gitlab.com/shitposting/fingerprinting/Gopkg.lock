@@ -12,12 +12,6 @@
   version = "v0.2.0"
 
 [[projects]]
-  name = "github.com/empetrone/telegram-bot-api"
-  packages = ["."]
-  revision = "212b1541150cbfcc268fbeb3b15c14383e638409"
-  version = "4.6.2"
-
-[[projects]]
   branch = "master"
   name = "github.com/nfnt/resize"
   packages = ["."]
@@ -29,9 +23,15 @@
   revision = "a90a01d73ae432e2611d178c18367fbaa13e0154"
   version = "v1.0.1"
 
+[[projects]]
+  name = "gitlab.com/shitposting/telegram-bot-api"
+  packages = ["."]
+  revision = "d702e6b05b661382d9c1d7602c091bf48c82e274"
+  version = "4.6.3"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "394b3f881e02ca7ed5d724c4fe2722af93e11a972da5298ce6e4f0271f23a7b1"
+  inputs-digest = "74f04d8c64da3bfbb797cb40bf8a5fcd3bdd58fa0c563d7a7abe3632ae014fea"
   solver-name = "gps-cdcl"
   solver-version = 1

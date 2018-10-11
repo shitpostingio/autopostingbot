@@ -18,12 +18,6 @@
   version = "v0.2.0"
 
 [[projects]]
-  name = "github.com/empetrone/telegram-bot-api"
-  packages = ["."]
-  revision = "212b1541150cbfcc268fbeb3b15c14383e638409"
-  version = "4.6.2"
-
-[[projects]]
   name = "github.com/fatih/color"
   packages = ["."]
   revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
@@ -32,8 +26,8 @@
 [[projects]]
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
-  revision = "a0583e0143b1624142adab07e0e97fe106d99561"
-  version = "v1.3.0"
+  revision = "d523deb1b23d913de5bdada721a6071e71283618"
+  version = "v1.4.0"
 
 [[projects]]
   name = "github.com/jinzhu/gorm"
@@ -66,8 +60,8 @@
 [[projects]]
   name = "github.com/mattn/go-sqlite3"
   packages = ["."]
-  revision = "323a32be5a2421b8c7087225079c6c900ec397cd"
-  version = "v1.7.0"
+  revision = "25ecb14adfc7543176f7d85291ec7dba82c6f7e4"
+  version = "v1.9.0"
 
 [[projects]]
   branch = "master"
@@ -85,7 +79,7 @@
   branch = "master"
   name = "gitlab.com/shitposting/fingerprinting"
   packages = ["."]
-  revision = "9ce9e508485fa0ec828ecf702f0f30af97b28475"
+  revision = "f315afd46262890a95fcaff0df6c2e509b90c31d"
 
 [[projects]]
   name = "gitlab.com/shitposting/loglog"
@@ -94,14 +88,26 @@
   version = "v1.0.1"
 
 [[projects]]
+  name = "gitlab.com/shitposting/telegram-bot-api"
+  packages = ["."]
+  revision = "54ae378ee615880b43c8d60ce06ea14aed232d06"
+  version = "v5.0"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "c11f84a56e43e20a78cee75a7c034031ecf57d1f"
+  revision = "34b17bdb430002e9db9ae7ddc8480b9fa05edc22"
+
+[[projects]]
+  name = "google.golang.org/appengine"
+  packages = ["cloudsql"]
+  revision = "b1f26356af11148e710935ed1ac8a7f5702c7612"
+  version = "v1.1.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "547b581e21d1a66135be9739e980644c2a896b0e5468de389a2dcb6841e48f50"
+  inputs-digest = "52abbf99cce3badf296d7c31dbe47268a114b9a04a5fd66bd72d5040d5ea926a"
   solver-name = "gps-cdcl"
   solver-version = 1
