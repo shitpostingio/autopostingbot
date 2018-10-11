@@ -1,9 +1,14 @@
 # per gentile concessione: https://gist.github.com/subfuzion/0bd969d08fe0d8b5cc4b23c795854a13
 
-SHELL := /bin/bash
+SHELL := /usr/bin/env bash
 
 TARGET := $(shell echo $${PWD\#\#*/})
 .DEFAULT_GOAL: $(TARGET)
+
+.EXPORT_ALL_VARIABLES:
+GOOS = linux
+GOARCH = amd64
+
 
 VERSION := 1.5.0
 BUILD := `git rev-parse HEAD`
