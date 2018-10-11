@@ -1,6 +1,6 @@
 # per gentile concessione: https://gist.github.com/subfuzion/0bd969d08fe0d8b5cc4b23c795854a13
 
-SHELL := /bin/bash
+SHELL := /usr/bin/env bash
 
 TARGET := $(shell echo $${PWD\#\#*/})
 .DEFAULT_GOAL: $(TARGET)
