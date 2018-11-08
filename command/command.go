@@ -80,6 +80,7 @@ func editCaption(msg *tgbotapi.Message, api *tgbotapi.BotAPI, manager *algo.Mana
 		return
 	}
 
+	// Added the escape \ before the square bracket since it is parsed as Markdown
 	if msg.ReplyToMessage.ForwardFrom != nil && isCredit {
 		newcaption = fmt.Sprintf("%s\n\n\\[Thanks to %s]", msg.CommandArguments(), msg.ReplyToMessage.ForwardFrom.FirstName)
 	} else {
@@ -126,6 +127,7 @@ func addOcCredit(msg *tgbotapi.Message, api *tgbotapi.BotAPI, manager *algo.Mana
 		}
 
 		// Send new caption to database
+		// Added the escape \ before the square bracket since it is parsed as Markdown
 
 		newcaption := fmt.Sprintf("%s\n\n\\[By [%s](%s)]", strings.TrimSpace(caption.String()), strings.TrimSpace(completeMessage.String()), url)
 
