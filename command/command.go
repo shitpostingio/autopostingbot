@@ -29,7 +29,7 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 			photos := *editedMsg.Photo
 			modifyMedia(photos[len(photos)-1].FileID, editedMsg.Caption, manager, editedMsg.From.ID, editedMsg.MessageID, int(editedMsg.Chat.ID))
 		case editedMsg.Text != "":
-			switch editedMsg.Command() {
+			switch strings.ToLower(editedMsg.Command()) {
 			case "caption":
 				editCaption(editedMsg, api, manager, false)
 			case "thanks":
@@ -49,7 +49,7 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 		photos := *msg.Photo
 		saveMedia(photos[len(photos)-1].FileID, msg.Caption, Image, manager, msg.From.ID, msg.MessageID, int(msg.Chat.ID))
 	case msg.Text != "":
-		switch msg.Command() {
+		switch strings.ToLower(editedMsg.Command()) {
 		case "status":
 			statusSignal(msg, manager)
 		case "delete":
