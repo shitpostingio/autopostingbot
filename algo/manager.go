@@ -31,6 +31,8 @@ type Manager struct {
 	ModifyMediaChannel chan MediaPayload
 	DeleteMediaChannel chan MediaPayload
 	StatusChannel      chan MediaPayload
+	PostNowChannel     chan MediaPayload
+	PreviewChannel     chan MediaPayload
 	hourlyPostSignal   <-chan time.Time
 	hourlyPostRate     time.Duration
 	postSignal         <-chan time.Time
@@ -88,6 +90,8 @@ func NewManager(mc ManagerConfig) (m *Manager, err error) {
 		ModifyMediaChannel: make(chan MediaPayload),
 		DeleteMediaChannel: make(chan MediaPayload),
 		StatusChannel:      make(chan MediaPayload),
+		PostNowChannel:     make(chan MediaPayload),
+		PreviewChannel:     make(chan MediaPayload),
 		debug:              mc.Debug,
 		log:                mc.Log,
 	}
@@ -140,19 +144,49 @@ func (m *Manager) managerLifecycle() {
 
 	for {
 		select {
+		case postNow := <-m.PostNowChannel:
+
+			err := m.findEntity(&postNow.Entity)
+
+			if err != nil {
+				m.log.Warn(logErrorPreview)
+				utility.SendTelegramReply(int(postNow.ChatID), postNow.MessageID, m.botAPI, "I can't post it")
+			} else {
+				err := m.buildAndPost(postNow.Entity, m.channelID)
+
+				if err != nil {
+					m.log.Warn(err.Error())
+				} else {
+					utility.SendTelegramReply(int(postNow.ChatID), postNow.MessageID, m.botAPI, "Done!")
+				}
+			}
+
+		case previewPost := <-m.PreviewChannel:
+
+			err := m.findEntity(&previewPost.Entity)
+
+			if err != nil {
+				m.log.Warn(logErrorPreview)
+				utility.SendTelegramReply(int(previewPost.ChatID), previewPost.MessageID, m.botAPI, "I can't show it")
+			} else {
+				err := m.buildAndPost(previewPost.Entity, int64(previewPost.ChatID))
+
+				if err != nil {
+					m.log.Warn(err.Error())
+				}
+			}
+
 		case deletedPost := <-m.DeleteMediaChannel:
 
-			var post entities.Post
-
-			m.db.Where("media = ? AND isnull(posted_at)", deletedPost.Entity.Media).First(&post)
+			err := m.findEntity(&deletedPost.Entity)
 
 			// Since I have the var post, it has ID 0 if the query doesn't return any value, so I check the ID.
-			if post.ID == 0 {
+			if err != nil {
 				m.log.Warn(logErrorDelete)
 				utility.SendTelegramReply(int(deletedPost.ChatID), deletedPost.MessageID, m.botAPI, "I can't delete it")
 			} else {
-				m.db.Delete(&post)
-				m.log.Info(fmt.Sprintf("Deleted post with ID: %d, deleted by: %d", int(post.ID), deletedPost.Entity.UserID))
+				m.db.Delete(&deletedPost.Entity)
+				m.log.Info(fmt.Sprintf("Deleted post with ID: %d, deleted by: %d", int(deletedPost.Entity.ID), deletedPost.Entity.UserID))
 				utility.SendTelegramReply(int(deletedPost.ChatID), deletedPost.MessageID, m.botAPI, "Deleted! \xF0\x9F\x9A\xAE")
 			}
 		case status := <-m.StatusChannel:
@@ -264,7 +298,7 @@ func (m *Manager) doPost() error {
 		return err
 	}
 
-	if err := m.popAndPost(wtp); err != nil {
+	if err := m.buildAndPost(wtp, m.channelID); err != nil {
 		// posting did not go well...
 		// mark that media with the error flag
 		wtp.HasError = true
@@ -344,9 +378,21 @@ func (m *Manager) whatToPost() (entities.Post, error) {
 	return postsQueue[0], nil
 }
 
-// popAndPost removes entity from the database and post it to the Telegram channel
-// identified by Manager.channelID
-func (m *Manager) popAndPost(entity entities.Post) error {
+// findEntity finds the entity from the database associated with our FileID
+func (m *Manager) findEntity(mediaEntity *entities.Post) error {
+
+	m.db.Where("media = ?", &mediaEntity.Media).Where("isnull(posted_at)").First(&mediaEntity)
+
+	if int(mediaEntity.ID) == 0 {
+		return fmt.Errorf("no media with fileID %s", mediaEntity.Media)
+	}
+
+	return nil
+}
+
+// buildAndPost builds the telegramMessages and sends it to the user or the channel
+// if the messages is sent to the channel, the post is removed from the queue
+func (m *Manager) buildAndPost(entity entities.Post, recipient int64) error {
 	caption := "@shitpost"
 	if entity.Caption != "" {
 		entity.Caption = strings.TrimSpace(entity.Caption)
@@ -359,12 +405,12 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 	var sentMessage tgbotapi.Message
 	switch {
 	case entity.IsImage(m.db):
-		tgImage := tgbotapi.NewPhotoShare(m.channelID, entity.Media)
+		tgImage := tgbotapi.NewPhotoShare(recipient, entity.Media)
 		tgImage.ParseMode = "Markdown"
 		tgImage.Caption = caption
 		sentMessage, err = m.botAPI.Send(tgImage)
 	case entity.IsVideo(m.db):
-		tgVideo := tgbotapi.NewVideoShare(m.channelID, entity.Media)
+		tgVideo := tgbotapi.NewVideoShare(recipient, entity.Media)
 		tgVideo.ParseMode = "Markdown"
 		tgVideo.Caption = caption
 		sentMessage, err = m.botAPI.Send(tgVideo)
@@ -373,7 +419,8 @@ func (m *Manager) popAndPost(entity entities.Post) error {
 	// checking if there's an error here gives us the chance to remove the posted
 	// entity if everything was ok - if it wasn't, the error will be handled on the caller
 	// level.
-	if err == nil {
+
+	if (err == nil) && (recipient == m.channelID) {
 		entity.PostedAt = time.Now()
 		entity.MessageID = sentMessage.MessageID
 		m.db.Save(&entity)

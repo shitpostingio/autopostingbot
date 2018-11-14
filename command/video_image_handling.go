@@ -115,3 +115,37 @@ func statusSignal(msg *tgbotapi.Message, manager *algo.Manager) {
 		Entity:    e,
 	}
 }
+
+func previewMedia(msg *tgbotapi.Message, api *tgbotapi.BotAPI, manager *algo.Manager) {
+	fileID, err := checkReplyAndMedia(msg)
+
+	if err != nil {
+		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, api, err.Error())
+		return
+	}
+
+	e := entities.Post{Media: fileID, UserID: uint(msg.From.ID)}
+
+	manager.PreviewChannel <- algo.MediaPayload{
+		ChatID:    int(msg.Chat.ID),
+		MessageID: msg.MessageID,
+		Entity:    e,
+	}
+}
+
+func postNowMedia(msg *tgbotapi.Message, api *tgbotapi.BotAPI, manager *algo.Manager) {
+	fileID, err := checkReplyAndMedia(msg)
+
+	if err != nil {
+		utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, api, err.Error())
+		return
+	}
+
+	e := entities.Post{Media: fileID, UserID: uint(msg.From.ID)}
+
+	manager.PostNowChannel <- algo.MediaPayload{
+		ChatID:    int(msg.Chat.ID),
+		MessageID: msg.MessageID,
+		Entity:    e,
+	}
+}
