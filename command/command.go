@@ -52,6 +52,8 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 	case msg.Photo != nil:
 		photos := *msg.Photo
 		saveMedia(photos[len(photos)-1].FileID, msg.Caption, Image, manager, msg.From.ID, msg.MessageID, int(msg.Chat.ID))
+	case msg.Animation != nil:
+		saveMedia(msg.Animation.FileID, msg.Caption, Animation, manager, msg.From.ID, msg.MessageID, int(msg.Chat.ID))
 	case msg.Text != "":
 		switch strings.ToLower(msg.Command()) {
 		case "status":
@@ -73,6 +75,14 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 	}
 
 	return nil
+}
+
+func testAnimation(msg *tgbotapi.Message, api *tgbotapi.BotAPI) {
+
+	kek := fmt.Sprintf("File ID %s, Caption %s", msg.Animation.FileID, msg.Caption)
+
+	utility.SendTelegramReply(int(msg.Chat.ID), msg.MessageID, api, kek)
+
 }
 
 // editCaption allows the user to edit the caption of a forwarded message or give the credit to the user.

@@ -16,6 +16,7 @@ type MediaType int
 const (
 	Image MediaType = iota
 	Video
+	Animation
 )
 
 // saveMedia sends the media identified by the fileID to the Manager
@@ -43,6 +44,21 @@ func saveMedia(fileID string, caption string, mediaType MediaType, manager *algo
 			UserID:  uint(userID),
 			Categories: []entities.Category{
 				entities.Category{Name: "video"},
+			},
+		}
+
+		manager.AddVideoChannel <- algo.MediaPayload{
+			ChatID:    chatID,
+			MessageID: messageID,
+			Entity:    e,
+		}
+	case Animation:
+		e := entities.Post{
+			Media:   fileID,
+			Caption: caption,
+			UserID:  uint(userID),
+			Categories: []entities.Category{
+				entities.Category{Name: "gif"},
 			},
 		}
 

@@ -34,6 +34,18 @@ func (p Post) IsVideo(db *gorm.DB) bool {
 	return false
 }
 
+// // IsGIF returns true if p is a GIF, false otherwise.
+func (p Post) IsGIF(db *gorm.DB) bool {
+	db.Preload("Categories").Where("media = ?", p.Media).First(&p)
+	for _, cat := range p.Categories {
+		if cat.Name == "gif" {
+			return true
+		}
+	}
+
+	return false
+}
+
 // IsImage returns true if p is an image, false otherwise.
 func (p Post) IsImage(db *gorm.DB) bool {
 	db.Preload("Categories").Where("media = ?", p.Media).First(&p)

@@ -28,6 +28,7 @@ type Manager struct {
 	db                 *gorm.DB
 	AddImageChannel    chan MediaPayload
 	AddVideoChannel    chan MediaPayload
+	AddGIFChannel      chan MediaPayload
 	ModifyMediaChannel chan MediaPayload
 	DeleteMediaChannel chan MediaPayload
 	StatusChannel      chan MediaPayload
@@ -73,6 +74,7 @@ type MediaPayload struct {
 var (
 	videoCategory entities.Category
 	imageCategory entities.Category
+	gifCategory   entities.Category
 )
 
 // NewManager returns a new Manager instance
@@ -87,6 +89,7 @@ func NewManager(mc ManagerConfig) (m *Manager, err error) {
 		channelID:          mc.ChannelID,
 		AddImageChannel:    make(chan MediaPayload),
 		AddVideoChannel:    make(chan MediaPayload),
+		AddGIFChannel:      make(chan MediaPayload),
 		ModifyMediaChannel: make(chan MediaPayload),
 		DeleteMediaChannel: make(chan MediaPayload),
 		StatusChannel:      make(chan MediaPayload),
@@ -233,6 +236,26 @@ func (m *Manager) managerLifecycle() {
 			// add to the database
 			m.db.Create(&newPost.Entity)
 			utility.SendTelegramReply(newPost.ChatID, newPost.MessageID, m.botAPI, "Video added!")
+		case newPost := <-m.AddGIFChannel:
+			m.log.Info("got a new GIF to add!")
+
+			// if we have a duplicate, write a log message and stop
+			if m.checkDuplicate(newPost) {
+				continue
+			}
+
+			userID, err := getUserID(m.db, int(newPost.Entity.UserID))
+			if err != nil {
+				m.log.Warn(err.Error())
+				continue
+			}
+
+			newPost.Entity.UserID = uint(userID)
+			newPost.Entity.Categories = []entities.Category{gifCategory}
+			// add to the database
+			m.db.Create(&newPost.Entity)
+			fmt.Println("Added Gif")
+			utility.SendTelegramReply(newPost.ChatID, newPost.MessageID, m.botAPI, "GIF added!")
 		case newPost := <-m.AddImageChannel:
 			m.log.Info("got a new image to add!")
 
@@ -411,6 +434,11 @@ func (m *Manager) buildAndPost(entity entities.Post, recipient int64) error {
 		sentMessage, err = m.botAPI.Send(tgImage)
 	case entity.IsVideo(m.db):
 		tgVideo := tgbotapi.NewVideoShare(recipient, entity.Media)
+		tgVideo.ParseMode = "Markdown"
+		tgVideo.Caption = caption
+		sentMessage, err = m.botAPI.Send(tgVideo)
+	case entity.IsGIF(m.db):
+		tgVideo := tgbotapi.NewAnimationShare(recipient, entity.Media)
 		tgVideo.ParseMode = "Markdown"
 		tgVideo.Caption = caption
 		sentMessage, err = m.botAPI.Send(tgVideo)
