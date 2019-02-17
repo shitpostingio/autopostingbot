@@ -1,7 +1,7 @@
 package utility
 
 import (
-	"gitlab.com/shitposting/telegram-bot-api"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 // SendTelegramReply replies with a text to the specified update

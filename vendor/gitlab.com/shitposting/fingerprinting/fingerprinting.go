@@ -9,7 +9,7 @@ import (
 	"os"
 
 	"github.com/corona10/goimagehash"
-	"gitlab.com/shitposting/telegram-bot-api"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 // GetPhotoFingerprint calculates a image hash for a given FileID, and returns it as string
