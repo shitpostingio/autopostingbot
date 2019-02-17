@@ -7,8 +7,8 @@ import (
 
 	"gitlab.com/shitposting/autoposting-bot/utility"
 
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"gitlab.com/shitposting/autoposting-bot/algo"
-	"gitlab.com/shitposting/telegram-bot-api"
 )
 
 // Handle e` il punto di entrata per il parsing e l'organizzazione dell'azione del bot

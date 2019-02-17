@@ -13,8 +13,8 @@ import (
 	"gitlab.com/shitposting/fingerprinting"
 	"gitlab.com/shitposting/loglog/loglogclient"
 
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/jinzhu/gorm"
-	"gitlab.com/shitposting/telegram-bot-api"
 )
 
 // Manager is the central point of input/output for @AntonioBusillo's algorithm.
