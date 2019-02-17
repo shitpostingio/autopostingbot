@@ -62,7 +62,7 @@ func saveMedia(fileID string, caption string, mediaType MediaType, manager *algo
 			},
 		}
 
-		manager.AddVideoChannel <- algo.MediaPayload{
+		manager.AddGIFChannel <- algo.MediaPayload{
 			ChatID:    chatID,
 			MessageID: messageID,
 			Entity:    e,
@@ -96,6 +96,9 @@ func checkReplyAndMedia(msg *tgbotapi.Message) (string, error) {
 		return fileID, nil
 	case msg.ReplyToMessage.Video != nil:
 		fileID := msg.ReplyToMessage.Video.FileID
+		return fileID, nil
+	case msg.ReplyToMessage.Animation != nil:
+		fileID := msg.ReplyToMessage.Animation.FileID
 		return fileID, nil
 	default:
 		err := errors.New("not a media")

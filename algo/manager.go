@@ -108,7 +108,8 @@ func NewManager(mc ManagerConfig) (m *Manager, err error) {
 	// Get and initialize the categories
 	mm.db.Where("name = ?", "image").First(&imageCategory)
 	mm.db.Where("name = ?", "video").First(&videoCategory)
-	if imageCategory.Name != "image" || videoCategory.Name != "video" {
+	mm.db.Where("name = ?", "gif").First(&gifCategory)
+	if imageCategory.Name != "image" || videoCategory.Name != "video" || gifCategory.Name != "gif" {
 		err = errors.New(imageCategoryError)
 		return
 	}
@@ -249,12 +250,13 @@ func (m *Manager) managerLifecycle() {
 				m.log.Warn(err.Error())
 				continue
 			}
+			m.log.Warn("Adding Gif")
 
 			newPost.Entity.UserID = uint(userID)
 			newPost.Entity.Categories = []entities.Category{gifCategory}
 			// add to the database
 			m.db.Create(&newPost.Entity)
-			fmt.Println("Added Gif")
+			m.log.Warn("Added Gif")
 			utility.SendTelegramReply(newPost.ChatID, newPost.MessageID, m.botAPI, "GIF added!")
 		case newPost := <-m.AddImageChannel:
 			m.log.Info("got a new image to add!")
@@ -438,10 +440,10 @@ func (m *Manager) buildAndPost(entity entities.Post, recipient int64) error {
 		tgVideo.Caption = caption
 		sentMessage, err = m.botAPI.Send(tgVideo)
 	case entity.IsGIF(m.db):
-		tgVideo := tgbotapi.NewAnimationShare(recipient, entity.Media)
-		tgVideo.ParseMode = "Markdown"
-		tgVideo.Caption = caption
-		sentMessage, err = m.botAPI.Send(tgVideo)
+		tgGIF := tgbotapi.NewAnimationShare(recipient, entity.Media)
+		tgGIF.ParseMode = "Markdown"
+		tgGIF.Caption = caption
+		sentMessage, err = m.botAPI.Send(tgGIF)
 	}
 
 	// checking if there's an error here gives us the chance to remove the posted
