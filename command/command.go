@@ -28,7 +28,7 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 		case editedMsg.Photo != nil:
 			photos := *editedMsg.Photo
 			modifyMedia(photos[len(photos)-1].FileID, editedMsg.Caption, manager, editedMsg.From.ID, editedMsg.MessageID, int(editedMsg.Chat.ID))
-		case msg.Animation != nil:
+		case editedMsg.Animation != nil:
 			modifyMedia(msg.Animation.FileID, editedMsg.Caption, manager, editedMsg.From.ID, editedMsg.MessageID, int(editedMsg.Chat.ID))
 		case editedMsg.Text != "":
 			switch strings.ToLower(editedMsg.Command()) {
