@@ -250,13 +250,10 @@ func (m *Manager) managerLifecycle() {
 				m.log.Warn(err.Error())
 				continue
 			}
-			m.log.Warn("Adding Gif")
-
 			newPost.Entity.UserID = uint(userID)
 			newPost.Entity.Categories = []entities.Category{gifCategory}
 			// add to the database
 			m.db.Create(&newPost.Entity)
-			m.log.Warn("Added Gif")
 			utility.SendTelegramReply(newPost.ChatID, newPost.MessageID, m.botAPI, "GIF added!")
 		case newPost := <-m.AddImageChannel:
 			m.log.Info("got a new image to add!")
