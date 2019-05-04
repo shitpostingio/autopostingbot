@@ -7,7 +7,7 @@ import (
 
 	"gitlab.com/shitposting/autoposting-bot/utility"
 
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"gitlab.com/shitposting/autoposting-bot/algo"
 )
 
@@ -29,13 +29,13 @@ func Handle(update tgbotapi.Update, api *tgbotapi.BotAPI, manager *algo.Manager)
 			photos := *editedMsg.Photo
 			modifyMedia(photos[len(photos)-1].FileID, editedMsg.Caption, manager, editedMsg.From.ID, editedMsg.MessageID, int(editedMsg.Chat.ID))
 		case editedMsg.Animation != nil:
-			modifyMedia(msg.Animation.FileID, editedMsg.Caption, manager, editedMsg.From.ID, editedMsg.MessageID, int(editedMsg.Chat.ID))
+			modifyMedia(editedMsg.Animation.FileID, editedMsg.Caption, manager, editedMsg.From.ID, editedMsg.MessageID, int(editedMsg.Chat.ID))
 		case editedMsg.Text != "":
 			switch strings.ToLower(editedMsg.Command()) {
 			case "preview":
-				previewMedia(msg, api, manager)
+				previewMedia(editedMsg, api, manager)
 			case "postnow":
-				postNowMedia(msg, api, manager)
+				postNowMedia(editedMsg, api, manager)
 			case "caption":
 				editCaption(editedMsg, api, manager, false)
 			case "thanks":
@@ -95,6 +95,8 @@ func editCaption(msg *tgbotapi.Message, api *tgbotapi.BotAPI, manager *algo.Mana
 	// Added the escape \ before the square bracket since it is parsed as Markdown
 	if msg.ReplyToMessage.ForwardFrom != nil && isCredit {
 		newcaption = fmt.Sprintf("%s\n\n\\[Thanks to %s]", msg.CommandArguments(), msg.ReplyToMessage.ForwardFrom.FirstName)
+	} else if msg.ReplyToMessage.ForwardSenderName != "" && isCredit {
+		newcaption = fmt.Sprintf("%s\n\n\\[Thanks to %s]", msg.CommandArguments(), msg.ReplyToMessage.ForwardSenderName)
 	} else {
 		newcaption = msg.CommandArguments()
 	}
