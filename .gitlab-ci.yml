@@ -1,112 +1,93 @@
 image: golang:latest
 
-cache:
-  paths:
-    - /apt-cache
-    - /go/src/github.com
-    - /go/src/golang.org
-    - /go/src/google.golang.org
-    - /go/src/gopkg.in
-
 variables:
   REPO_NAME: "gitlab.com/shitposting/autoposting-bot"
 
-# The problem is that to be able to use go get, one needs to put
-# the repository in the $GOPATH. So for example if your gitlab domain
-# is gitlab.com, and that your repository is namespace/project, and
-# the default GOPATH being /go, then you'd need to have your
-# repository in /go/src/gitlab.com/namespace/project
-# Thus, making a symbolic link corrects this.
 before_script:
-  - apt update
-  - apt install -y -qq libavcodec-dev libavformat-dev libavutil-dev libswscale-dev xz-utils sshpass
   - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
   - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
   - cd $GOPATH/src/$REPO_NAME
-  - go get -u golang.org/x/lint/golint
 
 stages:
   - format
   - test
   - build
-  - deploy
+  - staging
+  - production
 
-format:
+.exceptions: &exclude  # use <<: *exclude to add this rule to a job
+  except:
+    changes:
+      - README.md
+      - FEATURE.md
+      - .gitignore
+      - config_example.toml
+      - run_gometalint.sh
+
+go-fmt:
   stage: format
   script:
     - go fmt $(go list ./... | grep -v /vendor/)
-    - go vet $(go list ./... | grep -v /vendor/)
-  except:
-      changes:
-        - README.md
-        - .gitignore
-        - config_example.toml
-        - run_gometalint.sh
+  <<: *exclude
 
-#race_detector:
-#  stage: test
-#  script:
-#    - go test -race -short $(go list ./... | grep -v /vendor/)
-
-#memory_sanitizer:
-#stage: test
-#script:
-#- go test -msan -short $(go list ./... | grep -v /vendor/)
+      
 lint_code:
-  stage: test
+  stage: format
+  before_script:
+    - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
+    - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
+    - cd $GOPATH/src/$REPO_NAME
+    - go get -u golang.org/x/lint/golint
   script:
     - golint -set_exit_status $(go list ./... | grep -v /vendor/)
-  except:
-      changes:
-        - README.md
-        - .gitignore
-        - config_example.toml
-        - run_gometalint.sh
-        
+  <<: *exclude
+
+.race_detector:
+  stage: test
+  script:
+    - go test -race -short $(go list ./... | grep -v /vendor/)
+  <<: *exclude
+
+test:
+  stage: test
+  script: 
+    - go test ./...
+  <<: *exclude
+
 compile:
   stage: build
   script:
-    - ./buildzip.sh
+    - make build
+  <<: *exclude
   artifacts:
     paths:
-      - autposting-bot-v*.tar.xz
-  except:
-      changes:
-        - README.md
-        - .gitignore
-        - config_example.toml
-        - run_gometalint.sh
-
-Test:
-    stage: deploy
-    script:
+      - autoposting-bot
+      
+test-deploy:
+  stage: staging
+  before_script:
+    - apt update
+    - apt install -y -qq sshpass
+  script:
     - sshpass -V
     - export SSHPASS=$USER_PASS
-    - make build
     - sshpass -e ssh -p $PORT -o stricthostkeychecking=no $USER_ID@$HOSTNAME systemctl --user stop autoposting-bot
     - sshpass -e ssh -p $PORT -o stricthostkeychecking=no $USER_ID@$HOSTNAME mv /home/$USER_ID/go/bin/autoposting-bot /home/$USER_ID/go/bin/autoposting-bot_bak
-    - sshpass -e scp -P $PORT -o stricthostkeychecking=no -r admin-bot $USER_ID@$HOSTNAME:/home/$USER_ID/go/bin/autoposting-bot
+    - sshpass -e scp -P $PORT -o stricthostkeychecking=no -r autoposting-bot $USER_ID@$HOSTNAME:/home/$USER_ID/go/bin/autoposting-bot
     - sshpass -e ssh -p $PORT -o stricthostkeychecking=no $USER_ID@$HOSTNAME systemctl --user start autoposting-bot
-    except:
-      changes:
-        - README.md
-        - .gitignore
-        - config_example.toml
-        - run_gometalint.sh
-Prod:
-    stage: deploy
-    script:
+  <<: *exclude
+      
+prod-deploy:
+  stage: production
+  before_script:
+    - apt update
+    - apt install -y -qq sshpass
+  script:
     - sshpass -V
     - export SSHPASS=$PROD_USER_PASS
-    - make build
     - sshpass -e ssh -p $PROD_PORT -o stricthostkeychecking=no $PROD_USER_ID@$PROD_HOSTNAME systemctl --user stop autoposting-bot
     - sshpass -e ssh -p $PROD_PORT -o stricthostkeychecking=no $PROD_USER_ID@$PROD_HOSTNAME mv /home/$PROD_USER_ID/go/bin/autoposting-bot /home/$PROD_USER_ID/go/bin/autoposting-bot_bak
-    - sshpass -e scp -P $PROD_PORT -o stricthostkeychecking=no -r admin-bot $PROD_USER_ID@$PROD_HOSTNAME:/home/$PROD_USER_ID/go/bin/autoposting-bot
+    - sshpass -e scp -P $PROD_PORT -o stricthostkeychecking=no -r autoposting-bot $PROD_USER_ID@$PROD_HOSTNAME:/home/$PROD_USER_ID/go/bin/autoposting-bot
     - sshpass -e ssh -p $PROD_PORT -o stricthostkeychecking=no $PROD_USER_ID@$PROD_HOSTNAME systemctl --user start autoposting-bot
-    when: manual
-    except:
-      changes:
-        - README.md
-        - .gitignore
-        - config_example.toml
-        - run_gometalint.sh
+  when: manual
+  <<: *exclude
