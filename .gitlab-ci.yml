@@ -48,7 +48,7 @@ lint_code:
     - go test -race -short $(go list ./... | grep -v /vendor/)
   <<: *exclude
 
-.test:
+test:
   stage: test
   script: 
     - go test ./...
