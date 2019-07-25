@@ -10,8 +10,8 @@ GOOS = linux
 GOARCH = amd64
 
 
-VERSION := 1.5.0
-BUILD := `git rev-parse HEAD`
+VERSION := $(shell git describe --tags --abbrev=0)
+BUILD := $(shell git rev-parse HEAD)
 
 LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Build=$(BUILD)"
 
@@ -22,6 +22,7 @@ SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 all: check build
 
 $(TARGET): $(SRC)
+	$(info Building $(TARGET) v.${VERSION}. Build ${BUILD})
 	@go build $(LDFLAGS) -o $(TARGET)
 
 build: $(TARGET)
@@ -31,6 +32,7 @@ clean:
 	@rm -f $(TARGET)
 
 install:
+	$(info Building $(TARGET) v.${VERSION}. Build ${BUILD})
 	@go install $(LDFLAGS)
 
 uninstall: clean

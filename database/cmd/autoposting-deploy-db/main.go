@@ -4,59 +4,82 @@ import (
 	"flag"
 	"log"
 
-	"gitlab.com/shitposting/autoposting-bot/database/entities"
-	"gitlab.com/shitposting/loglog/loglogclient"
+	entities "gitlab.com/shitposting/datalibrary/entities/autopostingbot"
 
-	"gitlab.com/shitposting/autoposting-bot/config"
+	configuration "gitlab.com/shitposting/autoposting-bot/config"
 	"gitlab.com/shitposting/autoposting-bot/database/migrations"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-// autoposting-deploy-db will create a database file, with all the tables ready to be used
-
 var (
+	cleanDeploy    bool
 	configFilePath string
-
-	// Importing loglog client
-	l *loglogclient.LoglogClient
 )
 
 func main() {
-	flag.StringVar(&configFilePath, "name", "./config.toml", "autoposting-bot configuration file")
+
+	/* PARSE CLI ARGUMENTS */
+	flag.StringVar(&configFilePath, "config", "./config.toml", "autoposting-bot configuration file")
+	flag.BoolVar(&cleanDeploy, "clean", false, "Drop all tables and create them from scratch")
+
 	flag.Parse()
 
-	cfg, err := config.ReadConfigFile(configFilePath)
+	/* LOAD CONFIG */
+	cfg, err := configuration.Load(configFilePath, false)
+	fatalIfErr(err)
+
+	/* CONNECT TO DB */
+	db, err := gorm.Open("mysql", cfg.DB.DatabaseConnectionString())
+	fatalIfErr(err)
+
+	defer func() {
+		err = db.Close()
+		if err != nil {
+			log.Fatal(db.Close())
+		}
+	}()
+
+	if !cleanDeploy {
+		migrateTables(db)
+		return
+	}
+
+	dropTables(db)
+	createTables(db)
+	deployTypes(db)
+}
+
+func dropTables(db *gorm.DB) {
+	fatalIfErr(migrations.DropFingerprints(db))
+	fatalIfErr(migrations.DropPosts(db))
+	fatalIfErr(migrations.DropTypes(db))
+	fatalIfErr(migrations.DropUsers(db))
+}
+
+func createTables(db *gorm.DB) {
+	fatalIfErr(migrations.CreateUsers(db))
+	fatalIfErr(migrations.CreateTypes(db))
+	fatalIfErr(migrations.CreatePosts(db))
+	fatalIfErr(migrations.CreateFingerprints(db))
+}
+
+func migrateTables(db *gorm.DB) {
+	fatalIfErr(migrations.MigrateUsers(db))
+	fatalIfErr(migrations.MigrateTypes(db))
+	fatalIfErr(migrations.MigratePosts(db))
+	fatalIfErr(migrations.MigrateFingerprints(db))
+}
+
+func deployTypes(db *gorm.DB) {
+	fatalIfErr(db.Create(&entities.Type{Name: "image"}).Error)
+	fatalIfErr(db.Create(&entities.Type{Name: "video"}).Error)
+	fatalIfErr(db.Create(&entities.Type{Name: "animation"}).Error)
+}
+
+func fatalIfErr(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	l = loglogclient.NewClient(
-		loglogclient.Config{
-			SocketPath:    cfg.SocketPath,
-			ApplicationID: "Autoposting-bot",
-		})
-
-	db, err := gorm.Open("mysql", cfg.DatabaseConnectionString())
-	if err != nil {
-		l.Err(err.Error())
-	}
-
-	defer db.Close()
-	// Create User table
-	migrations.CreateUsers(db)
-	// Create Category table
-	migrations.CreateCategories(db)
-	// Create Posts table
-	migrations.CreatePosts(db)
-
-	// Create image and video categories
-	image := entities.Category{Name: "image"}
-	video := entities.Category{Name: "video"}
-	gif := entities.Category{Name: "gif"}
-	db.Create(&gif)
-	db.Create(&image)
-	db.Create(&video)
-
 }

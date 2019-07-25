@@ -1,14 +1,31 @@
 package utility
 
 import (
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"errors"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-// SendTelegramReply replies with a text to the specified update
-func SendTelegramReply(chatID int, messageID int, bot *tgbotapi.BotAPI, text string) {
-	msg := tgbotapi.NewMessage(int64(chatID), text)
-	msg.ParseMode = "Markdown"
-	msg.ReplyToMessageID = messageID
+// GetFileIDFromMessage returns fileid of the message if the media type is supported
+func GetFileIDFromMessage(msg *tgbotapi.Message) (fileID string, err error) {
 
-	bot.Send(msg)
+	if msg == nil {
+		err = errors.New("message is nil")
+		return
+	}
+
+	switch {
+	case msg.Photo != nil:
+		fileID = msg.Photo[len(msg.Photo)-1].FileID
+	case msg.Animation != nil:
+		fileID = msg.Animation.FileID
+	case msg.Video != nil:
+		fileID = msg.Video.FileID
+	}
+
+	if fileID == "" {
+		err = errors.New("not a supported media message")
+	}
+
+	return
 }

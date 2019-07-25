@@ -1,4 +1,4 @@
-image: golang:latest
+image: shitpostingio/golang:latest
 
 variables:
   REPO_NAME: "gitlab.com/shitposting/autoposting-bot"
@@ -71,13 +71,13 @@ test-deploy:
   script:
     - sshpass -V
     - export SSHPASS=$USER_PASS
-    - sshpass -e ssh -p $PORT -o stricthostkeychecking=no $USER_ID@$HOSTNAME systemctl --user stop autoposting-bot
+    - sshpass -e ssh -p $PORT -o stricthostkeychecking=no $USER_ID@$HOSTNAME systemctl --user stop $UNIT_NAME
     - sshpass -e ssh -p $PORT -o stricthostkeychecking=no $USER_ID@$HOSTNAME mv /home/$USER_ID/go/bin/autoposting-bot /home/$USER_ID/go/bin/autoposting-bot_bak
     - sshpass -e scp -P $PORT -o stricthostkeychecking=no -r autoposting-bot $USER_ID@$HOSTNAME:/home/$USER_ID/go/bin/autoposting-bot
-    - sshpass -e ssh -p $PORT -o stricthostkeychecking=no $USER_ID@$HOSTNAME systemctl --user start autoposting-bot
+    - sshpass -e ssh -p $PORT -o stricthostkeychecking=no $USER_ID@$HOSTNAME systemctl --user start $UNIT_NAME
   <<: *exclude
       
-prod-deploy:
+autoposting-deploy:
   stage: production
   before_script:
     - apt update
@@ -85,9 +85,24 @@ prod-deploy:
   script:
     - sshpass -V
     - export SSHPASS=$PROD_USER_PASS
-    - sshpass -e ssh -p $PROD_PORT -o stricthostkeychecking=no $PROD_USER_ID@$PROD_HOSTNAME systemctl --user stop autoposting-bot
+    - sshpass -e ssh -p $PROD_PORT -o stricthostkeychecking=no $PROD_USER_ID@$PROD_HOSTNAME systemctl --user stop $PROD_UNIT_NAME
     - sshpass -e ssh -p $PROD_PORT -o stricthostkeychecking=no $PROD_USER_ID@$PROD_HOSTNAME mv /home/$PROD_USER_ID/go/bin/autoposting-bot /home/$PROD_USER_ID/go/bin/autoposting-bot_bak
     - sshpass -e scp -P $PROD_PORT -o stricthostkeychecking=no -r autoposting-bot $PROD_USER_ID@$PROD_HOSTNAME:/home/$PROD_USER_ID/go/bin/autoposting-bot
-    - sshpass -e ssh -p $PROD_PORT -o stricthostkeychecking=no $PROD_USER_ID@$PROD_HOSTNAME systemctl --user start autoposting-bot
+    - sshpass -e ssh -p $PROD_PORT -o stricthostkeychecking=no $PROD_USER_ID@$PROD_HOSTNAME systemctl --user start $PROD_UNIT_NAME
+  when: manual
+  <<: *exclude
+  
+sushi-deploy:
+  stage: production
+  before_script:
+    - apt update
+    - apt install -y -qq sshpass
+  script:
+    - sshpass -V
+    - export SSHPASS=$PROD_USER_PASS
+    - sshpass -e ssh -p $PROD_PORT -o stricthostkeychecking=no $PROD_USER_ID@$PROD_HOSTNAME systemctl --user stop $SUSHI_UNIT
+    - sshpass -e ssh -p $PROD_PORT -o stricthostkeychecking=no $PROD_USER_ID@$PROD_HOSTNAME mv /home/$PROD_USER_ID/go/bin/sushiposting-bot /home/$PROD_USER_ID/go/bin/sushiposting-bot_bak
+    - sshpass -e scp -P $PROD_PORT -o stricthostkeychecking=no -r autoposting-bot $PROD_USER_ID@$PROD_HOSTNAME:/home/$PROD_USER_ID/go/bin/sushiposting-bot
+    - sshpass -e ssh -p $PROD_PORT -o stricthostkeychecking=no $PROD_USER_ID@$PROD_HOSTNAME systemctl --user start $SUSHI_UNIT
   when: manual
   <<: *exclude

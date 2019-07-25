@@ -46,3 +46,6 @@ flycheck_*.el
 
 # project gitignore
 autoposting-bot*
+.idea/
+config.toml
+memes/

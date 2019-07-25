@@ -24,6 +24,9 @@
 #   go-tests = true
 #   unused-packages = true
 
+[[constraint]]
+  name = "github.com/go-telegram-bot-api/telegram-bot-api"
+  branch = "develop"
 
 [[constraint]]
   name = "github.com/BurntSushi/toml"
@@ -34,7 +37,7 @@
   version = "1.9.1"
 
 [[constraint]]
-  branch = "master"
+  branch = "4-divide-library-into-packages"
   name = "gitlab.com/shitposting/fingerprinting"
 
 [[constraint]]

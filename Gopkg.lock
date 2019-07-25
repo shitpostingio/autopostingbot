@@ -14,8 +14,7 @@
     "etcs",
     "transforms"
   ]
-  revision = "190331714558be423e622b2c2fcdca9ec2882637"
-  version = "v0.2.0"
+  revision = "81672d701632bc2f2ba9c86e9bd28b645b39f92a"
 
 [[projects]]
   name = "github.com/fatih/color"
@@ -30,26 +29,31 @@
   version = "v1.4.1"
 
 [[projects]]
+  branch = "develop"
   name = "github.com/go-telegram-bot-api/telegram-bot-api"
   packages = ["."]
-  revision = "9860bdfd3a171ceafb6e1eafa163482a6ef92643"
-  version = "v4.6.4"
+  revision = "ffe77fb717d3cda2df08269a6362c49ccab11ebf"
+
+[[projects]]
+  name = "github.com/hako/durafmt"
+  packages = ["."]
+  revision = "7b7ae1e72eade09dbc9c2cfba3e6c4bae7b8bcac"
+  version = "1.0.0"
 
 [[projects]]
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
-    "dialects/mysql",
-    "dialects/sqlite"
+    "dialects/mysql"
   ]
-  revision = "472c70caa40267cb89fd8facb07fe6454b578626"
-  version = "v1.9.2"
+  revision = "836fb2c19d84dac7b0272958dfb9af7cf0d0ade4"
+  version = "v1.9.10"
 
 [[projects]]
-  branch = "master"
   name = "github.com/jinzhu/inflection"
   packages = ["."]
-  revision = "04140366298a54a039076d798123ffa108fff46c"
+  revision = "f5c5f50e6090ae76a29240b61ae2a90dd810112e"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -60,20 +64,20 @@
 [[projects]]
   name = "github.com/mattn/go-isatty"
   packages = ["."]
-  revision = "6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c"
-  version = "v0.0.4"
-
-[[projects]]
-  name = "github.com/mattn/go-sqlite3"
-  packages = ["."]
-  revision = "c7c4067b79cc51e6dfdcef5c702e74b1e0fa7c75"
-  version = "v1.10.0"
+  revision = "1311e847b0cb909da63b5fecfb5370aa66236465"
+  version = "v0.0.8"
 
 [[projects]]
   branch = "master"
   name = "github.com/nfnt/resize"
   packages = ["."]
   revision = "83c6a9932646f83e3267f353373d47347b6036b2"
+
+[[projects]]
+  branch = "v2"
+  name = "github.com/russross/blackfriday"
+  packages = ["."]
+  revision = "3e56bb68c8876389c631e9e318ce3c092a0906db"
 
 [[projects]]
   name = "github.com/technoweenie/multipartstreamer"
@@ -83,9 +87,18 @@
 
 [[projects]]
   branch = "master"
+  name = "gitlab.com/shitposting/datalibrary"
+  packages = [
+    "entities/autopostingbot",
+    "entities/fpserver"
+  ]
+  revision = "254cd2aefdd00d6c3a1c0dfd57feab4b2d0500d7"
+
+[[projects]]
+  branch = "4-divide-library-into-packages"
   name = "gitlab.com/shitposting/fingerprinting"
-  packages = ["."]
-  revision = "81c2062f8fd8c1e3a9e73e14924e5d39c7a28806"
+  packages = ["comparer"]
+  revision = "c7ff648dd668178fffc27e6bdc921affe2f39b3c"
 
 [[projects]]
   name = "gitlab.com/shitposting/loglog"
@@ -94,26 +107,29 @@
   version = "v1.0.1"
 
 [[projects]]
-  name = "gitlab.com/shitposting/telegram-bot-api"
-  packages = ["."]
-  revision = "54ae378ee615880b43c8d60ce06ea14aed232d06"
-  version = "v5.0"
+  branch = "master"
+  name = "gitlab.com/shitposting/telegram-markdown-processor"
+  packages = [
+    "dbCaption",
+    "telegramCaption"
+  ]
+  revision = "21e14a525438750715e0867293cf67e6e28388cd"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "d0b11bdaac8adb652bff00e49bcacf992835621a"
+  revision = "fae7ac547cb717d141c433a2a173315e216b64c4"
 
 [[projects]]
   name = "google.golang.org/appengine"
   packages = ["cloudsql"]
-  revision = "e9657d882bb81064595ca3b56cbe2546bbabf7b1"
-  version = "v1.4.0"
+  revision = "b2f4a3cf3c67576a2ee09e1fe62656a5086ce880"
+  version = "v1.6.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cb6853cceebb4bb1bd4c214b61554af40c5d06ca2e8798da6bbd73bc8063c938"
+  inputs-digest = "a0495d31bba65d439d09e70aab2db740aac2e467cfe707c8dc19ae0cf9d5c347"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -5,25 +5,24 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
-	"gitlab.com/shitposting/autoposting-bot/algo"
-	cfg "gitlab.com/shitposting/autoposting-bot/config"
-	"gitlab.com/shitposting/autoposting-bot/database/entities"
+	"gitlab.com/shitposting/autoposting-bot/edition"
+
+	"gitlab.com/shitposting/autoposting-bot/manager"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"gitlab.com/shitposting/loglog/loglogclient"
 
-	"github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"gitlab.com/shitposting/autoposting-bot/command"
+	configuration "gitlab.com/shitposting/autoposting-bot/config"
+	"gitlab.com/shitposting/autoposting-bot/messages"
+	"gitlab.com/shitposting/autoposting-bot/repository"
 )
 
 var (
-	// parsed config file
-	config cfg.Config
-
-	// config file path, if not specified it will read
-	// ./config.toml
+	// config file path, if not specified it will read ./config.toml
 	configFilePath string
 
 	// Version is the autoposting-bot version, a compile-time value
@@ -35,170 +34,164 @@ var (
 	// testing is a bool value to enable polling instead of webhook
 	testing bool
 
-	manager *algo.Manager
-
-	db *gorm.DB
-
-	err   error
+	//debug --
 	debug bool
 
-	// Importing loglog client
-	l *loglogclient.LoglogClient
+	//polling
+	polling bool
+
+	//sushiEdition
+	sushiEdition bool
 )
 
 func main() {
-	setupCLIParams()
 
-	config, err = cfg.ReadConfigFile(configFilePath)
+	/* LOAD CLI ARGUMENTS */
+	loadCLIParams()
+
+	/* LOAD CONFIGURATION */
+	cfg, err := configuration.Load(configFilePath, !polling)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	l = loglogclient.NewClient(
+	/* SETUP LOGLOG CLIENT */
+	l := loglogclient.NewClient(
 		loglogclient.Config{
-			SocketPath:    config.SocketPath,
-			ApplicationID: "Autoposting-bot",
+			SocketPath:    cfg.LogLog.SocketPath,
+			ApplicationID: cfg.LogLog.ApplicationID,
 		})
 
-	l.Info(fmt.Sprintf("Shitposting autoposting-bot version %s, build %s\n", Version, Build))
-	l.Info(fmt.Sprintf("INFO - reading configuration file located at %s", configFilePath))
-
-	// setup a Telegram bot API instance
-	bot, err := tgbotapi.NewBotAPI(config.BotToken)
+	/* INITIALIZE BOT */
+	bot, err := tgbotapi.NewBotAPI(cfg.BotToken)
 	if err != nil {
 		l.Err(err.Error())
-		os.Exit(1)
+		return
 	}
 
-	// should we activate debug output?
-	bot.Debug = debug
-
-	l.Info(fmt.Sprintf("Authorized on account %s", bot.Self.UserName))
-
-	var updates tgbotapi.UpdatesChannel
-
-	if testing {
-		updates = setPolling(bot)
+	/* SET EDITION */
+	if sushiEdition {
+		edition.SetEdition(edition.Sushiporn)
 	} else {
-		updates = setWebhook(bot)
+		edition.SetEdition(edition.Shitpost)
 	}
 
-	manager, err = algo.NewManager(algo.ManagerConfig{
-		ChannelID:      int64(config.ChannelID),
-		BotAPIInstance: bot,
-		DatabaseString: config.DatabaseConnectionString(),
-		Debug:          debug,
-		Log:            l,
-	})
+	/* PRINT INFO */
+	bot.Debug = debug
+	l.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, %s\n", Version, Build, edition.GetEditionString()))
+	l.Info(fmt.Sprintf("Authorized on account @%s", bot.Self.UserName))
 
+	/* CONNECT TO THE DATABASE */
+	db, err := gorm.Open("mysql", cfg.DB.DatabaseConnectionString())
 	if err != nil {
 		l.Err(err.Error())
-		os.Exit(1)
+		return
 	}
 
-	// Initialize gorm
-	db, err = gorm.Open("mysql", config.DatabaseConnectionString())
+	/* CREATE Repository */
+	repo := repository.SetVariables(bot, db, l, &cfg)
+
+	/* GET UPDATES CHANNEL */
+	updates := getUpdatesChannel(repo)
+	if updates == nil {
+		l.Err("Update channel nil")
+		return
+	}
+
+	err = manager.StartManager(repo.Bot, repo.Db, repo.Log, repo.Config, debug, testing)
 	if err != nil {
-		l.Err(err.Error())
-		os.Exit(1)
+		l.Err(fmt.Sprintf("Unable to start manager: %s", err.Error()))
+		return
 	}
 
-	go startServer()
-
-	for update := range updates {
-		go func(update tgbotapi.Update, bot *tgbotapi.BotAPI, manager *algo.Manager) {
-			if iCanUseThis(update) {
-				err := command.Handle(update, bot, manager)
-				if err != nil {
-					l.Err(err.Error())
-				}
-			}
-		}(update, bot, manager)
-	}
-
+	/* HANDLE UPDATES */
+	handleUpdates(updates, repo)
 }
 
-func setupCLIParams() {
-	flag.BoolVar(&testing, "testing", false, "use polling instead of webhooks")
+//handleUpdates iterates on the updates and passes them onto the handlers
+func handleUpdates(updates tgbotapi.UpdatesChannel, repo *repository.Repository) {
+	for update := range updates {
+		switch {
+		case update.EditedMessage != nil:
+			go messages.HandleEdited(update.EditedMessage, repo)
+		case update.Message != nil:
+			go messages.HandleNew(update.Message, repo)
+		}
+	}
+}
+
+func loadCLIParams() {
 	flag.StringVar(&configFilePath, "config", "./config.toml", "configuration file path")
+	flag.BoolVar(&testing, "testing", false, "activate testing features")
 	flag.BoolVar(&debug, "debug", false, "activate all the debug features")
+	flag.BoolVar(&polling, "polling", false, "use polling instead of webhoooks")
+	flag.BoolVar(&sushiEdition, "sushi", false, "set the current edition as sushiporn")
 	flag.Parse()
 }
 
-func startServer() {
+//getUpdatesChannel uses webhooks or polling to get an `UpdatesChannel`
+func getUpdatesChannel(repo *repository.Repository) tgbotapi.UpdatesChannel {
+
+	/* WEBHOOKS IF WE'RE NOT TESTING */
+	if !polling {
+		return useWebhook(repo)
+	}
+
+	/* POLLING OTHERWISE */
+	_, err := repo.Bot.Request(tgbotapi.RemoveWebhookConfig{})
+	if err != nil {
+		repo.Log.Err(fmt.Sprintf("Unable to remove webhook: %s", err.Error()))
+		return nil
+	}
+
+	return usePolling(repo)
+}
+
+//usePolling gets an `UpdatesChannel` using polling
+func usePolling(repo *repository.Repository) tgbotapi.UpdatesChannel {
+
+	updateConfig := tgbotapi.UpdateConfig{
+		Offset:  0,
+		Limit:   0,
+		Timeout: 60,
+	}
+
+	return repo.Bot.GetUpdatesChan(updateConfig)
+}
+
+//useWebhook ets an `UpdatesChannel` using webhooks
+func useWebhook(repo *repository.Repository) tgbotapi.UpdatesChannel {
+
+	go startServer(repo.Log, repo.Config.Server)
+
+	/* TRY TO RETRIEVE WEBHOOK INFORMATION FROM TELEGRAM */
+	webhook, err := repo.Bot.GetWebhookInfo()
+
+	/* SET UP NEW WEBHOOK */
+	if err != nil || !webhook.IsSet() {
+		newWebhook := tgbotapi.NewWebhook(repo.Config.WebHookURL())
+		webhookConfig := tgbotapi.WebhookConfig{
+			URL:            newWebhook.URL,
+			Certificate:    newWebhook.Certificate,
+			MaxConnections: newWebhook.MaxConnections,
+			AllowedUpdates: newWebhook.AllowedUpdates,
+		}
+
+		_, err := repo.Bot.Request(webhookConfig)
+		if err != nil {
+			repo.Log.Err(fmt.Sprintf("Unable to request webhookConfig: %s", err.Error()))
+			return nil
+		}
+	}
+
+	return repo.Bot.ListenForWebhook(repo.Config.WebHookPath())
+}
+
+//startServer starts serving HTTP requests with or without TLS
+func startServer(log *loglogclient.LoglogClient, config configuration.ServerDetails) {
 	if config.TLS {
-		go l.Err((http.ListenAndServeTLS(config.BindString(), config.TLSCertPath, config.TLSKeyPath, nil)).Error())
-	}
-
-	go l.Err((http.ListenAndServe(config.BindString(), nil)).Error())
-}
-
-func iCanUseThis(update tgbotapi.Update) bool {
-	realUpdate := &tgbotapi.Message{}
-	if update.Message != nil && update.Message.From != nil {
-		realUpdate = update.Message
-	} else if update.EditedMessage != nil && update.EditedMessage.From != nil {
-		realUpdate = update.EditedMessage
+		log.Err((http.ListenAndServeTLS(config.BindString(), config.TLSCertPath, config.TLSKeyPath, nil)).Error())
 	} else {
-		return false
+		log.Err((http.ListenAndServe(config.BindString(), nil)).Error())
 	}
-
-	destID := realUpdate.From.ID
-	var users []entities.User
-
-	db.Where("telegram_id = ?", destID).Find(&users)
-	if len(users) > 0 {
-		return true
-	}
-
-	return false
-}
-
-func setPolling(bot *tgbotapi.BotAPI) tgbotapi.UpdatesChannel {
-
-	webhk, err := bot.GetWebhookInfo()
-
-	if err != nil {
-		l.Err(err.Error())
-	}
-
-	if webhk.IsSet() {
-
-		bot.RemoveWebhook()
-	}
-
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-	updates, err := bot.GetUpdatesChan(u)
-	if err != nil {
-		l.Err(err.Error())
-	}
-
-	return updates
-}
-
-func setWebhook(bot *tgbotapi.BotAPI) tgbotapi.UpdatesChannel {
-
-	go startServer()
-
-	webhk, err := bot.GetWebhookInfo()
-
-	if err != nil {
-		l.Err(err.Error())
-	}
-
-	if webhk.IsSet() {
-		updates := bot.ListenForWebhook(config.WebHookPath())
-		return updates
-	}
-
-	_, err = bot.SetWebhook(tgbotapi.NewWebhook(config.WebHookURL()))
-	if err != nil {
-		l.Err(err.Error())
-	}
-
-	updates := bot.ListenForWebhook(config.WebHookPath())
-
-	return updates
-
 }
