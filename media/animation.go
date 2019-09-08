@@ -79,9 +79,9 @@ func HandleNewAnimation(msg *tgbotapi.Message, user *entities.User, repo *reposi
 	var success bool
 	fixedCaption := dbCaption.PrepareCaptionForDB(msg.Caption, edition.ChannelName, utility.GetMessageEntities(msg), 0)
 	if fingerprintEntity.AHash != "" && fingerprintEntity.PHash != "" {
-		success = database.AddAnimation(fileID, fixedCaption, user, &fingerprintEntity, repo.Db, repo.Log)
+		success = database.AddAnimation(fileID, fixedCaption, user, &fingerprintEntity, repo.Db)
 	} else {
-		success = database.AddAnimation(fileID, fixedCaption, user, nil, repo.Db, repo.Log)
+		success = database.AddAnimation(fileID, fixedCaption, user, nil, repo.Db)
 	}
 
 	if success {

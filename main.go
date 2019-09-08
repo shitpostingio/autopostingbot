@@ -14,7 +14,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"gitlab.com/shitposting/loglog/loglogclient"
+	"gitlab.com/shitposting/loglog-ng"
 
 	configuration "gitlab.com/shitposting/autoposting-bot/config"
 	"gitlab.com/shitposting/autoposting-bot/messages"
@@ -56,16 +56,16 @@ func main() {
 	}
 
 	/* SETUP LOGLOG CLIENT */
-	l := loglogclient.NewClient(
-		loglogclient.Config{
-			SocketPath:    cfg.LogLog.SocketPath,
-			ApplicationID: cfg.LogLog.ApplicationID,
-		})
+	loglogerr := loglog.Setup(cfg.LogLog.ApplicationID)
+
+	if loglogerr != nil {
+		log.Fatal("Loglog error:", loglogerr)
+	}
 
 	/* INITIALIZE BOT */
 	bot, err := tgbotapi.NewBotAPI(cfg.BotToken)
 	if err != nil {
-		l.Err(err.Error())
+		loglog.Err(err.Error())
 		return
 	}
 
@@ -78,29 +78,29 @@ func main() {
 
 	/* PRINT INFO */
 	bot.Debug = debug
-	l.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, %s\n", Version, Build, edition.GetEditionString()))
-	l.Info(fmt.Sprintf("Authorized on account @%s", bot.Self.UserName))
+	loglog.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, %s", Version, Build, edition.GetEditionString()))
+	loglog.Info(fmt.Sprintf("Authorized on account @%s", bot.Self.UserName))
 
 	/* CONNECT TO THE DATABASE */
 	db, err := gorm.Open("mysql", cfg.DB.DatabaseConnectionString())
 	if err != nil {
-		l.Err(err.Error())
+		loglog.Err(err.Error())
 		return
 	}
 
 	/* CREATE Repository */
-	repo := repository.SetVariables(bot, db, l, &cfg)
+	repo := repository.SetVariables(bot, db, &cfg)
 
 	/* GET UPDATES CHANNEL */
 	updates := getUpdatesChannel(repo)
 	if updates == nil {
-		l.Err("Update channel nil")
+		loglog.Err("Update channel nil")
 		return
 	}
 
-	err = manager.StartManager(repo.Bot, repo.Db, repo.Log, repo.Config, debug, testing)
+	err = manager.StartManager(repo.Bot, repo.Db, repo.Config, debug, testing)
 	if err != nil {
-		l.Err(fmt.Sprintf("Unable to start manager: %s", err.Error()))
+		loglog.Err(fmt.Sprintf("Unable to start manager: %s", err.Error()))
 		return
 	}
 
@@ -140,7 +140,7 @@ func getUpdatesChannel(repo *repository.Repository) tgbotapi.UpdatesChannel {
 	/* POLLING OTHERWISE */
 	_, err := repo.Bot.Request(tgbotapi.RemoveWebhookConfig{})
 	if err != nil {
-		repo.Log.Err(fmt.Sprintf("Unable to remove webhook: %s", err.Error()))
+		loglog.Err(fmt.Sprintf("Unable to remove webhook: %s", err.Error()))
 		return nil
 	}
 
@@ -162,7 +162,7 @@ func usePolling(repo *repository.Repository) tgbotapi.UpdatesChannel {
 //useWebhook ets an `UpdatesChannel` using webhooks
 func useWebhook(repo *repository.Repository) tgbotapi.UpdatesChannel {
 
-	go startServer(repo.Log, repo.Config.Server)
+	go startServer(repo.Config.Server)
 
 	/* TRY TO RETRIEVE WEBHOOK INFORMATION FROM TELEGRAM */
 	webhook, err := repo.Bot.GetWebhookInfo()
@@ -179,7 +179,7 @@ func useWebhook(repo *repository.Repository) tgbotapi.UpdatesChannel {
 
 		_, err := repo.Bot.Request(webhookConfig)
 		if err != nil {
-			repo.Log.Err(fmt.Sprintf("Unable to request webhookConfig: %s", err.Error()))
+			loglog.Err(fmt.Sprintf("Unable to request webhookConfig: %s", err.Error()))
 			return nil
 		}
 	}
@@ -188,10 +188,10 @@ func useWebhook(repo *repository.Repository) tgbotapi.UpdatesChannel {
 }
 
 //startServer starts serving HTTP requests with or without TLS
-func startServer(log *loglogclient.LoglogClient, config configuration.ServerDetails) {
+func startServer(config configuration.ServerDetails) {
 	if config.TLS {
-		log.Err((http.ListenAndServeTLS(config.BindString(), config.TLSCertPath, config.TLSKeyPath, nil)).Error())
+		loglog.Err((http.ListenAndServeTLS(config.BindString(), config.TLSCertPath, config.TLSKeyPath, nil)).Error())
 	} else {
-		log.Err((http.ListenAndServe(config.BindString(), nil)).Error())
+		loglog.Err((http.ListenAndServe(config.BindString(), nil)).Error())
 	}
 }

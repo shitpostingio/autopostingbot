@@ -6,19 +6,18 @@ import (
 	"log"
 
 	entities "gitlab.com/shitposting/datalibrary/entities/autopostingbot"
-	"gitlab.com/shitposting/loglog/loglogclient"
 
 	configuration "gitlab.com/shitposting/autoposting-bot/config"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gitlab.com/shitposting/loglog-ng"
 )
 
 var (
 	userID         int
 	userHandle     string
 	configFilePath string
-	loglog         *loglogclient.LoglogClient
 )
 
 func main() {
@@ -54,11 +53,10 @@ func main() {
 	}()
 
 	/* INSTANTIATE LOGLOG */
-	loglog = loglogclient.NewClient(
-		loglogclient.Config{
-			SocketPath:    cfg.LogLog.SocketPath,
-			ApplicationID: cfg.LogLog.ApplicationID,
-		})
+	err = loglog.Setup(cfg.LogLog.ApplicationID)
+	if err != nil {
+		log.Println("Loglog error:", err)
+	}
 
 	/* INSERT USER IN THE DATABASE */
 	result := db.Create(&entities.User{TelegramID: userID, Handle: userHandle})

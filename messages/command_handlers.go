@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"gitlab.com/shitposting/loglog-ng"
 	"gitlab.com/shitposting/telegram-markdown-processor/telegramCaption"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -25,7 +26,7 @@ import (
 func handleStatusCommand(chatID int64, repo *repository.Repository) (reply string, err error) {
 	err = sendStatus(chatID, repo)
 	if err != nil {
-		repo.Log.Err(fmt.Sprintf("Unable to send status message: %s", err.Error()))
+		loglog.Err(fmt.Sprintf("Unable to send status message: %s", err.Error()))
 	}
 
 	return
@@ -46,7 +47,7 @@ func handlePauseCommand(msg *tgbotapi.Message, repo *repository.Repository) (rep
 		return
 	}
 
-	repo.Log.Info(fmt.Sprintf("%s paused posting", utility.GetHandleOrName(msg.From)))
+	loglog.Info(fmt.Sprintf("%s paused posting", utility.GetHandleOrName(msg.From)))
 	return handleStatusCommand(msg.Chat.ID, repo)
 }
 
@@ -125,7 +126,7 @@ func handlePostNowCommand(msg *tgbotapi.Message, fileID string, repo *repository
 		return
 	}
 
-	repo.Log.Info(fmt.Sprintf("%s used PostNow", utility.GetHandleOrName(msg.From)))
+	loglog.Info(fmt.Sprintf("%s used PostNow", utility.GetHandleOrName(msg.From)))
 	return "Posted!", err
 }
 
