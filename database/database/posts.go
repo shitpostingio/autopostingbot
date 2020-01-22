@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"gitlab.com/shitposting/loglog/loglogclient"
+	"gitlab.com/shitposting/loglog-ng"
 
 	"github.com/jinzhu/gorm"
 	entities "gitlab.com/shitposting/datalibrary/entities/autopostingbot"
@@ -14,7 +14,7 @@ import (
 )
 
 // AddImage creates an entry in the database for an image
-func AddImage(fileID, caption string, user *entities.User, fingerprint *entities.Fingerprint, db *gorm.DB, log *loglogclient.LoglogClient) bool {
+func AddImage(fileID, caption string, user *entities.User, fingerprint *entities.Fingerprint, db *gorm.DB) bool {
 
 	post := entities.Post{
 		User:        *user,
@@ -26,7 +26,7 @@ func AddImage(fileID, caption string, user *entities.User, fingerprint *entities
 
 	result := db.Create(&post)
 	if result.RowsAffected != 1 {
-		log.Err(fmt.Sprintf("Unable to add post to the database. Rows affected: %d", result.RowsAffected))
+		loglog.Err(fmt.Sprintf("Unable to add post to the database. Rows affected: %d", result.RowsAffected))
 		return false
 	}
 
@@ -34,7 +34,7 @@ func AddImage(fileID, caption string, user *entities.User, fingerprint *entities
 }
 
 // AddVideo creates an entry in the database for a video
-func AddVideo(fileID, caption string, user *entities.User, fingerprint *entities.Fingerprint, db *gorm.DB, log *loglogclient.LoglogClient) bool {
+func AddVideo(fileID, caption string, user *entities.User, fingerprint *entities.Fingerprint, db *gorm.DB) bool {
 
 	post := entities.Post{
 		User:    *user,
@@ -49,7 +49,7 @@ func AddVideo(fileID, caption string, user *entities.User, fingerprint *entities
 
 	result := db.Create(&post)
 	if result.RowsAffected != 1 {
-		log.Err(fmt.Sprintf("Unable to add post to the database. Rows affected: %d", result.RowsAffected))
+		loglog.Err(fmt.Sprintf("Unable to add post to the database. Rows affected: %d", result.RowsAffected))
 		return false
 	}
 
@@ -57,7 +57,7 @@ func AddVideo(fileID, caption string, user *entities.User, fingerprint *entities
 }
 
 // AddAnimation creates an entry in the database for a animation
-func AddAnimation(fileID, caption string, user *entities.User, fingerprint *entities.Fingerprint, db *gorm.DB, log *loglogclient.LoglogClient) bool {
+func AddAnimation(fileID, caption string, user *entities.User, fingerprint *entities.Fingerprint, db *gorm.DB) bool {
 
 	post := entities.Post{
 		User:    *user,
@@ -72,7 +72,7 @@ func AddAnimation(fileID, caption string, user *entities.User, fingerprint *enti
 
 	result := db.Create(&post)
 	if result.RowsAffected != 1 {
-		log.Err(fmt.Sprintf("Unable to add post to the database. Rows affected: %d", result.RowsAffected))
+		loglog.Err(fmt.Sprintf("Unable to add post to the database. Rows affected: %d", result.RowsAffected))
 		return false
 	}
 

@@ -34,7 +34,7 @@ func GetMessageEntities(message *tgbotapi.Message) []tgbotapi.MessageEntity {
 func GetHandleOrName(user *tgbotapi.User) string {
 
 	if user.UserName != "" {
-		return "@"+user.UserName
+		return "@" + user.UserName
 	}
 
 	if user.LastName != "" {

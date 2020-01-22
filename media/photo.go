@@ -35,7 +35,7 @@ func HandleNewPhoto(msg *tgbotapi.Message, user *entities.User, repo *repository
 	}
 
 	/* GET PHOTO FINGERPRINT */
-	aHash, pHash, err := getPhotoFingerprint(fileID, file.FilePath, repo.Config.Fpserver, repo.Config.BotToken, repo.Log)
+	aHash, pHash, err := getPhotoFingerprint(fileID, file.FilePath, repo.Config.Fpserver, repo.Config.BotToken)
 	if err != nil {
 		reply = "Unable to get photo fingerprint"
 		return
@@ -71,7 +71,7 @@ func HandleNewPhoto(msg *tgbotapi.Message, user *entities.User, repo *repository
 	/* ADD IMAGE TO DATABASE */
 	fingerprintEntity := entities.Fingerprint{AHash: aHash, PHash: pHash}
 	fixedCaption := dbCaption.PrepareCaptionForDB(msg.Caption, edition.ChannelName, utility.GetMessageEntities(msg), 0)
-	success := database.AddImage(fileID, fixedCaption, user, &fingerprintEntity, repo.Db, repo.Log)
+	success := database.AddImage(fileID, fixedCaption, user, &fingerprintEntity, repo.Db)
 	if success {
 		reply = "Image added correctly!"
 	} else {

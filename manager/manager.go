@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"gitlab.com/shitposting/loglog/loglogclient"
+	"gitlab.com/shitposting/loglog-ng"
 
 	configuration "gitlab.com/shitposting/autoposting-bot/config"
 	"gitlab.com/shitposting/autoposting-bot/database/database"
@@ -19,7 +19,6 @@ import (
 type Manager struct {
 	bot         *tgbotapi.BotAPI
 	db          *gorm.DB
-	log         *loglogclient.LoglogClient
 	config      *configuration.Config
 	isDebugging bool
 	isTesting   bool
@@ -44,12 +43,11 @@ const (
 var manager Manager
 
 // StartManager starts the manager
-func StartManager(botAPI *tgbotapi.BotAPI, database *gorm.DB, loglogClient *loglogclient.LoglogClient, configuration *configuration.Config, debug, testing bool) error {
+func StartManager(botAPI *tgbotapi.BotAPI, database *gorm.DB, configuration *configuration.Config, debug, testing bool) error {
 
 	manager = Manager{
 		bot:         botAPI,
 		db:          database,
-		log:         loglogClient,
 		config:      configuration,
 		isDebugging: debug,
 		isTesting:   testing,
@@ -85,7 +83,7 @@ func managePosting() {
 		case <-manager.postingSignal:
 			err := post()
 			if err != nil {
-				manager.log.Err(err.Error())
+				loglog.Err(err.Error())
 			}
 		case <-manager.postingRateChanging:
 			<-manager.postingRateChanged

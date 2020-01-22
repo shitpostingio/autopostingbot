@@ -1,4 +1,4 @@
-image: shitpostingio/golang:latest
+image: shitpostingio/golang:debian
 
 variables:
   REPO_NAME: "gitlab.com/shitposting/autoposting-bot"
