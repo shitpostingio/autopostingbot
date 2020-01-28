@@ -172,6 +172,24 @@ func shareVideo(chatID int64, fileID, caption string, replyToMessageID int, save
 		loglog.Err(fmt.Sprintf("Unable to send image with fileID %s: %s", fileID, err.Error()))
 	}
 
+	/* WE MAY NOT WANT TO VIDEO PICTURES TO DISK */
+	if !saveToDisk || edition.IsSushiporn() {
+		return sentMessage, err
+	}
+
+	/* SAVE VIDEO LOCALLY */
+	url, err := manager.bot.GetFileDirectURL(fileID)
+	if err != nil {
+		loglog.Err(fmt.Sprintf("Unable to get direct URL for image with fileID %s: %s", fileID, err.Error()))
+		return sentMessage, err
+	}
+
+	/* DOWNLOAD */
+	err = utility.DownloadFile(fmt.Sprintf("%s/%s.mp4", manager.config.MemePath, fileID), url)
+	if err != nil {
+		loglog.Err(fmt.Sprintf("Unable to download image with fileID %s: %s", fileID, err.Error()))
+	}
+
 	return
 }
 
@@ -188,6 +206,24 @@ func shareAnimation(chatID int64, fileID, caption string, replyToMessageID int, 
 	sentMessage, err = manager.bot.Send(animation)
 	if err != nil {
 		loglog.Err(fmt.Sprintf("Unable to send image with fileID %s: %s", fileID, err.Error()))
+	}
+
+	/* WE MAY NOT WANT TO SAVE ANIMATION TO DISK */
+	if !saveToDisk || edition.IsSushiporn() {
+		return sentMessage, err
+	}
+
+	/* SAVE ANIMATION LOCALLY */
+	url, err := manager.bot.GetFileDirectURL(fileID)
+	if err != nil {
+		loglog.Err(fmt.Sprintf("Unable to get direct URL for image with fileID %s: %s", fileID, err.Error()))
+		return sentMessage, err
+	}
+
+	/* DOWNLOAD */
+	err = utility.DownloadFile(fmt.Sprintf("%s/%s.mp4", manager.config.MemePath, fileID), url)
+	if err != nil {
+		loglog.Err(fmt.Sprintf("Unable to download image with fileID %s: %s", fileID, err.Error()))
 	}
 
 	return
