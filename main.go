@@ -3,7 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
+	"github.com/zelenin/go-tdlib/client"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 
 	"gitlab.com/shitposting/autoposting-bot/edition"
@@ -14,11 +15,11 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"gitlab.com/shitposting/loglog-ng"
 
 	configuration "gitlab.com/shitposting/autoposting-bot/config"
 	"gitlab.com/shitposting/autoposting-bot/messages"
 	"gitlab.com/shitposting/autoposting-bot/repository"
+	"gitlab.com/shitposting/autoposting-bot/api"
 )
 
 var (
@@ -55,17 +56,25 @@ func main() {
 		log.Fatal(err)
 	}
 
-	/* SETUP LOGLOG CLIENT */
-	loglogerr := loglog.Setup(cfg.LogLog.ApplicationID)
-
-	if loglogerr != nil {
-		log.Fatal("Loglog error:", loglogerr)
+	tdlibClient, err := tdlib.Authorize(cfg.BotToken, &cfg.Tdlib)
+	if err != nil {
+		log.Fatalf("NewClient error: %s", err)
 	}
+	listener := tdlibClient.GetListener()
+	defer listener.Close()
+
+	go func() {
+		for update := range listener.Updates {
+			if update.GetClass() == client.ClassUpdate {
+				log.Printf("%#v", update)
+			}
+		}
+	}()
 
 	/* INITIALIZE BOT */
 	bot, err := tgbotapi.NewBotAPI(cfg.BotToken)
 	if err != nil {
-		loglog.Err(err.Error())
+		log.Error(err.Error())
 		return
 	}
 
@@ -78,13 +87,13 @@ func main() {
 
 	/* PRINT INFO */
 	bot.Debug = debug
-	loglog.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, %s", Version, Build, edition.GetEditionString()))
-	loglog.Info(fmt.Sprintf("Authorized on account @%s", bot.Self.UserName))
+	log.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, %s", Version, Build, edition.GetEditionString()))
+	log.Info(fmt.Sprintf("Authorized on account @%s", bot.Self.UserName))
 
 	/* CONNECT TO THE DATABASE */
 	db, err := gorm.Open("mysql", cfg.DB.DatabaseConnectionString())
 	if err != nil {
-		loglog.Err(err.Error())
+		log.Error(err.Error())
 		return
 	}
 
@@ -94,13 +103,13 @@ func main() {
 	/* GET UPDATES CHANNEL */
 	updates := getUpdatesChannel(repo)
 	if updates == nil {
-		loglog.Err("Update channel nil")
+		log.Error("Update channel nil")
 		return
 	}
 
 	err = manager.StartManager(repo.Bot, repo.Db, repo.Config, debug, testing)
 	if err != nil {
-		loglog.Err(fmt.Sprintf("Unable to start manager: %s", err.Error()))
+		log.Error(fmt.Sprintf("Unable to start manager: %s", err.Error()))
 		return
 	}
 
@@ -140,7 +149,7 @@ func getUpdatesChannel(repo *repository.Repository) tgbotapi.UpdatesChannel {
 	/* POLLING OTHERWISE */
 	_, err := repo.Bot.Request(tgbotapi.RemoveWebhookConfig{})
 	if err != nil {
-		loglog.Err(fmt.Sprintf("Unable to remove webhook: %s", err.Error()))
+		log.Error(fmt.Sprintf("Unable to remove webhook: %s", err.Error()))
 		return nil
 	}
 
@@ -179,7 +188,7 @@ func useWebhook(repo *repository.Repository) tgbotapi.UpdatesChannel {
 
 		_, err := repo.Bot.Request(webhookConfig)
 		if err != nil {
-			loglog.Err(fmt.Sprintf("Unable to request webhookConfig: %s", err.Error()))
+			log.Error(fmt.Sprintf("Unable to request webhookConfig: %s", err.Error()))
 			return nil
 		}
 	}
@@ -190,8 +199,8 @@ func useWebhook(repo *repository.Repository) tgbotapi.UpdatesChannel {
 //startServer starts serving HTTP requests with or without TLS
 func startServer(config configuration.ServerDetails) {
 	if config.TLS {
-		loglog.Err((http.ListenAndServeTLS(config.BindString(), config.TLSCertPath, config.TLSKeyPath, nil)).Error())
+		log.Error((http.ListenAndServeTLS(config.BindString(), config.TLSCertPath, config.TLSKeyPath, nil)).Error())
 	} else {
-		loglog.Err((http.ListenAndServe(config.BindString(), nil)).Error())
+		log.Error((http.ListenAndServe(config.BindString(), nil)).Error())
 	}
 }

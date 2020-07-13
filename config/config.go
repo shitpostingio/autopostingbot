@@ -12,7 +12,7 @@ const (
 	defaultFileSizeThreshold  = 20971520 //20MB
 	defaultPostAlertThreshold = 10
 	defaultSocketPath         = "/tmp/loglog.socket"
-	defaultDBAddress          = "127.0.0.1:3306"
+	defaultDBAddress          = "localhost:3306"
 )
 
 // Load reads a configuration file and returns its config instance

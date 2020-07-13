@@ -3,7 +3,7 @@ package messages
 import (
 	"fmt"
 
-	"gitlab.com/shitposting/loglog-ng"
+	log "github.com/sirupsen/logrus"
 
 	"gitlab.com/shitposting/autoposting-bot/edition"
 	"gitlab.com/shitposting/autoposting-bot/manager"
@@ -59,7 +59,7 @@ func HandleNew(msg *tgbotapi.Message, repo *repository.Repository) {
 	reply.ReplyToMessageID = msg.MessageID
 	_, err := repo.Bot.Send(reply)
 	if err != nil {
-		loglog.Err(fmt.Sprintf("Unable to send reply to new message: %s", err.Error()))
+		log.Error(fmt.Sprintf("Unable to send reply to new message: %s", err.Error()))
 	}
 }
 
@@ -91,7 +91,7 @@ func HandleEdited(msg *tgbotapi.Message, repo *repository.Repository) {
 	reply.ReplyToMessageID = msg.MessageID
 	_, err := repo.Bot.Send(reply)
 	if err != nil {
-		loglog.Err(fmt.Sprintf("Unable to send reply to edited message: %s", err.Error()))
+		log.Error(fmt.Sprintf("Unable to send reply to edited message: %s", err.Error()))
 	}
 }
 
@@ -111,7 +111,7 @@ func sendDuplicateAlert(duplicatePost *entities.Post, chatID int64, replyID int,
 
 	err = tryUploading(duplicatePost, chatID, replyID, caption, repo)
 	if err != nil {
-		loglog.Err(fmt.Sprintf("Unable to send duplicate message: %s", err.Error()))
+		log.Error(fmt.Sprintf("Unable to send duplicate message: %s", err.Error()))
 	}
 }
 

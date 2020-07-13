@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"gitlab.com/shitposting/loglog-ng"
+	log "github.com/sirupsen/logrus"
 
 	"gitlab.com/shitposting/autoposting-bot/algo"
 	"gitlab.com/shitposting/autoposting-bot/database/database"
@@ -40,7 +40,7 @@ func PausePosting(howMuch time.Duration) error {
 	timeFromLastPause := -time.Until(manager.previousPauseTime)
 	if timeFromLastPause < 5*time.Minute {
 
-		loglog.Warn(fmt.Sprintf(
+		log.Warn(fmt.Sprintf(
 			"Pausing the posting rate too frequently is not allowed. Last pause was %s ago",
 			timeFromLastPause))
 
@@ -48,7 +48,7 @@ func PausePosting(howMuch time.Duration) error {
 			return errors.New("the previous pause was less than 5 minutes ago")
 		}
 
-		loglog.Info("Proceeding anyway because we're testing")
+		log.Info("Proceeding anyway because we're testing")
 	}
 
 	/* FORCE THE MANAGER TO STOP WAITING FOR THE NEXT POSTING SIGNAL */

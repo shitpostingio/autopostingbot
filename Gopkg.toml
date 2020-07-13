@@ -40,10 +40,6 @@
   branch = "4-divide-library-into-packages"
   name = "gitlab.com/shitposting/fingerprinting"
 
-[[constraint]]
-  name = "gitlab.com/shitposting/loglog"
-  version = "1.0.1"
-
 [prune]
   go-tests = true
   unused-packages = true

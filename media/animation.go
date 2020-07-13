@@ -1,7 +1,7 @@
 package media
 
 import (
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 	entities "gitlab.com/shitposting/datalibrary/entities/autopostingbot"
 	fpcompare "gitlab.com/shitposting/fingerprinting/comparer"
 	"gitlab.com/shitposting/telegram-markdown-processor/dbCaption"

@@ -10,7 +10,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	entities "gitlab.com/shitposting/datalibrary/entities/autopostingbot"
 
-	"gitlab.com/shitposting/loglog-ng"
+	log "github.com/sirupsen/logrus"
 
 	"gitlab.com/shitposting/autoposting-bot/database/database"
 	"gitlab.com/shitposting/autoposting-bot/edition"
@@ -39,13 +39,13 @@ func PostToChannel(post entities.Post, isPostNow bool) error {
 
 	if timeFromLastPost < 5*time.Minute {
 
-		loglog.Warn(fmt.Sprintf("Posting too frequently is not allowed. Last post was %s ago", timeFromLastPost))
+		log.Warn(fmt.Sprintf("Posting too frequently is not allowed. Last post was %s ago", timeFromLastPost))
 
 		if !manager.isTesting {
 			return errors.New("the previous post was less than 5 minutes ago")
 		}
 
-		loglog.Info("Proceeding anyway because we're testing")
+		log.Info("Proceeding anyway because we're testing")
 
 	}
 
@@ -54,7 +54,7 @@ func PostToChannel(post entities.Post, isPostNow bool) error {
 
 		err = database.MarkPostAsPosted(post, sentMessage.MessageID, manager.db)
 		if err != nil {
-			loglog.Err(err.Error())
+			log.Error(err.Error())
 		}
 
 		manager.previousPostTime = time.Now()
@@ -132,7 +132,7 @@ func sharePhoto(chatID int64, fileID, caption string, replyToMessageID int, save
 	/* SEND THE POST */
 	sentMessage, err = manager.bot.Send(image)
 	if err != nil {
-		loglog.Err(fmt.Sprintf("Unable to share image with fileID %s: %s. Another attempt will be made by uploading it", fileID, err.Error()))
+		log.Error(fmt.Sprintf("Unable to share image with fileID %s: %s. Another attempt will be made by uploading it", fileID, err.Error()))
 		return sentMessage, err
 	}
 
@@ -144,14 +144,14 @@ func sharePhoto(chatID int64, fileID, caption string, replyToMessageID int, save
 	/* SAVE IMAGES LOCALLY */
 	url, err := manager.bot.GetFileDirectURL(fileID)
 	if err != nil {
-		loglog.Err(fmt.Sprintf("Unable to get direct URL for image with fileID %s: %s", fileID, err.Error()))
+		log.Error(fmt.Sprintf("Unable to get direct URL for image with fileID %s: %s", fileID, err.Error()))
 		return sentMessage, err
 	}
 
 	/* DOWNLOAD */
 	err = utility.DownloadFile(fmt.Sprintf("%s/%s.jpg", manager.config.MemePath, fileID), url)
 	if err != nil {
-		loglog.Err(fmt.Sprintf("Unable to download image with fileID %s: %s", fileID, err.Error()))
+		log.Error(fmt.Sprintf("Unable to download image with fileID %s: %s", fileID, err.Error()))
 	}
 
 	return
@@ -169,7 +169,7 @@ func shareVideo(chatID int64, fileID, caption string, replyToMessageID int, save
 
 	sentMessage, err = manager.bot.Send(video)
 	if err != nil {
-		loglog.Err(fmt.Sprintf("Unable to send image with fileID %s: %s", fileID, err.Error()))
+		log.Error(fmt.Sprintf("Unable to send image with fileID %s: %s", fileID, err.Error()))
 	}
 
 	/* WE MAY NOT WANT TO VIDEO PICTURES TO DISK */
@@ -180,14 +180,14 @@ func shareVideo(chatID int64, fileID, caption string, replyToMessageID int, save
 	/* SAVE VIDEO LOCALLY */
 	url, err := manager.bot.GetFileDirectURL(fileID)
 	if err != nil {
-		loglog.Err(fmt.Sprintf("Unable to get direct URL for image with fileID %s: %s", fileID, err.Error()))
+		log.Error(fmt.Sprintf("Unable to get direct URL for image with fileID %s: %s", fileID, err.Error()))
 		return sentMessage, err
 	}
 
 	/* DOWNLOAD */
 	err = utility.DownloadFile(fmt.Sprintf("%s/%s.mp4", manager.config.MemePath, fileID), url)
 	if err != nil {
-		loglog.Err(fmt.Sprintf("Unable to download image with fileID %s: %s", fileID, err.Error()))
+		log.Error(fmt.Sprintf("Unable to download image with fileID %s: %s", fileID, err.Error()))
 	}
 
 	return
@@ -205,7 +205,7 @@ func shareAnimation(chatID int64, fileID, caption string, replyToMessageID int, 
 
 	sentMessage, err = manager.bot.Send(animation)
 	if err != nil {
-		loglog.Err(fmt.Sprintf("Unable to send image with fileID %s: %s", fileID, err.Error()))
+		log.Error(fmt.Sprintf("Unable to send image with fileID %s: %s", fileID, err.Error()))
 	}
 
 	/* WE MAY NOT WANT TO SAVE ANIMATION TO DISK */
@@ -216,14 +216,14 @@ func shareAnimation(chatID int64, fileID, caption string, replyToMessageID int, 
 	/* SAVE ANIMATION LOCALLY */
 	url, err := manager.bot.GetFileDirectURL(fileID)
 	if err != nil {
-		loglog.Err(fmt.Sprintf("Unable to get direct URL for image with fileID %s: %s", fileID, err.Error()))
+		log.Error(fmt.Sprintf("Unable to get direct URL for image with fileID %s: %s", fileID, err.Error()))
 		return sentMessage, err
 	}
 
 	/* DOWNLOAD */
 	err = utility.DownloadFile(fmt.Sprintf("%s/%s.mp4", manager.config.MemePath, fileID), url)
 	if err != nil {
-		loglog.Err(fmt.Sprintf("Unable to download image with fileID %s: %s", fileID, err.Error()))
+		log.Error(fmt.Sprintf("Unable to download image with fileID %s: %s", fileID, err.Error()))
 	}
 
 	return

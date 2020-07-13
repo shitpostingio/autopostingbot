@@ -12,6 +12,7 @@ type Config struct {
 	Server             ServerDetails
 	DB                 DBConfig
 	Fpserver           FpServerConfig
+	Tdlib TdlibConfiguration
 }
 
 // LoglogConfig contains the configuration for Loglog

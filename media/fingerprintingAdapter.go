@@ -13,7 +13,7 @@ import (
 	entities "gitlab.com/shitposting/datalibrary/entities/autopostingbot"
 	"gitlab.com/shitposting/datalibrary/entities/fpserver"
 
-	"gitlab.com/shitposting/loglog-ng"
+	log "github.com/sirupsen/logrus"
 
 	configuration "gitlab.com/shitposting/autoposting-bot/config"
 	"gitlab.com/shitposting/autoposting-bot/utility"
@@ -26,7 +26,7 @@ func getPhotoFingerprint(fileID string, path string, fp configuration.FpServerCo
 	client := &http.Client{Timeout: time.Second * 30}
 	request, err := http.NewRequest("GET", fmt.Sprintf("%s/%s/%s", fp.Address, fp.ImageEndpoint, fileID), nil)
 	if err != nil {
-		loglog.Err("Can't setup fingerprinting request to FPServer for picture with fileID " + fileID)
+		log.Error("Can't setup fingerprinting request to FPServer for picture with fileID " + fileID)
 		return "", "", err
 	}
 
@@ -65,7 +65,7 @@ func getVideoFingerprint(fileInfo *tgbotapi.File, repo *repository.Repository) (
 	client := &http.Client{Timeout: time.Second * 30}
 	request, err := http.NewRequest("GET", fmt.Sprintf("%s/%s/%s", repo.Config.Fpserver.Address, repo.Config.Fpserver.VideoEndpoint, fileInfo.FileID), nil)
 	if err != nil {
-		loglog.Err("Can't setup request to screengen server for picture with fileID " + fileInfo.FileID)
+		log.Error("Can't setup request to screengen server for picture with fileID " + fileInfo.FileID)
 		return "", "", "", err
 	}
 
@@ -90,7 +90,7 @@ func getVideoFingerprint(fileInfo *tgbotapi.File, repo *repository.Repository) (
 	// UNMARSHAL
 	err = json.Unmarshal(bodyResult, &response)
 	if err != nil {
-		loglog.Warn(fmt.Sprintf("Error when unmarshaling FpServer result: %s", string(bodyResult)))
+		log.Warn(fmt.Sprintf("Error when unmarshaling FpServer result: %s", string(bodyResult)))
 	}
 
 	return response.ThumbnailFileID, response.AHash, response.PHash, err

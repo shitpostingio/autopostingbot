@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"gitlab.com/shitposting/loglog-ng"
+	log "github.com/sirupsen/logrus"
 
 	configuration "gitlab.com/shitposting/autoposting-bot/config"
 	"gitlab.com/shitposting/autoposting-bot/database/database"
@@ -83,7 +83,7 @@ func managePosting() {
 		case <-manager.postingSignal:
 			err := post()
 			if err != nil {
-				loglog.Err(err.Error())
+				log.Error(err.Error())
 			}
 		case <-manager.postingRateChanging:
 			<-manager.postingRateChanged

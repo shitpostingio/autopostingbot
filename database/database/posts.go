@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"gitlab.com/shitposting/loglog-ng"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/jinzhu/gorm"
 	entities "gitlab.com/shitposting/datalibrary/entities/autopostingbot"
@@ -26,7 +26,7 @@ func AddImage(fileID, caption string, user *entities.User, fingerprint *entities
 
 	result := db.Create(&post)
 	if result.RowsAffected != 1 {
-		loglog.Err(fmt.Sprintf("Unable to add post to the database. Rows affected: %d", result.RowsAffected))
+		log.Error(fmt.Sprintf("Unable to add post to the database. Rows affected: %d", result.RowsAffected))
 		return false
 	}
 
@@ -49,7 +49,7 @@ func AddVideo(fileID, caption string, user *entities.User, fingerprint *entities
 
 	result := db.Create(&post)
 	if result.RowsAffected != 1 {
-		loglog.Err(fmt.Sprintf("Unable to add post to the database. Rows affected: %d", result.RowsAffected))
+		log.Error(fmt.Sprintf("Unable to add post to the database. Rows affected: %d", result.RowsAffected))
 		return false
 	}
 
@@ -72,7 +72,7 @@ func AddAnimation(fileID, caption string, user *entities.User, fingerprint *enti
 
 	result := db.Create(&post)
 	if result.RowsAffected != 1 {
-		loglog.Err(fmt.Sprintf("Unable to add post to the database. Rows affected: %d", result.RowsAffected))
+		log.Error(fmt.Sprintf("Unable to add post to the database. Rows affected: %d", result.RowsAffected))
 		return false
 	}
 

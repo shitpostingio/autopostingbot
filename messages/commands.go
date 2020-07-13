@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"gitlab.com/shitposting/loglog-ng"
+	log "github.com/sirupsen/logrus"
 
 	"gitlab.com/shitposting/autoposting-bot/repository"
 
@@ -89,7 +89,7 @@ func handleReplyCommands(command string, msg *tgbotapi.Message, user *entities.U
 		reply.Text = err.Error()
 		_, err = repo.Bot.Send(reply)
 		if err != nil {
-			loglog.Err(fmt.Sprintf("Error when sending error in reply to a command: %s", err.Error()))
+			log.Error(fmt.Sprintf("Error when sending error in reply to a command: %s", err.Error()))
 		}
 		return
 	}
@@ -99,7 +99,7 @@ func handleReplyCommands(command string, msg *tgbotapi.Message, user *entities.U
 		reply.Text = replyText
 		_, err = repo.Bot.Send(reply)
 		if err != nil {
-			loglog.Err(fmt.Sprintf("Error when sending reply to command: %s", err.Error()))
+			log.Error(fmt.Sprintf("Error when sending reply to command: %s", err.Error()))
 		}
 	}
 }
