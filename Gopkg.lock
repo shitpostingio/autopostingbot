@@ -29,12 +29,28 @@
   version = "v1.4.1"
 
 [[projects]]
+  digest = "1:586ea76dbd0374d6fb649a91d70d652b7fe0ccffb8910a77468e7702e7901f3d"
+  name = "github.com/go-stack/stack"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "2fee6af1a9795aafbe0253a0cfbdf668e1fb8a9a"
+  version = "v1.8.0"
+
+[[projects]]
   branch = "develop"
   digest = "1:b1dd4d5cc66fca6720e4769b245df60f35444c9950ff69fc208e0ea366d50ecc"
   name = "github.com/go-telegram-bot-api/telegram-bot-api"
   packages = ["."]
   pruneopts = "UT"
   revision = "ffe77fb717d3cda2df08269a6362c49ccab11ebf"
+
+[[projects]]
+  branch = "master"
+  digest = "1:d2c84374e37085b97762b77f695101a96aea829293a6ab43915df0248a21fe9c"
+  name = "github.com/golang/snappy"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "196ae77b8a26000fa30caa8b2b541e09674dbc43"
 
 [[projects]]
   digest = "1:09970bb8daf100bdf11b48b72c71ef980cd2b50efbd903989b3d182956be0b83"
@@ -64,6 +80,20 @@
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:48817cb3ca86acdda86a6f1afa457f4ad0860fe2fcc982fe8ab605375cf1ffa5"
+  name = "github.com/klauspost/compress"
+  packages = [
+    "fse",
+    "huff0",
+    "snappy",
+    "zstd",
+    "zstd/internal/xxhash",
+  ]
+  pruneopts = "UT"
+  revision = "a8f778f32d263b3a95d1e5a90534f5f680560abe"
+  version = "v1.10.10"
+
+[[projects]]
   digest = "1:09cb61dc19af93deae01587e2fdb1c081e0bf48f1a5ad5fa24f48750dc57dce8"
   name = "github.com/konsorten/go-windows-terminal-sequences"
   packages = ["."]
@@ -78,6 +108,14 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "83c6a9932646f83e3267f353373d47347b6036b2"
+
+[[projects]]
+  digest = "1:9e1d37b58d17113ec3cb5608ac0382313c5b59470b94ed97d0976e69c7022314"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "614d223910a179a466c1767a985424175c39b465"
+  version = "v0.9.1"
 
 [[projects]]
   branch = "v2"
@@ -102,6 +140,22 @@
   pruneopts = "UT"
   revision = "a90a01d73ae432e2611d178c18367fbaa13e0154"
   version = "v1.0.1"
+
+[[projects]]
+  branch = "master"
+  digest = "1:40fdfd6ab85ca32b6935853bbba35935dcb1d796c8135efd85947566c76e662e"
+  name = "github.com/xdg/scram"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "7eeb5667e42c09cb51bf7b7c28aea8c56767da90"
+
+[[projects]]
+  branch = "master"
+  digest = "1:f5c1d04bc09c644c592b45b9f0bad4030521b1a7d11c7dadbb272d9439fa6e8e"
+  name = "github.com/xdg/stringprep"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "73f8eece6fdcd902c185bf651de50f3828bed5ed"
 
 [[projects]]
   digest = "1:76d964cb397db8163d9ad1ef9ce11d7b52c697c40cde626374813643a0b281e6"
@@ -150,6 +204,62 @@
   revision = "21e14a525438750715e0867293cf67e6e28388cd"
 
 [[projects]]
+  digest = "1:09cf83da2e89dfdba4ef14a6e1d193238ed9bc5f00ff198e5adb02aff2cce194"
+  name = "go.mongodb.org/mongo-driver"
+  packages = [
+    "bson",
+    "bson/bsoncodec",
+    "bson/bsonoptions",
+    "bson/bsonrw",
+    "bson/bsontype",
+    "bson/primitive",
+    "event",
+    "internal",
+    "mongo",
+    "mongo/options",
+    "mongo/readconcern",
+    "mongo/readpref",
+    "mongo/writeconcern",
+    "tag",
+    "version",
+    "x/bsonx",
+    "x/bsonx/bsoncore",
+    "x/mongo/driver",
+    "x/mongo/driver/address",
+    "x/mongo/driver/auth",
+    "x/mongo/driver/auth/internal/gssapi",
+    "x/mongo/driver/connstring",
+    "x/mongo/driver/description",
+    "x/mongo/driver/dns",
+    "x/mongo/driver/mongocrypt",
+    "x/mongo/driver/mongocrypt/options",
+    "x/mongo/driver/operation",
+    "x/mongo/driver/session",
+    "x/mongo/driver/topology",
+    "x/mongo/driver/uuid",
+    "x/mongo/driver/wiremessage",
+  ]
+  pruneopts = "UT"
+  revision = "750fe7dfc033d023b335494a4ad2b713386e8e59"
+  version = "v1.3.5"
+
+[[projects]]
+  branch = "master"
+  digest = "1:f92f6956e4059f6a3efc14924d2dd58ba90da25cc57fe07ae3779ef2f5e0c5f2"
+  name = "golang.org/x/crypto"
+  packages = ["pbkdf2"]
+  pruneopts = "UT"
+  revision = "948cd5f35899cbf089c620b3caeac9b60fa08704"
+
+[[projects]]
+  branch = "master"
+  digest = "1:4692f916cb72b2c295f04841036d85a3f13e96d1cc9e8e4c2c30edebac518053"
+  name = "golang.org/x/sync"
+  packages = ["semaphore"]
+  pruneopts = "UT"
+  revision = "6e8e738ad208923de99951fe0b48239bfd864f28"
+
+[[projects]]
   branch = "master"
   digest = "1:de18db9b6b884884bbb43eafaee3c72a06c8d4ac69d87411c52b5801a5e814f7"
   name = "golang.org/x/sys"
@@ -159,6 +269,21 @@
   ]
   pruneopts = "UT"
   revision = "ddb9806d33aed8dbaac1cd6f1cba58952e87f933"
+
+[[projects]]
+  digest = "1:a2c690dfee42801a26a0e88f69206feca8a3c2437fd476d84767468d7d7708e9"
+  name = "golang.org/x/text"
+  packages = [
+    "internal/gen",
+    "internal/triegen",
+    "internal/ucd",
+    "transform",
+    "unicode/cldr",
+    "unicode/norm",
+  ]
+  pruneopts = "UT"
+  revision = "23ae387dee1f90d29a23c0e87ee0b46038fbed0e"
+  version = "v0.3.3"
 
 [[projects]]
   branch = "master"
@@ -196,6 +321,10 @@
     "gitlab.com/shitposting/loglog-ng",
     "gitlab.com/shitposting/telegram-markdown-processor/dbCaption",
     "gitlab.com/shitposting/telegram-markdown-processor/telegramCaption",
+    "go.mongodb.org/mongo-driver/bson",
+    "go.mongodb.org/mongo-driver/bson/primitive",
+    "go.mongodb.org/mongo-driver/mongo",
+    "go.mongodb.org/mongo-driver/mongo/options",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

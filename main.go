@@ -5,6 +5,7 @@ import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"gitlab.com/shitposting/autoposting-bot/api"
+	"gitlab.com/shitposting/autoposting-bot/documentstore"
 	updates2 "gitlab.com/shitposting/autoposting-bot/updates"
 	"net/http"
 
@@ -95,6 +96,8 @@ func main() {
 		log.Error(err.Error())
 		return
 	}
+
+	documentstore.Connect(&cfg.DocumentStore)
 
 	/* CREATE Repository */
 	repo := repository.SetVariables(bot, db, &cfg)
