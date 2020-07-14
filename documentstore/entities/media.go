@@ -7,7 +7,8 @@ import (
 // Media represents a media in the document store
 type Media struct {
 	ID               primitive.ObjectID `bson:"_id,omitempty"`
-	Type 			 string
+	Type             string
+	TdlibID          int32
 	FileUniqueID     string
 	FileID           string
 	Histogram        []float64 `bson:",omitempty"`

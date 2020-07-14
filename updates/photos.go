@@ -4,19 +4,27 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/api"
+	"gitlab.com/shitposting/autoposting-bot/files"
 )
 
 func handlePhoto(message *client.Message) {
 
 	//
-	messageContent := message.Content.(*client.MessagePhoto)
+	fileInfo, err := api.GetMediaFileInfo(message)
+	if err != nil {
+		log.Error("handlePhoto: ", err)
+		return
+	}
 
-	photoIndex := messageContent.Photo.Sizes[len(messageContent.Photo.Sizes) - 1]
-	fileID := photoIndex.Photo.Remote.Id
-	fileUniqueID := photoIndex.Photo.Remote.UniqueId
+	//
+	fileInfo, err = files.DownloadFile(fileInfo.Id)
+	if err != nil {
+		log.Error("handlePhoto: ", err)
+		return
+	}
 
-	log.Info("FileID: ", fileID, " UniqueID: ", fileUniqueID)
-	_, _ = api.SendPlainPhoto(message.ChatId, fileID, "USH")
+
+
 
 
 	//utf16Text := utf16.Encode([]rune(messageContent.Caption.Text))

@@ -14,10 +14,10 @@ var (
 		client.TypeVideo:     SendVideo,
 	}
 
-	fileIDFunction = map[string]func(*client.Message) (string, string) {
-		client.TypeAnimation: GetAnimationFileIDsFromMessage,
-		client.TypePhoto:     GetPhotoFileIDsFromMessage,
-		client.TypeVideo:     GetVideoFileIDsFromMessage,
+	fileIDFunction = map[string]func(*client.Message) *client.File {
+		client.TypeMessageAnimation: GetAnimationFileInfoFromMessage,
+		client.TypeMessagePhoto:     GetPhotoFileInfoFromMessage,
+		client.TypeMessageVideo:     GetVideoFileInfoFromMessage,
 	}
 
 )
@@ -35,16 +35,16 @@ func SendMedia(mediaType string, chatID int64, remoteFileID, caption string, ent
 
 }
 
-func GetMediaFileIDs(message *client.Message) (fileID, fileUniqueID string) {
+func GetMediaFileInfo(message *client.Message) (*client.File, error) {
 
 	mediaType := message.Content.MessageContentType()
 	getIDs, found := fileIDFunction[mediaType]
 	if !found {
-		err := fmt.Errorf("send function not found for media type %s", mediaType)
+		err := fmt.Errorf("get file id function not found for media type %s", mediaType)
 		log.Error(err)
-		return
+		return nil, err
 	}
 
-	return getIDs(message)
+	return getIDs(message), nil
 
 }
