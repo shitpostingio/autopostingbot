@@ -28,7 +28,7 @@ func (StatusCommandHandler) Handle(message *client.Message) error {
 						time.Until(nextPost).Truncate(time.Minute),
 						nextPost.Format("15:04"))
 
-	_, err := api.SendPlainTextMessage(message.ChatId, text)
+	_, err := api.SendPlainText(message.ChatId, text)
 	return err
 
 }

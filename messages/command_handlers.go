@@ -24,10 +24,10 @@ import (
 )
 
 func handleStatusCommand(chatID int64, repo *repository.Repository) (reply string, err error) {
-	err = sendStatus(chatID, repo)
-	if err != nil {
-		log.Error(fmt.Sprintf("Unable to send status message: %s", err.Error()))
-	}
+	//err = sendStatus(chatID, repo)
+	//if err != nil {
+	//	log.Error(fmt.Sprintf("Unable to send status message: %s", err.Error()))
+	//}
 
 	return
 }
@@ -52,8 +52,8 @@ func handlePauseCommand(msg *tgbotapi.Message, repo *repository.Repository) (rep
 }
 
 func handlePeekCommand(msg *tgbotapi.Message, repo *repository.Repository) (reply string, err error) {
-	nextPost, err := database.GetNextPost(repo.Db)
-	_, err = manager.SendPostToChatID(nextPost, msg.Chat.ID, "", msg.MessageID, false)
+	//nextPost, err := database.GetNextPost(repo.Db)
+	//_, err = manager.SendPostToChatID(nextPost, msg.Chat.ID, "", msg.MessageID, false)
 	return
 }
 

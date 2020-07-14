@@ -7,9 +7,10 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/repository"
 )
 
-var(
-	handlers = map[string]commands.Handler {
-		"status" : commands.StatusCommandHandler{},
+var (
+	handlers = map[string]commands.Handler{
+		"status": commands.StatusCommandHandler{},
+		"peek":   commands.PeekCommandHandler{},
 	}
 )
 
@@ -21,9 +22,10 @@ func HandleUpdates(listener *client.Listener) {
 			switch update.GetType() {
 			case client.TypeUpdateNewMessage:
 				handleNewMessage(update.(*client.UpdateNewMessage).Message)
-			}
 
-			log.Printf("Type: %s, Value: %#v", update.GetType(), update)
+			default:
+				log.Printf("Type: %s, Value: %#v", update.GetType(), update)
+			}
 
 		}
 	}
@@ -32,11 +34,12 @@ func HandleUpdates(listener *client.Listener) {
 
 func handleNewMessage(message *client.Message) {
 
+	log.Printf("Message: %#v", message.Content)
+
 	if message.SenderUserId == repository.Me.Id {
 		log.Print("MESSAGE FROM SELF")
 		return
 	}
-
 
 	switch message.Content.MessageContentType() {
 	case client.TypeMessageText:
@@ -44,10 +47,9 @@ func handleNewMessage(message *client.Message) {
 	case client.TypeMessageAnimation:
 
 	case client.TypeMessagePhoto:
-
+		handlePhoto(message)
 	case client.TypeMessageVideo:
-		
-		
+
 	}
 
 }

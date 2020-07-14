@@ -10,12 +10,15 @@ import (
 
 func handleText(message *client.Message) {
 
+	log.Println("HANDLETEXT")
+
 	//
 	messageContent := message.Content.(*client.MessageText)
 	utf16Text := utf16.Encode([]rune(messageContent.Text.Text))
 
 	//
 	command, isCommand := telegram.GetCommand(utf16Text, messageContent.Text.Entities)
+	log.Println("Command:", command, " IsCommand", isCommand)
 	if !isCommand {
 		return
 	}
@@ -24,7 +27,7 @@ func handleText(message *client.Message) {
 	handler, found := handlers[command]
 	if !found {
 		log.Error("No handler found for ", command)
-		_,_ = api.SendPlainTextMessage(message.ChatId, "Unimplemented")
+		_,_ = api.SendPlainText(message.ChatId, "Unimplemented")
 		return
 	}
 
