@@ -24,3 +24,8 @@ func SendAnimation(chatID int64, remoteFileID, caption string, entities []*clien
 func SendPlainAnimation(chatID int64, remoteFileID, caption string) (*client.Message, error) {
 	return SendAnimation(chatID, remoteFileID, caption, nil)
 }
+
+func GetAnimationFileIDsFromMessage(message *client.Message) (fileID, fileUniqueID string) {
+	animation := message.Content.(*client.MessageAnimation).Animation.Animation
+	return animation.Remote.Id, animation.Remote.UniqueId
+}

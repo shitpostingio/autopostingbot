@@ -3,15 +3,7 @@ package updates
 import (
 	log "github.com/sirupsen/logrus"
 	"github.com/zelenin/go-tdlib/client"
-	"gitlab.com/shitposting/autoposting-bot/commands"
 	"gitlab.com/shitposting/autoposting-bot/repository"
-)
-
-var (
-	handlers = map[string]commands.Handler{
-		"status": commands.StatusCommandHandler{},
-		"peek":   commands.PeekCommandHandler{},
-	}
 )
 
 func HandleUpdates(listener *client.Listener) {

@@ -3,14 +3,13 @@ package messages
 import (
 	"errors"
 	"fmt"
-	"strings"
 	"time"
 
 	"gitlab.com/shitposting/telegram-markdown-processor/telegramCaption"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	entities "gitlab.com/shitposting/datalibrary/entities/autopostingbot"
 	log "github.com/sirupsen/logrus"
+	entities "gitlab.com/shitposting/datalibrary/entities/autopostingbot"
 
 	"gitlab.com/shitposting/autoposting-bot/algo"
 	"gitlab.com/shitposting/autoposting-bot/database/database"
@@ -34,26 +33,27 @@ func handleStatusCommand(chatID int64, repo *repository.Repository) (reply strin
 
 func handlePauseCommand(msg *tgbotapi.Message, repo *repository.Repository) (reply string, err error) {
 
-	var toParse string
-	if strings.HasSuffix(msg.CommandArguments(), "h") {
-		toParse = msg.CommandArguments()
-	} else {
-		toParse = msg.CommandArguments() + "h"
-	}
-
-	duration, _ := time.ParseDuration(toParse)
-	err = manager.PausePosting(duration)
-	if err != nil {
-		return
-	}
-
-	log.Info(fmt.Sprintf("%s paused posting", utility.GetHandleOrName(msg.From)))
-	return handleStatusCommand(msg.Chat.ID, repo)
+	//var toParse string
+	//if strings.HasSuffix(msg.CommandArguments(), "h") {
+	//	toParse = msg.CommandArguments()
+	//} else {
+	//	toParse = msg.CommandArguments() + "h"
+	//}
+	//
+	//duration, _ := time.ParseDuration(toParse)
+	//err = manager.PausePosting(duration)
+	//if err != nil {
+	//	return
+	//}
+	//
+	//log.Info(fmt.Sprintf("%s paused posting", utility.GetHandleOrName(msg.From)))
+	//return handleStatusCommand(msg.Chat.ID, repo)
+	return "", nil
 }
 
 func handlePeekCommand(msg *tgbotapi.Message, repo *repository.Repository) (reply string, err error) {
-	//nextPost, err := database.GetNextPost(repo.Db)
-	//_, err = manager.SendPostToChatID(nextPost, msg.Chat.ID, "", msg.MessageID, false)
+	nextPost, err := database.GetNextPost(repo.Db)
+	_, err = manager.SendPostToChatID(nextPost, msg.Chat.ID, "", msg.MessageID, false)
 	return
 }
 

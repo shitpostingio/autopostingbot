@@ -14,7 +14,7 @@ type PeekCommandHandler struct {
 
 }
 
-func (PeekCommandHandler) Handle(message *client.Message) error {
+func (PeekCommandHandler) Handle(arguments string, message *client.Message) error {
 
 	log.Println("PEEK HANDLER")
 	nextPost, err := database.GetNextPost(repository.Db)
@@ -40,5 +40,5 @@ func (PeekCommandHandler) Handle(message *client.Message) error {
 	log.Println("Formatted text found:", formattedText.Text)
 	_, err = api.SendMedia(mediaType, message.ChatId, nextPost.FileID, formattedText.Text, formattedText.Entities)
 	return err
-	
+
 }

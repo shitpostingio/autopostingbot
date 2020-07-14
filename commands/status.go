@@ -19,7 +19,7 @@ type StatusCommandHandler struct {
 
 }
 
-func (StatusCommandHandler) Handle(message *client.Message) error {
+func (StatusCommandHandler) Handle(arguments string, message *client.Message) error {
 
 	nextPost := manager.GetNextPostTime()
 	text := fmt.Sprintf(statusText,

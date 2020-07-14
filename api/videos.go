@@ -24,3 +24,8 @@ func SendVideo(chatID int64, remoteFileID, caption string, entities []*client.Te
 func SendPlainVideo(chatID int64, remoteFileID, caption string) (*client.Message, error) {
 	return SendVideo(chatID, remoteFileID, caption, nil)
 }
+
+func GetVideoFileIDsFromMessage(message *client.Message) (fileID, fileUniqueID string) {
+	video := message.Content.(*client.MessageVideo).Video.Video
+	return video.Remote.Id, video.Remote.UniqueId
+}

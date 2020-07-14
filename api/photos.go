@@ -24,3 +24,14 @@ func SendPhoto(chatID int64, remoteFileID, caption string, entities []*client.Te
 func SendPlainPhoto(chatID int64, remoteFileID, caption string) (*client.Message, error) {
 	return SendPhoto(chatID, remoteFileID, caption, nil)
 }
+
+func GetPhotoFileIDsFromMessage(message *client.Message) (fileID, fileUniqueID string) {
+
+	photo := message.Content.(*client.MessagePhoto).Photo
+	if len(photo.Sizes) == 0 {
+		return
+	}
+
+	return photo.Sizes[len(photo.Sizes) - 1].Photo.Remote.Id, photo.Sizes[len(photo.Sizes) - 1].Photo.Remote.UniqueId
+
+}

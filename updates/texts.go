@@ -4,8 +4,17 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/api"
+	"gitlab.com/shitposting/autoposting-bot/commands"
 	"gitlab.com/shitposting/autoposting-bot/telegram"
 	"unicode/utf16"
+)
+
+var (
+	handlers = map[string]commands.Handler{
+		"status": commands.StatusCommandHandler{},
+		//"peek":   commands.PeekCommandHandler{},
+		"pause": commands.PauseCommandHandler{},
+	}
 )
 
 func handleText(message *client.Message) {
@@ -17,7 +26,7 @@ func handleText(message *client.Message) {
 	utf16Text := utf16.Encode([]rune(messageContent.Text.Text))
 
 	//
-	command, isCommand := telegram.GetCommand(utf16Text, messageContent.Text.Entities)
+	command, arguments, isCommand := telegram.GetCommand(utf16Text, messageContent.Text.Entities)
 	log.Println("Command:", command, " IsCommand", isCommand)
 	if !isCommand {
 		return
@@ -31,7 +40,7 @@ func handleText(message *client.Message) {
 		return
 	}
 
-	err := handler.Handle(message)
+	err := handler.Handle(arguments, message)
 	if err != nil {
 		log.Error(err)
 	}
