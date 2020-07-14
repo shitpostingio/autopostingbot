@@ -49,3 +49,4 @@ autoposting-bot*
 .idea/
 config.toml
 memes/
+.tdlib/

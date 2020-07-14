@@ -3,8 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/zelenin/go-tdlib/client"
 	log "github.com/sirupsen/logrus"
+	"gitlab.com/shitposting/autoposting-bot/api"
+	updates2 "gitlab.com/shitposting/autoposting-bot/updates"
 	"net/http"
 
 	"gitlab.com/shitposting/autoposting-bot/edition"
@@ -19,7 +20,6 @@ import (
 	configuration "gitlab.com/shitposting/autoposting-bot/config"
 	"gitlab.com/shitposting/autoposting-bot/messages"
 	"gitlab.com/shitposting/autoposting-bot/repository"
-	"gitlab.com/shitposting/autoposting-bot/api"
 )
 
 var (
@@ -56,20 +56,19 @@ func main() {
 		log.Fatal(err)
 	}
 
-	tdlibClient, err := tdlib.Authorize(cfg.BotToken, &cfg.Tdlib)
+	tdlibClient, err := api.Authorize(cfg.BotToken, &cfg.Tdlib)
 	if err != nil {
 		log.Fatalf("NewClient error: %s", err)
+	}
+	repository.Tdlib = tdlibClient
+	repository.Me, err = tdlibClient.GetMe()
+	if err != nil {
+		log.Fatal("GetMe")
 	}
 	listener := tdlibClient.GetListener()
 	defer listener.Close()
 
-	go func() {
-		for update := range listener.Updates {
-			if update.GetClass() == client.ClassUpdate {
-				log.Printf("%#v", update)
-			}
-		}
-	}()
+	go updates2.HandleUpdates(listener)
 
 	/* INITIALIZE BOT */
 	bot, err := tgbotapi.NewBotAPI(cfg.BotToken)
