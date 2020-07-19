@@ -10,7 +10,8 @@
   version = "v0.3.1"
 
 [[projects]]
-  digest = "1:af4af244d704c5438539fa83b0b893a169d233939d113d72028b9ce43696fcf4"
+  branch = "v0.3.0"
+  digest = "1:70d6a7868bd61c3f309fabe5d112eaafbd4cc83838985397d839064a6b59e4ce"
   name = "github.com/corona10/goimagehash"
   packages = [
     ".",
@@ -18,15 +19,15 @@
     "transforms",
   ]
   pruneopts = "UT"
-  revision = "81672d701632bc2f2ba9c86e9bd28b645b39f92a"
+  revision = "5f00903fecab6225de6641930e525feccf1ef825"
 
 [[projects]]
-  digest = "1:ec6f9bf5e274c833c911923c9193867f3f18788c461f76f05f62bb1510e0ae65"
+  digest = "1:a3af33fd30536d9c5a7b6ad542390919e57c1125097a194c7b3d9904109a0611"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
   pruneopts = "UT"
-  revision = "72cd26f257d44c1114970e19afddcd812016007e"
-  version = "v1.4.1"
+  revision = "17ef3dd9d98b69acec3e85878995ada9533a9370"
+  version = "v1.5.0"
 
 [[projects]]
   digest = "1:586ea76dbd0374d6fb649a91d70d652b7fe0ccffb8910a77468e7702e7901f3d"
@@ -38,11 +39,11 @@
 
 [[projects]]
   branch = "develop"
-  digest = "1:b1dd4d5cc66fca6720e4769b245df60f35444c9950ff69fc208e0ea366d50ecc"
+  digest = "1:840ae28eca875ce9faac27f26a524101274049653707b3e3fd7ba5782195ebb7"
   name = "github.com/go-telegram-bot-api/telegram-bot-api"
   packages = ["."]
   pruneopts = "UT"
-  revision = "ffe77fb717d3cda2df08269a6362c49ccab11ebf"
+  revision = "38c2cb18eddd4a0664ba18d82cd9f77a8c959381"
 
 [[projects]]
   branch = "master"
@@ -61,15 +62,15 @@
   version = "1.0.0"
 
 [[projects]]
-  digest = "1:6d39be33a917111436132ff319562545899eaeca7039a1bfffd0cd0246990d78"
+  digest = "1:49ddc70f666da82675944a9eab97ff74b2ca8be8e71f7d0ff4cda2ab44a3762d"
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
     "dialects/mysql",
   ]
   pruneopts = "UT"
-  revision = "836fb2c19d84dac7b0272958dfb9af7cf0d0ade4"
-  version = "v1.9.10"
+  revision = "7cc9c13f20d9d41d10a2bc2888271fd723c1a567"
+  version = "v1.9.14"
 
 [[projects]]
   digest = "1:01ed62f8f4f574d8aff1d88caee113700a2b44c42351943fa73cc1808f736a50"
@@ -119,11 +120,11 @@
 
 [[projects]]
   branch = "v2"
-  digest = "1:ef2ad4a90c4620df693fa29353f125b5702d6966fc699fa7d7aa1fd093f9db4b"
+  digest = "1:8178d8b173583e8fe2fda7f747c728716261e18c35cc38acf9745333064d7474"
   name = "github.com/russross/blackfriday"
   packages = ["."]
   pruneopts = "UT"
-  revision = "3e56bb68c8876389c631e9e318ce3c092a0906db"
+  revision = "acedacffef10e8f1943455d4dd8bb8f4dfe8d0f8"
 
 [[projects]]
   digest = "1:05eebdd5727fea23083fce0d98d307d70c86baed644178e81608aaa9f09ea469"
@@ -166,31 +167,42 @@
   version = "v0.2.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:18b2d813efcac6dfd74f0cced71a2006bdc5c1d81adee254560d7d1347c8aaa5"
+  branch = "3-support-direct-uploads"
+  digest = "1:1a6e7a104983c8b34969ec19ba35351770536dd20249970832b3cc7861b7bade"
+  name = "gitlab.com/shitposting/analysis-api"
+  packages = [
+    "api/client",
+    "services/structs",
+  ]
+  pruneopts = "UT"
+  revision = "79559cd20f0b7ff80af5523dc14b2bbbc4e32759"
+
+[[projects]]
+  digest = "1:c34c1c92dce89d6e18164a67114dec6d470e515d4330faad57b6e8ea6b00da36"
   name = "gitlab.com/shitposting/datalibrary"
   packages = [
     "entities/autopostingbot",
     "entities/fpserver",
   ]
   pruneopts = "UT"
-  revision = "254cd2aefdd00d6c3a1c0dfd57feab4b2d0500d7"
+  revision = "106005cb355f93e530b84bd506f0d872730417e7"
+  version = "1.0"
 
 [[projects]]
-  branch = "4-divide-library-into-packages"
+  branch = "master"
   digest = "1:e0cdf68e5963527d5c688cd123b8ff9e2700f0ea06f4f6d60f715f5c069bc95c"
   name = "gitlab.com/shitposting/fingerprinting"
   packages = ["comparer"]
   pruneopts = "UT"
-  revision = "c7ff648dd668178fffc27e6bdc921affe2f39b3c"
+  revision = "203d9eea207dbbb089f04c888d9ff2f8e39d9822"
 
 [[projects]]
   branch = "master"
-  digest = "1:985dd6fb0e4d2ec4a30ac25973f16a2c7e7c5b1ffbe505d176da66be04723284"
+  digest = "1:e23bc957419d80c90cec91a91f7106a99297b467eb7445b1f3ffe57cb71c9abc"
   name = "gitlab.com/shitposting/loglog-ng"
   packages = ["."]
   pruneopts = "UT"
-  revision = "a4ef995a5bb57efb4c0976842e7af56d945b43ec"
+  revision = "1a7a17ceee83b57de68ed50b56df514b9ab463ed"
 
 [[projects]]
   branch = "master"
@@ -201,7 +213,7 @@
     "telegramCaption",
   ]
   pruneopts = "UT"
-  revision = "21e14a525438750715e0867293cf67e6e28388cd"
+  revision = "724e5e8b9322a50897a56b2a3b479e1208b5cfae"
 
 [[projects]]
   digest = "1:09cf83da2e89dfdba4ef14a6e1d193238ed9bc5f00ff198e5adb02aff2cce194"
@@ -287,22 +299,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:7b5ce208ea2ca1f96322e6a5b616839fe49ea798648a013039f300475a1aadfc"
+  digest = "1:918a46e4a2fb83df33f668f5a6bd51b2996775d073fce1800d3ec01b0a5ddd2b"
   name = "golang.org/x/xerrors"
   packages = [
     ".",
     "internal",
   ]
   pruneopts = "UT"
-  revision = "a985d3407aa71f30cf86696ee0a2f409709f22e1"
-
-[[projects]]
-  digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
-  name = "google.golang.org/appengine"
-  packages = ["cloudsql"]
-  pruneopts = "UT"
-  revision = "5f2a59506353b8d5ba8cbbcd9f3c1f41f1eaf079"
-  version = "v1.6.2"
+  revision = "9bdfabe68543c54f90421aeb9a60ef8061b5b544"
 
 [solve-meta]
   analyzer-name = "dep"
@@ -315,6 +319,7 @@
     "github.com/jinzhu/gorm/dialects/mysql",
     "github.com/sirupsen/logrus",
     "github.com/zelenin/go-tdlib/client",
+    "gitlab.com/shitposting/analysis-api/api/client",
     "gitlab.com/shitposting/datalibrary/entities/autopostingbot",
     "gitlab.com/shitposting/datalibrary/entities/fpserver",
     "gitlab.com/shitposting/fingerprinting/comparer",
@@ -325,6 +330,7 @@
     "go.mongodb.org/mongo-driver/bson/primitive",
     "go.mongodb.org/mongo-driver/mongo",
     "go.mongodb.org/mongo-driver/mongo/options",
+    "go.mongodb.org/mongo-driver/mongo/readpref",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

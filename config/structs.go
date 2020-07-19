@@ -16,6 +16,7 @@ type Config struct {
 	Fpserver           FpServerConfig
 	Tdlib              TdlibConfiguration
 	DocumentStore      DocumentStoreConfiguration
+	AnalysisAPI        AnalysisAPIConfig
 }
 
 // LoglogConfig contains the configuration for Loglog
@@ -33,6 +34,15 @@ type FpServerConfig struct {
 	AuthorizationHeaderValue string
 	CallerAPIKeyHeaderName   string
 	FilePathHeaderName       string
+}
+
+type AnalysisAPIConfig struct {
+	Address                  string
+	ImageEndpoint            string
+	VideoEndpoint            string
+	AuthorizationHeaderName  string
+	AuthorizationHeaderValue string
+	CallerAPIKeyHeaderName   string
 }
 
 //DBConfig contains the configuration for a database

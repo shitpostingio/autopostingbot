@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	log "github.com/sirupsen/logrus"
+	"gitlab.com/shitposting/autoposting-bot/analysisadapter"
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore"
 	updates2 "gitlab.com/shitposting/autoposting-bot/updates"
@@ -68,6 +69,8 @@ func main() {
 	}
 	listener := tdlibClient.GetListener()
 	defer listener.Close()
+
+	analysisadapter.Start(cfg.AnalysisAPI)
 
 	go updates2.HandleUpdates(listener)
 

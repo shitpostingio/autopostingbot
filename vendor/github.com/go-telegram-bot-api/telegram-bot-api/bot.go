@@ -27,6 +27,8 @@ type BotAPI struct {
 	Self            User         `json:"-"`
 	Client          *http.Client `json:"-"`
 	shutdownChannel chan interface{}
+
+	apiEndpoint string
 }
 
 // NewBotAPI creates a new BotAPI instance.
@@ -46,6 +48,8 @@ func NewBotAPIWithClient(token string, client *http.Client) (*BotAPI, error) {
 		Client:          client,
 		Buffer:          100,
 		shutdownChannel: make(chan interface{}),
+
+		apiEndpoint: APIEndpoint,
 	}
 
 	self, err := bot.GetMe()
@@ -56,6 +60,11 @@ func NewBotAPIWithClient(token string, client *http.Client) (*BotAPI, error) {
 	bot.Self = self
 
 	return bot, nil
+}
+
+// SetAPIEndpoint changes the Telegram Bot API endpoint used by the instance.
+func (bot *BotAPI) SetAPIEndpoint(apiEndpoint string) {
+	bot.apiEndpoint = apiEndpoint
 }
 
 func buildParams(in Params) (out url.Values) {
@@ -78,7 +87,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params Params) (APIResponse, err
 		log.Printf("Endpoint: %s, params: %v\n", endpoint, params)
 	}
 
-	method := fmt.Sprintf(APIEndpoint, bot.Token, endpoint)
+	method := fmt.Sprintf(bot.apiEndpoint, bot.Token, endpoint)
 
 	values := buildParams(params)
 
@@ -106,6 +115,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params Params) (APIResponse, err
 		}
 
 		return apiResp, Error{
+			Code:               apiResp.ErrorCode,
 			Message:            apiResp.Description,
 			ResponseParameters: parameters,
 		}
@@ -199,7 +209,7 @@ func (bot *BotAPI) UploadFile(endpoint string, params Params, fieldname string, 
 		log.Printf("Endpoint: %s, fieldname: %s, params: %v, file: %T\n", endpoint, fieldname, params, file)
 	}
 
-	method := fmt.Sprintf(APIEndpoint, bot.Token, endpoint)
+	method := fmt.Sprintf(bot.apiEndpoint, bot.Token, endpoint)
 
 	req, err := http.NewRequest("POST", method, nil)
 	if err != nil {
@@ -439,6 +449,7 @@ func (bot *BotAPI) ListenForWebhook(pattern string) UpdatesChannel {
 
 	http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
 		bytes, _ := ioutil.ReadAll(r.Body)
+		r.Body.Close()
 
 		var update Update
 		json.Unmarshal(bytes, &update)
@@ -447,6 +458,32 @@ func (bot *BotAPI) ListenForWebhook(pattern string) UpdatesChannel {
 	})
 
 	return ch
+}
+
+// WriteToHTTPResponse writes the request to the HTTP ResponseWriter.
+//
+// It doesn't support uploading files.
+//
+// See https://core.telegram.org/bots/api#making-requests-when-getting-updates
+// for details.
+func WriteToHTTPResponse(w http.ResponseWriter, c Chattable) error {
+	params, err := c.params()
+	if err != nil {
+		return err
+	}
+
+	if t, ok := c.(Fileable); ok {
+		if !t.useExistingFile() {
+			return errors.New("unable to use http response to upload files")
+		}
+	}
+
+	values := buildParams(params)
+	values.Set("method", c.method())
+
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	_, err = w.Write([]byte(values.Encode()))
+	return err
 }
 
 // GetChat gets information about a chat.
@@ -573,4 +610,24 @@ func (bot *BotAPI) StopPoll(config StopPollConfig) (Poll, error) {
 	err = json.Unmarshal(resp.Result, &poll)
 
 	return poll, err
+}
+
+// GetMyCommands gets the currently registered commands.
+func (bot *BotAPI) GetMyCommands() ([]BotCommand, error) {
+	config := GetMyCommandsConfig{}
+
+	params, err := config.params()
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := bot.MakeRequest(config.method(), params)
+	if err != nil {
+		return nil, err
+	}
+
+	var commands []BotCommand
+	err = json.Unmarshal(resp.Result, &commands)
+
+	return commands, err
 }

@@ -3,6 +3,7 @@ package tgbotapi
 import (
 	"io"
 	"net/url"
+	"strconv"
 )
 
 // Telegram constants
@@ -34,8 +35,9 @@ const (
 
 // Constant values for ParseMode in MessageConfig
 const (
-	ModeMarkdown = "Markdown"
-	ModeHTML     = "HTML"
+	ModeMarkdown   = "Markdown"
+	ModeMarkdownV2 = "MarkdownV2"
+	ModeHTML       = "HTML"
 )
 
 // Library errors
@@ -502,8 +504,17 @@ func (config ContactConfig) method() string {
 // SendPollConfig allows you to send a poll.
 type SendPollConfig struct {
 	BaseChat
-	Question string
-	Options  []string
+	Question              string
+	Options               []string
+	IsAnonymous           bool
+	Type                  string
+	AllowsMultipleAnswers bool
+	CorrectOptionID       int64
+	Explanation           string
+	ExplanationParseMode  string
+	OpenPeriod            int
+	CloseDate             int
+	IsClosed              bool
 }
 
 func (config SendPollConfig) params() (Params, error) {
@@ -514,6 +525,15 @@ func (config SendPollConfig) params() (Params, error) {
 
 	params["question"] = config.Question
 	err = params.AddInterface("options", config.Options)
+	params["is_anonymous"] = strconv.FormatBool(config.IsAnonymous)
+	params.AddNonEmpty("type", config.Type)
+	params["allows_multiple_answers"] = strconv.FormatBool(config.AllowsMultipleAnswers)
+	params["correct_option_id"] = strconv.FormatInt(config.CorrectOptionID, 10)
+	params.AddBool("is_closed", config.IsClosed)
+	params.AddNonEmpty("explanation", config.Explanation)
+	params.AddNonEmpty("explanation_parse_mode", config.ExplanationParseMode)
+	params.AddNonZero("open_period", config.OpenPeriod)
+	params.AddNonZero("close_date", config.CloseDate)
 
 	return params, err
 }
@@ -939,11 +959,8 @@ func (config KickChatMemberConfig) params() (Params, error) {
 // RestrictChatMemberConfig contains fields to restrict members of chat
 type RestrictChatMemberConfig struct {
 	ChatMemberConfig
-	UntilDate             int64
-	CanSendMessages       *bool
-	CanSendMediaMessages  *bool
-	CanSendOtherMessages  *bool
-	CanAddWebPagePreviews *bool
+	UntilDate   int64
+	Permissions *ChatPermissions
 }
 
 func (config RestrictChatMemberConfig) method() string {
@@ -956,10 +973,9 @@ func (config RestrictChatMemberConfig) params() (Params, error) {
 	params.AddFirstValid("chat_id", config.ChatID, config.SuperGroupUsername, config.ChannelUsername)
 	params.AddNonZero("user_id", config.UserID)
 
-	params.AddNonNilBool("can_send_messages", config.CanSendMessages)
-	params.AddNonNilBool("can_send_media_messages", config.CanSendMediaMessages)
-	params.AddNonNilBool("can_send_other_messages", config.CanSendOtherMessages)
-	params.AddNonNilBool("can_add_web_page_previews", config.CanAddWebPagePreviews)
+	if err := params.AddInterface("permissions", config.Permissions); err != nil {
+		return params, err
+	}
 	params.AddNonZero64("until_date", config.UntilDate)
 
 	return params, nil
@@ -968,14 +984,14 @@ func (config RestrictChatMemberConfig) params() (Params, error) {
 // PromoteChatMemberConfig contains fields to promote members of chat
 type PromoteChatMemberConfig struct {
 	ChatMemberConfig
-	CanChangeInfo      *bool
-	CanPostMessages    *bool
-	CanEditMessages    *bool
-	CanDeleteMessages  *bool
-	CanInviteUsers     *bool
-	CanRestrictMembers *bool
-	CanPinMessages     *bool
-	CanPromoteMembers  *bool
+	CanChangeInfo      bool
+	CanPostMessages    bool
+	CanEditMessages    bool
+	CanDeleteMessages  bool
+	CanInviteUsers     bool
+	CanRestrictMembers bool
+	CanPinMessages     bool
+	CanPromoteMembers  bool
 }
 
 func (config PromoteChatMemberConfig) method() string {
@@ -988,14 +1004,35 @@ func (config PromoteChatMemberConfig) params() (Params, error) {
 	params.AddFirstValid("chat_id", config.ChatID, config.SuperGroupUsername, config.ChannelUsername)
 	params.AddNonZero("user_id", config.UserID)
 
-	params.AddNonNilBool("can_change_info", config.CanChangeInfo)
-	params.AddNonNilBool("can_post_messages", config.CanPostMessages)
-	params.AddNonNilBool("can_edit_messages", config.CanEditMessages)
-	params.AddNonNilBool("can_delete_messages", config.CanDeleteMessages)
-	params.AddNonNilBool("can_invite_users", config.CanInviteUsers)
-	params.AddNonNilBool("can_restrict_members", config.CanRestrictMembers)
-	params.AddNonNilBool("can_pin_messages", config.CanPinMessages)
-	params.AddNonNilBool("can_promote_members", config.CanPromoteMembers)
+	params.AddBool("can_change_info", config.CanChangeInfo)
+	params.AddBool("can_post_messages", config.CanPostMessages)
+	params.AddBool("can_edit_messages", config.CanEditMessages)
+	params.AddBool("can_delete_messages", config.CanDeleteMessages)
+	params.AddBool("can_invite_users", config.CanInviteUsers)
+	params.AddBool("can_restrict_members", config.CanRestrictMembers)
+	params.AddBool("can_pin_messages", config.CanPinMessages)
+	params.AddBool("can_promote_members", config.CanPromoteMembers)
+
+	return params, nil
+}
+
+// SetChatAdministratorCustomTitle sets the title of an administrative user
+// promoted by the bot for a chat.
+type SetChatAdministratorCustomTitle struct {
+	ChatMemberConfig
+	CustomTitle string
+}
+
+func (SetChatAdministratorCustomTitle) method() string {
+	return "setChatAdministratorCustomTitle"
+}
+
+func (config SetChatAdministratorCustomTitle) params() (Params, error) {
+	params := make(Params)
+
+	params.AddFirstValid("chat_id", config.ChatID, config.SuperGroupUsername, config.ChannelUsername)
+	params.AddNonZero("user_id", config.UserID)
+	params.AddNonEmpty("custom_title", config.CustomTitle)
 
 	return params, nil
 }
@@ -1039,6 +1076,27 @@ type ChatAdministratorsConfig struct {
 
 func (ChatAdministratorsConfig) method() string {
 	return "getChatAdministrators"
+}
+
+// SetChatPermissionsConfig allows you to set default permissions for the
+// members in a group. The bot must be an administrator and have rights to
+// restrict members.
+type SetChatPermissionsConfig struct {
+	ChatConfig
+	Permissions *ChatPermissions
+}
+
+func (SetChatPermissionsConfig) method() string {
+	return "setChatPermissions"
+}
+
+func (config SetChatPermissionsConfig) params() (Params, error) {
+	params := make(Params)
+
+	params.AddFirstValid("chat_id", config.ChatID, config.SuperGroupUsername)
+	params.AddInterface("permissions", config.Permissions)
+
+	return params, nil
 }
 
 // ChatInviteLinkConfig contains information about getting a chat link.
@@ -1367,11 +1425,14 @@ func (config UploadStickerConfig) useExistingFile() bool {
 }
 
 // NewStickerSetConfig allows creating a new sticker set.
+//
+// You must set either PNGSticker or TGSSticker.
 type NewStickerSetConfig struct {
 	UserID        int64
 	Name          string
 	Title         string
 	PNGSticker    interface{}
+	TGSSticker    interface{}
 	Emojis        string
 	ContainsMasks bool
 	MaskPosition  *MaskPosition
@@ -1389,6 +1450,8 @@ func (config NewStickerSetConfig) params() (Params, error) {
 	params["title"] = config.Title
 
 	if sticker, ok := config.PNGSticker.(string); ok {
+		params[config.name()] = sticker
+	} else if sticker, ok := config.TGSSticker.(string); ok {
 		params[config.name()] = sticker
 	}
 
@@ -1410,9 +1473,17 @@ func (config NewStickerSetConfig) name() string {
 }
 
 func (config NewStickerSetConfig) useExistingFile() bool {
-	_, ok := config.PNGSticker.(string)
+	if config.PNGSticker != nil {
+		_, ok := config.PNGSticker.(string)
+		return ok
+	}
 
-	return ok
+	if config.TGSSticker != nil {
+		_, ok := config.TGSSticker.(string)
+		return ok
+	}
+
+	panic("NewStickerSetConfig had nil PNGSticker and TGSSticker")
 }
 
 // AddStickerConfig allows you to add a sticker to a set.
@@ -1420,6 +1491,7 @@ type AddStickerConfig struct {
 	UserID       int64
 	Name         string
 	PNGSticker   interface{}
+	TGSSticker   interface{}
 	Emojis       string
 	MaskPosition *MaskPosition
 }
@@ -1436,6 +1508,8 @@ func (config AddStickerConfig) params() (Params, error) {
 	params["emojis"] = config.Emojis
 
 	if sticker, ok := config.PNGSticker.(string); ok {
+		params[config.name()] = sticker
+	} else if sticker, ok := config.TGSSticker.(string); ok {
 		params[config.name()] = sticker
 	}
 
@@ -1490,6 +1564,43 @@ func (config DeleteStickerConfig) params() (Params, error) {
 	params["sticker"] = config.Sticker
 
 	return params, nil
+}
+
+// SetStickerSetThumbConfig allows you to set the thumbnail for a sticker set.
+type SetStickerSetThumbConfig struct {
+	Name   string
+	UserID int
+	Thumb  interface{}
+}
+
+func (config SetStickerSetThumbConfig) method() string {
+	return "setStickerSetThumb"
+}
+
+func (config SetStickerSetThumbConfig) params() (Params, error) {
+	params := make(Params)
+
+	params["name"] = config.Name
+	params.AddNonZero("user_id", config.UserID)
+
+	if thumb, ok := config.Thumb.(string); ok {
+		params["thumb"] = thumb
+	}
+
+	return params, nil
+}
+
+func (config SetStickerSetThumbConfig) name() string {
+	return "thumb"
+}
+
+func (config SetStickerSetThumbConfig) getFile() interface{} {
+	return config.Thumb
+}
+
+func (config SetStickerSetThumbConfig) useExistingFile() bool {
+	_, ok := config.Thumb.(string)
+	return ok
 }
 
 // SetChatStickerSetConfig allows you to set the sticker set for a supergroup.
@@ -1558,4 +1669,54 @@ func (config MediaGroupConfig) params() (Params, error) {
 	params.AddNonZero("reply_to_message_id", config.ReplyToMessageID)
 
 	return params, nil
+}
+
+// DiceConfig allows you to send a random dice roll to Telegram.
+type DiceConfig struct {
+	BaseChat
+
+	Emoji string
+}
+
+func (config DiceConfig) method() string {
+	return "sendDice"
+}
+
+func (config DiceConfig) params() (Params, error) {
+	params, err := config.BaseChat.params()
+	if err != nil {
+		return params, err
+	}
+
+	params.AddNonEmpty("emoji", config.Emoji)
+
+	return params, err
+}
+
+// GetMyCommandsConfig gets a list of the currently registered commands.
+type GetMyCommandsConfig struct{}
+
+func (config GetMyCommandsConfig) method() string {
+	return "getMyCommands"
+}
+
+func (config GetMyCommandsConfig) params() (Params, error) {
+	return make(Params), nil
+}
+
+// SetMyCommandsConfig sets a list of commands the bot understands.
+type SetMyCommandsConfig struct {
+	commands []BotCommand
+}
+
+func (config SetMyCommandsConfig) method() string {
+	return "setMyCommands"
+}
+
+func (config SetMyCommandsConfig) params() (Params, error) {
+	params := make(Params)
+
+	err := params.AddInterface("commands", config.commands)
+
+	return params, err
 }

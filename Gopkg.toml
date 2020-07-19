@@ -37,8 +37,8 @@
   version = "1.9.1"
 
 [[constraint]]
-  branch = "4-divide-library-into-packages"
-  name = "gitlab.com/shitposting/fingerprinting"
+  name = "gitlab.com/shitposting/analysis-api"
+  branch = "3-support-direct-uploads"
 
 [prune]
   go-tests = true

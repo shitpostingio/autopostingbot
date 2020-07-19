@@ -83,3 +83,83 @@ func PerceptionHash(img image.Image) (*ImageHash, error) {
 	}
 	return phash, nil
 }
+
+// PerceptionHashExtend function returns phash of which the size can be set larger than uint64
+// Some variable name refer to https://github.com/JohannesBuchner/imagehash/blob/master/imagehash/__init__.py
+// Support 64bits phash (hashSize=8) and 256bits phash (hashSize=16)
+func PerceptionHashExtend(img image.Image, hashSize int) (*ExtImageHash, error) {
+	if img == nil {
+		return nil, errors.New("Image object can not be nil")
+	}
+	imgSize := hashSize * hashSize
+	resized := resize.Resize(uint(imgSize), uint(imgSize), img, resize.Bilinear)
+	pixels := transforms.Rgb2Gray(resized)
+	dct := transforms.DCT2D(pixels, imgSize, imgSize)
+	flattens := transforms.FlattenPixels(dct, hashSize, hashSize)
+	median := etcs.MedianOfPixels(flattens)
+
+	lenOfUnit := 64
+	phash := make([]uint64, imgSize/lenOfUnit)
+	for idx, p := range flattens {
+		indexOfArray := (imgSize - 1 - idx) / lenOfUnit
+		indexOfBit := idx % lenOfUnit
+		if p > median {
+			phash[indexOfArray] |= 1 << uint(indexOfBit)
+		}
+	}
+	return NewExtImageHash(phash, PHash), nil
+}
+
+// AverageHashExtend function returns ahash of which the size can be set larger than uint64
+// Support 64bits ahash (hashSize=8) and 256bits ahash (hashSize=16)
+func AverageHashExtend(img image.Image, hashSize int) (*ExtImageHash, error) {
+	if img == nil {
+		return nil, errors.New("Image object can not be nil")
+	}
+
+	imgSize := hashSize * hashSize
+
+	resized := resize.Resize(uint(hashSize), uint(hashSize), img, resize.Bilinear)
+	pixels := transforms.Rgb2Gray(resized)
+	flattens := transforms.FlattenPixels(pixels, hashSize, hashSize)
+	avg := etcs.MeanOfPixels(flattens)
+
+	lenOfUnit := 64
+	ahash := make([]uint64, imgSize/lenOfUnit)
+	for idx, p := range flattens {
+		indexOfArray := (imgSize - 1 - idx) / lenOfUnit
+		indexOfBit := idx % lenOfUnit
+		if p > avg {
+			ahash[indexOfArray] |= 1 << uint(indexOfBit)
+		}
+	}
+	return NewExtImageHash(ahash, AHash), nil
+}
+
+// DifferenceHashExtend function returns dhash of which the size can be set larger than uint64
+// Support 64bits dhash (hashSize=8) and 256bits dhash (hashSize=16)
+func DifferenceHashExtend(img image.Image, hashSize int) (*ExtImageHash, error) {
+	if img == nil {
+		return nil, errors.New("Image object can not be nil")
+	}
+
+	imgSize := hashSize * hashSize
+
+	resized := resize.Resize(uint(hashSize)+1, uint(hashSize), img, resize.Bilinear)
+	pixels := transforms.Rgb2Gray(resized)
+
+	lenOfUnit := 64
+	dhash := make([]uint64, imgSize/lenOfUnit)
+	idx := 0
+	for i := 0; i < len(pixels); i++ {
+		for j := 0; j < len(pixels[i])-1; j++ {
+			indexOfArray := (imgSize - 1 - idx) / lenOfUnit
+			indexOfBit := idx % lenOfUnit
+			if pixels[i][j] < pixels[i][j+1] {
+				dhash[indexOfArray] |= 1 << uint(indexOfBit)
+			}
+			idx++
+		}
+	}
+	return NewExtImageHash(dhash, DHash), nil
+}

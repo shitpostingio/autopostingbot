@@ -3,6 +3,7 @@ package updates
 import (
 	log "github.com/sirupsen/logrus"
 	"github.com/zelenin/go-tdlib/client"
+	"gitlab.com/shitposting/autoposting-bot/analysisadapter"
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/files"
 )
@@ -23,6 +24,8 @@ func handlePhoto(message *client.Message) {
 		return
 	}
 
+	fingerprint, err := analysisadapter.Request(fileInfo.Local.Path, client.TypePhoto, fileInfo.Remote.UniqueId)
+	log.Println("Ottenuta risposta da analysis: ", fingerprint, err)
 
 
 
