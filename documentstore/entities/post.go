@@ -7,7 +7,7 @@ import (
 
 type Post struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty"`
-	AddedBy   int64
+	AddedBy   int32
 	Media     Media
 	Caption   string
 	HasError  bool `bson:",omitempty"`

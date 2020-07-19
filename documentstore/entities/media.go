@@ -1,14 +1,9 @@
 package entities
 
-import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
-)
-
 // Media represents a media in the document store
 type Media struct {
-	ID               primitive.ObjectID `bson:"_id,omitempty"`
 	Type             string
-	TdlibID          int32
+	TdlibID          int32	//TODO: controllare, è un intero basso, probabilmente un riferimento al db di tdlib
 	FileUniqueID     string
 	FileID           string
 	Histogram        []float64 `bson:",omitempty"`
