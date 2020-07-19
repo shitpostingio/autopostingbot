@@ -13,8 +13,8 @@ type Post struct {
 	Caption   *client.FormattedText
 	HasError  bool `bson:",omitempty"`
 	AddedAt   time.Time
-	UpdatedAt time.Time `bson:",omitempty"`
-	PostedAt  time.Time `bson:",omitempty"`
-	MessageID int64 `bson:",omitempty"`
-	DeletedAt time.Time `bson:",omitempty"`
+	UpdatedAt *time.Time `bson:",omitempty"`
+	PostedAt  *time.Time `bson:",omitempty"`
+	MessageID int64
+	DeletedAt *time.Time `bson:",omitempty"`
 }

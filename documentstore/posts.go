@@ -73,7 +73,8 @@ func FindPostByFeatures(histogram []float64, pHash string, approximation float64
 				{"$lte", maxAvg},
 			},
 		},
-		{Key: "media.histogramsum",
+		{
+			Key: "media.histogramsum",
 			Value: bson.D{
 				{"$gte", minSum},
 				{"$lte", maxSum},
@@ -156,10 +157,33 @@ func DeletePostByUniqueID(uniqueID string, collection *mongo.Collection) error {
 //
 //}
 //
-//// GetQueueLength returns the number of the enqueued posts
-//func GetQueueLength() (length int) {
-//
-//}
+// GetQueueLength returns the number of the enqueued posts
+func GetQueueLength(collection *mongo.Collection) (length int64) {
+
+	//
+	ctx, cancelCtx := context.WithTimeout(context.Background(), opDeadline)
+	defer cancelCtx()
+
+	//
+	filter := bson.D{
+		{
+			Key: "media.postedat",
+			Value: nil, //TODO: CONTROLLARE
+		},
+		{
+			Key: "media.haserror",
+			Value: nil,
+		},
+	}
+
+	res, err := collection.CountDocuments(ctx, filter, options.Count())
+	if err != nil {
+		return -1
+	}
+
+	return res
+
+}
 //
 //// GetQueuePositionByDatabaseID returns the position of the selected post in the queue
 //func GetQueuePositionByDatabaseID(id uint) (position int) {

@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/api"
-	"gitlab.com/shitposting/autoposting-bot/database/database"
+	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 	"gitlab.com/shitposting/autoposting-bot/manager"
-	"gitlab.com/shitposting/autoposting-bot/repository"
 	"time"
 )
 
@@ -22,7 +21,7 @@ func (StatusCommandHandler) Handle(arguments string, message *client.Message) er
 
 	nextPost := manager.GetNextPostTime()
 	text := fmt.Sprintf(statusText,
-		database.GetQueueLength(repository.Db),
+		dbwrapper.GetQueueLength(),
 		manager.GetPostingRate().String(),
 		time.Until(nextPost).Truncate(time.Minute),
 		nextPost.Format("15:04"))

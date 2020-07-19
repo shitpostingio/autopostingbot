@@ -22,3 +22,7 @@ func FindPostByUniqueID(uniqueID string) (post entities.Post, err error) {
 func DeletePostByUniqueID(uniqueID string) error {
 	return documentstore.DeletePostByUniqueID(uniqueID, documentstore.PostCollection)
 }
+
+func GetQueueLength() (length int64) {
+	return documentstore.GetQueueLength(documentstore.PostCollection)
+}

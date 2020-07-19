@@ -24,7 +24,7 @@ func getDuplicateCaption(duplicatePost *entities.Post) (*client.FormattedText, e
 		duplicatePost.AddedBy, telegram.GetNameFromUser(user), utility.FormatDate(duplicatePost.AddedAt))
 
 	if duplicatePost.MessageID != 0 {
-		caption = fmt.Sprintf("%s\nPosted on %s\nLink: t.me/%s/%d", caption, utility.FormatDate(duplicatePost.PostedAt), edition.ChannelName, duplicatePost.MessageID)
+		caption = fmt.Sprintf("%s\nPosted on %s\nLink: t.me/%s/%d", caption, utility.FormatDate(*duplicatePost.PostedAt), edition.ChannelName, duplicatePost.MessageID)
 	}
 
 	ft, err := legacy.NewFormattedTextFromCaption(caption)
