@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	sendFunction = map[string]func(int64, string, string, []*client.TextEntity) (*client.Message, error){
+	sendFunction = map[string]func(int64, int64, string, string, []*client.TextEntity) (*client.Message, error){
 		client.TypeAnimation: SendAnimation,
 		client.TypePhoto:     SendPhoto,
 		client.TypeVideo:     SendVideo,
@@ -20,7 +20,7 @@ var (
 	}
 )
 
-func SendMedia(mediaType string, chatID int64, remoteFileID, caption string, entities []*client.TextEntity) (*client.Message, error) {
+func SendMedia(mediaType string, chatID, replyToMessageID int64, remoteFileID, caption string, entities []*client.TextEntity) (*client.Message, error) {
 
 	send, found := sendFunction[mediaType]
 	if !found {
@@ -29,7 +29,7 @@ func SendMedia(mediaType string, chatID int64, remoteFileID, caption string, ent
 		return nil, err
 	}
 
-	return send(chatID, remoteFileID, caption, entities)
+	return send(chatID, replyToMessageID, remoteFileID, caption, entities)
 
 }
 

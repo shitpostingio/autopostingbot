@@ -2,10 +2,15 @@ package api
 
 import "github.com/zelenin/go-tdlib/client"
 
-func SendText(chatID int64, text string, entities []*client.TextEntity) (*client.Message, error) {
+const (
+	NoReply = 0
+)
+
+func SendText(chatID, replyToMessageID int64, text string, entities []*client.TextEntity) (*client.Message, error) {
 
 	request := client.SendMessageRequest{
-		ChatId: chatID,
+		ChatId:           chatID,
+		ReplyToMessageId: replyToMessageID,
 		InputMessageContent: &client.InputMessageText{
 			Text: &client.FormattedText{
 				Text:     text,
@@ -19,5 +24,9 @@ func SendText(chatID int64, text string, entities []*client.TextEntity) (*client
 }
 
 func SendPlainText(chatID int64, text string) (*client.Message, error) {
-	return SendText(chatID, text, nil)
+	return SendText(chatID, NoReply, text, nil)
+}
+
+func SendPlainReplyText(chatID, replyToMessageID int64, text string) (*client.Message, error) {
+	return SendText(chatID, replyToMessageID, text, nil)
 }

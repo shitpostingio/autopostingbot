@@ -33,9 +33,9 @@ func HandleNew(msg *tgbotapi.Message, repo *repository.Repository) {
 	case msg.Photo != nil:
 		//replyText, duplicatePost = media.HandleNewPhoto(msg, &user, repo, true)
 	case msg.Video != nil:
-		replyText, duplicatePost = media.HandleNewVideo(msg, &user, repo, true)
+		//replyText, duplicatePost = media.HandleNewVideo(msg, &user, repo, true)
 	case msg.Animation != nil:
-		replyText, duplicatePost = media.HandleNewAnimation(msg, &user, repo, true)
+		//replyText, duplicatePost = media.HandleNewAnimation(msg, &user, repo, true)
 	case msg.Text != "" && msg.IsCommand():
 		handleCommands(msg, &user, repo)
 		return

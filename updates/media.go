@@ -37,9 +37,10 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 
 		post, err := dbwrapper.FindPostByFeatures(fingerprint.Histogram, fingerprint.PHash)
 		if err == nil {
-			//TODO: SEND DUPLICATE
 			log.Println("Match found: ", post)
-			_, _ = api.SendMedia(mediatype, message.ChatId, post.Media.FileID, "DUPLICATE DETECTED", nil)
+			//TODO: VEDERE L'ERRORE
+			formattedText, _ := getDuplicateCaption(&post)
+			_, _ = api.SendMedia(mediatype, message.ChatId, message.Id, post.Media.FileID, formattedText.Text, formattedText.Entities)
 			return
 		}
 
@@ -64,6 +65,6 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 		log.Error(err)
 	}
 
-	_, _ = api.SendPlainText(message.ChatId, "Media added!")
+	_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "Media added!")
 
 }

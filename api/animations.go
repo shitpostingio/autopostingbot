@@ -2,10 +2,11 @@ package api
 
 import "github.com/zelenin/go-tdlib/client"
 
-func SendAnimation(chatID int64, remoteFileID, caption string, entities []*client.TextEntity) (*client.Message, error) {
+func SendAnimation(chatID, replyToMessageID int64, remoteFileID, caption string, entities []*client.TextEntity) (*client.Message, error) {
 
 	request := client.SendMessageRequest{
-		ChatId: chatID,
+		ChatId:           chatID,
+		ReplyToMessageId: replyToMessageID,
 		InputMessageContent: &client.InputMessageAnimation{
 			Animation: &client.InputFileRemote{
 				Id: remoteFileID,
@@ -22,7 +23,11 @@ func SendAnimation(chatID int64, remoteFileID, caption string, entities []*clien
 }
 
 func SendPlainAnimation(chatID int64, remoteFileID, caption string) (*client.Message, error) {
-	return SendAnimation(chatID, remoteFileID, caption, nil)
+	return SendAnimation(chatID, NoReply, remoteFileID, caption, nil)
+}
+
+func SendPlainReplyAnimation(chatID, replyToMessageID int64, remoteFileID, caption string) (*client.Message, error) {
+	return SendAnimation(chatID, replyToMessageID, remoteFileID, caption, nil)
 }
 
 func GetAnimationFileInfoFromMessage(message *client.Message) *client.File {

@@ -4,10 +4,11 @@ import (
 	"github.com/zelenin/go-tdlib/client"
 )
 
-func SendPhoto(chatID int64, remoteFileID, caption string, entities []*client.TextEntity) (*client.Message, error) {
+func SendPhoto(chatID, replyToMessageID int64, remoteFileID, caption string, entities []*client.TextEntity) (*client.Message, error) {
 
 	request := client.SendMessageRequest{
-		ChatId: chatID,
+		ChatId:           chatID,
+		ReplyToMessageId: replyToMessageID,
 		InputMessageContent: &client.InputMessagePhoto{
 			Photo: &client.InputFileRemote{
 				Id: remoteFileID,
@@ -24,7 +25,11 @@ func SendPhoto(chatID int64, remoteFileID, caption string, entities []*client.Te
 }
 
 func SendPlainPhoto(chatID int64, remoteFileID, caption string) (*client.Message, error) {
-	return SendPhoto(chatID, remoteFileID, caption, nil)
+	return SendPhoto(chatID, NoReply, remoteFileID, caption, nil)
+}
+
+func SendPlainReplyPhoto(chatID, replyToMessageID int64, remoteFileID, caption string) (*client.Message, error) {
+	return SendPhoto(chatID, replyToMessageID, remoteFileID, caption, nil)
 }
 
 //TODO: POSSIBILI PROBLEMI CON SIZE = 0

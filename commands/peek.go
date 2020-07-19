@@ -37,7 +37,7 @@ func (PeekCommandHandler) Handle(arguments string, message *client.Message) erro
 	}
 
 	log.Println("Formatted text found:", formattedText.Text)
-	_, err = api.SendMedia(mediaType, message.ChatId, nextPost.FileID, formattedText.Text, formattedText.Entities)
+	_, err = api.SendMedia(mediaType, message.ChatId, message.Id, nextPost.FileID, formattedText.Text, formattedText.Entities)
 	return err
 
 }
