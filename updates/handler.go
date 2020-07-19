@@ -28,7 +28,7 @@ func handleNewMessage(message *client.Message) {
 
 	//
 	if !dbwrapper.UserIsAuthorized(message.SenderUserId) {
-		log.Println("Ricevuto messaggio da utente non autorizzato: ", message.SenderUserId)
+		log.Debugln("Ricevuto messaggio da utente non autorizzato: ", message.SenderUserId)
 		return
 	}
 
@@ -38,11 +38,11 @@ func handleNewMessage(message *client.Message) {
 	case client.TypeMessageText:
 		handleText(message)
 	case client.TypeMessageAnimation:
-
+		handleMedia(message, client.TypeAnimation, false)
 	case client.TypeMessagePhoto:
-		handlePhoto(message)
+		handleMedia(message, client.TypePhoto, false)
 	case client.TypeMessageVideo:
-
+		handleMedia(message, client.TypeVideo, false)
 	}
 
 }
