@@ -130,17 +130,26 @@ func FindPostByUniqueID(uniqueID string, collection *mongo.Collection) (post ent
 
 }
 
-//
-//// FindPostByID retrieves a post entity via its database id
-//func FindPostByID(id uint) (post entities.Post) {
-//
-//}
-//
-//// DeletePostByFileID deletes a post entity via its fileID
-//func DeletePostByFileID(fileID string) error {
-//
-//}
-//
+// DeletePostByFileID deletes a post entity via its fileID
+func DeletePostByUniqueID(uniqueID string, collection *mongo.Collection) error {
+
+	if uniqueID == "" {
+		return errors.New("uniqueID empty")
+	}
+
+	//
+	ctx, cancelCtx := context.WithTimeout(context.Background(), opDeadline)
+	defer cancelCtx()
+
+	//
+	filter := bson.M{"media.fileuniqueid": uniqueID}
+
+	//
+	_, err := collection.DeleteOne(ctx, filter, options.Delete())
+	return err
+
+}
+
 //// GetNextPost retrieves the oldest media in the queue
 //func GetNextPost() (entities.Post, error) {
 //

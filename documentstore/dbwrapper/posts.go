@@ -18,3 +18,7 @@ func FindPostByFeatures(histogram []float64, pHash string) (post entities.Post, 
 func FindPostByUniqueID(uniqueID string) (post entities.Post, err error) {
 	return documentstore.FindPostByUniqueID(uniqueID, documentstore.PostCollection)
 }
+
+func DeletePostByUniqueID(uniqueID string) error {
+	return documentstore.DeletePostByUniqueID(uniqueID, documentstore.PostCollection)
+}

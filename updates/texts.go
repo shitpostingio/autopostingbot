@@ -14,6 +14,7 @@ var (
 		"status": commands.StatusCommandHandler{},
 		//"peek":   commands.PeekCommandHandler{},
 		"pause": commands.PauseCommandHandler{},
+		"delete": commands.DeleteCommandHandler{}, //TODO: CONTROLLARE CHE SIA IN RISPOSTA A QUALCOSA
 	}
 )
 
@@ -40,7 +41,17 @@ func handleText(message *client.Message) {
 		return
 	}
 
-	err := handler.Handle(arguments, message)
+	var err error
+	if message.ReplyToMessageId == 0 {
+		err = handler.Handle(arguments, message)
+	} else {
+		replyMessage, err := api.GetMessage(message.ChatId, message.ReplyToMessageId)
+		if err != nil {
+			//TODO: ERRORE
+		}
+		err = handler.Handle(arguments, replyMessage)
+	}
+
 	if err != nil {
 		log.Error(err)
 	}

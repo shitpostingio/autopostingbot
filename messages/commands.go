@@ -37,9 +37,9 @@ func handleNonReplyCommands(command string, msg *tgbotapi.Message, repo *reposit
 	var err error
 	switch command {
 	case "status":
-		_, err = handleStatusCommand(msg.Chat.ID, repo)
+		//_, err = handleStatusCommand(msg.Chat.ID, repo)
 	case "pause":
-		_, err = handlePauseCommand(msg, repo)
+		//_, err = handlePauseCommand(msg, repo)
 	case "peek":
 		_, err = handlePeekCommand(msg, repo)
 	default:
@@ -64,7 +64,7 @@ func handleReplyCommands(command string, msg *tgbotapi.Message, user *entities.U
 
 	switch command {
 	case "delete":
-		replyText, err = handleDeleteCommand(fileID, user, repo)
+		//replyText, err = handleDeleteCommand(fileID, user, repo)
 	case "info":
 		replyText, err = handleInfoCommand(fileID, repo)
 	case "preview":
