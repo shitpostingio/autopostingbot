@@ -13,7 +13,7 @@ var (
 	Db     *gorm.DB
 	Config *configuration.Config
 	Tdlib  *client.Client
-	Me *client.User
+	Me     *client.User
 )
 
 // Repository represents a container for common-use variables

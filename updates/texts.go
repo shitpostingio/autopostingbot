@@ -36,7 +36,7 @@ func handleText(message *client.Message) {
 	handler, found := handlers[command]
 	if !found {
 		log.Error("No handler found for ", command)
-		_,_ = api.SendPlainText(message.ChatId, "Unimplemented")
+		_, _ = api.SendPlainText(message.ChatId, "Unimplemented")
 		return
 	}
 
@@ -46,4 +46,3 @@ func handleText(message *client.Message) {
 	}
 
 }
-

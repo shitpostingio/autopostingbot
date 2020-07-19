@@ -8,7 +8,7 @@ func SendText(chatID int64, text string, entities []*client.TextEntity) (*client
 		ChatId: chatID,
 		InputMessageContent: &client.InputMessageText{
 			Text: &client.FormattedText{
-				Text: text,
+				Text:     text,
 				Entities: entities,
 			},
 		},

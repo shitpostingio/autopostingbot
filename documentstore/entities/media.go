@@ -3,7 +3,7 @@ package entities
 // Media represents a media in the document store
 type Media struct {
 	Type             string
-	TdlibID          int32	//TODO: controllare, è un intero basso, probabilmente un riferimento al db di tdlib
+	TdlibID          int32 //TODO: controllare, è un intero basso, probabilmente un riferimento al db di tdlib
 	FileUniqueID     string
 	FileID           string
 	Histogram        []float64 `bson:",omitempty"`

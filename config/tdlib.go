@@ -9,4 +9,3 @@ type TdlibConfiguration struct {
 	APIID             int32
 	APIHash           string
 }
-

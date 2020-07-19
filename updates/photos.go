@@ -5,13 +5,9 @@ import (
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/analysisadapter"
 	"gitlab.com/shitposting/autoposting-bot/api"
-	"gitlab.com/shitposting/autoposting-bot/documentstore"
+	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
 	"gitlab.com/shitposting/autoposting-bot/files"
-)
-
-const (
-	mediaApproximation = 0.08 //TODO: rendere variabile
 )
 
 func handlePhoto(message *client.Message) {
@@ -37,7 +33,7 @@ func handlePhoto(message *client.Message) {
 		return
 	}
 
-	post, err := documentstore.FindPostByFeatures(fingerprint.Histogram, fingerprint.PHash, mediaApproximation, documentstore.PostCollection)
+	post, err := dbwrapper.FindPostByFeatures(fingerprint.Histogram, fingerprint.PHash)
 	if err == nil {
 		//TODO: SEND DUPLICATE
 		log.Println("Match found: ", post)
@@ -58,11 +54,12 @@ func handlePhoto(message *client.Message) {
 		PHash:            fingerprint.PHash,
 	}
 
-	//TODO: CAPTION
-	err = documentstore.AddPost(message.SenderUserId, media, "", documentstore.PostCollection)
+	photoMessage := message.Content.(*client.MessagePhoto)
+	err = dbwrapper.AddPost(message.SenderUserId, media, photoMessage.Caption)
 	if err != nil {
 		log.Error(err)
 	}
 
-}
+	_, _ = api.SendPlainText(message.ChatId, "Photo added!")
 
+}

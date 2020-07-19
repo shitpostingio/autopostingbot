@@ -5,7 +5,6 @@ import (
 )
 
 type InfoCommandHandler struct {
-
 }
 
 func (InfoCommandHandler) Handle(arguments string, message *client.Message) error {

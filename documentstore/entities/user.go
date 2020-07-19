@@ -7,6 +7,6 @@ import (
 
 type User struct {
 	ID         primitive.ObjectID `bson:"_id,omitempty"`
-	TelegramID int64
+	TelegramID int32
 	CreatedAt  time.Time
 }

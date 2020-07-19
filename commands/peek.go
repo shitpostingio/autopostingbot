@@ -11,7 +11,6 @@ import (
 )
 
 type PeekCommandHandler struct {
-
 }
 
 func (PeekCommandHandler) Handle(arguments string, message *client.Message) error {

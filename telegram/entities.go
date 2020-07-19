@@ -10,7 +10,7 @@ func GetCommand(text []uint16, entities []*client.TextEntity) (command, argument
 
 	// A bot command for us needs to be in the beginning of the message
 	found = entities != nil && len(entities) > 0 &&
-			entities[0].Type.TextEntityTypeType() == client.TypeTextEntityTypeBotCommand
+		entities[0].Type.TextEntityTypeType() == client.TypeTextEntityTypeBotCommand
 
 	if !found {
 		return

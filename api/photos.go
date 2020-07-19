@@ -30,5 +30,5 @@ func SendPlainPhoto(chatID int64, remoteFileID, caption string) (*client.Message
 //TODO: POSSIBILI PROBLEMI CON SIZE = 0
 func GetPhotoFileInfoFromMessage(message *client.Message) *client.File {
 	photo := message.Content.(*client.MessagePhoto).Photo
-	return photo.Sizes[len(photo.Sizes) - 1].Photo
+	return photo.Sizes[len(photo.Sizes)-1].Photo
 }

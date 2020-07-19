@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func AddUser(userID int64, collection *mongo.Collection) error {
+func AddUser(userID int32, collection *mongo.Collection) error {
 
 	//
 	if userID <= 0 {
@@ -36,7 +36,7 @@ func AddUser(userID int64, collection *mongo.Collection) error {
 
 }
 
-func UserIsAuthorized(userID int64, collection *mongo.Collection) bool {
+func UserIsAuthorized(userID int32, collection *mongo.Collection) bool {
 
 	ctx, cancelCtx := context.WithTimeout(context.Background(), opDeadline)
 	defer cancelCtx()
@@ -48,4 +48,3 @@ func UserIsAuthorized(userID int64, collection *mongo.Collection) bool {
 }
 
 //TODO: DeleteUser
-

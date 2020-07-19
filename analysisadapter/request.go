@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func Request(path, mediaType, fileUniqueID string) (fingerprint *structs.FingerprintResponse, err error){
+func Request(path, mediaType, fileUniqueID string) (fingerprint *structs.FingerprintResponse, err error) {
 
 	file, err := os.Open(path)
 	if err != nil {
@@ -21,7 +21,7 @@ func Request(path, mediaType, fileUniqueID string) (fingerprint *structs.Fingerp
 	filename := path[index+1:]
 	endpoint := getEndpoint(mediaType, fileUniqueID)
 	log.Println("Filename: ", filename, " endpoint: ", endpoint)
-	result, errString := analysis.PerformFingerprintRequest(file,filename, endpoint, config.AuthorizationHeaderValue)
+	result, errString := analysis.PerformFingerprintRequest(file, filename, endpoint, config.AuthorizationHeaderValue)
 	if errString != "" {
 		err = errors.New(errString)
 	}
@@ -30,4 +30,3 @@ func Request(path, mediaType, fileUniqueID string) (fingerprint *structs.Fingerp
 	return &result, err
 
 }
-

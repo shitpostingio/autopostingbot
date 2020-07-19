@@ -3,7 +3,8 @@ package analysisadapter
 import (
 	configuration "gitlab.com/shitposting/autoposting-bot/config"
 )
-var(
+
+var (
 	config configuration.AnalysisAPIConfig
 )
 

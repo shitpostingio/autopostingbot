@@ -31,7 +31,7 @@ func HandleNew(msg *tgbotapi.Message, repo *repository.Repository) {
 	var duplicatePost entities.Post
 	switch {
 	case msg.Photo != nil:
-		replyText, duplicatePost = media.HandleNewPhoto(msg, &user, repo, true)
+		//replyText, duplicatePost = media.HandleNewPhoto(msg, &user, repo, true)
 	case msg.Video != nil:
 		replyText, duplicatePost = media.HandleNewVideo(msg, &user, repo, true)
 	case msg.Animation != nil:

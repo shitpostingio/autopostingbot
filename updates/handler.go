@@ -3,7 +3,7 @@ package updates
 import (
 	log "github.com/sirupsen/logrus"
 	"github.com/zelenin/go-tdlib/client"
-	"gitlab.com/shitposting/autoposting-bot/repository"
+	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 )
 
 func HandleUpdates(listener *client.Listener) {
@@ -26,12 +26,13 @@ func HandleUpdates(listener *client.Listener) {
 
 func handleNewMessage(message *client.Message) {
 
-	log.Printf("Message: %#v", message.Content)
-
-	if message.SenderUserId == repository.Me.Id {
-		log.Print("MESSAGE FROM SELF")
+	//
+	if !dbwrapper.UserIsAuthorized(message.SenderUserId) {
+		log.Println("Ricevuto messaggio da utente non autorizzato: ", message.SenderUserId)
 		return
 	}
+
+	log.Printf("Message: %#v", message.Content)
 
 	switch message.Content.MessageContentType() {
 	case client.TypeMessageText:

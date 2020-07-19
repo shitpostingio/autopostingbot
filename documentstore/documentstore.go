@@ -28,7 +28,6 @@ var (
 
 	PostCollection *mongo.Collection
 	UserCollection *mongo.Collection
-
 )
 
 // Connect connects to the document store
