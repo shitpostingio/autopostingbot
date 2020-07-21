@@ -31,7 +31,7 @@ var(
 
 )
 
-func CaptionToHTMLCaption(ft *client.FormattedText) string {
+func ToHTMLCaption(ft *client.FormattedText) string {
 
 	text := strings.ReplaceAll(ft.Text, "&", "&amp;")
 	text = strings.ReplaceAll(text, "<", "&lt;")

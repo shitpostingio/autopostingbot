@@ -5,7 +5,7 @@ import (
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/analysisadapter"
 	"gitlab.com/shitposting/autoposting-bot/api"
-	caption2 "gitlab.com/shitposting/autoposting-bot/caption"
+	caption "gitlab.com/shitposting/autoposting-bot/caption"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
 	"gitlab.com/shitposting/autoposting-bot/files"
@@ -60,10 +60,8 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 		PHash:            fingerprint.PHash,
 	}
 
-	caption := api.GetMediaCaption(message)
-	_ = caption2.CaptionToHTMLCaption(caption)
-
-	err = dbwrapper.AddPost(message.SenderUserId, media, caption)
+	c := caption.ToHTMLCaption(api.GetMediaFormattedText(message))
+	err = dbwrapper.AddPost(message.SenderUserId, media, c)
 	if err != nil {
 		log.Error(err)
 	}

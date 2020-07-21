@@ -48,7 +48,8 @@ func (PeekCommandHandler) Handle(arguments string, message *client.Message) erro
 		return err
 	}
 
-	_, err = api.SendMedia(nextPost.Media.Type, message.ChatId, message.Id, nextPost.Media.FileID, nextPost.Caption.Text, nextPost.Caption.Entities)
+	entities, _ := api.FormattedTextFromCaption(nextPost.Caption)
+	_, err = api.SendMedia(nextPost.Media.Type, message.ChatId, message.Id, nextPost.Media.FileID, entities.Text, entities.Entities)
 	return err
 
 }

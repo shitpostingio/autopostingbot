@@ -47,7 +47,7 @@ func GetMediaFileInfo(message *client.Message) (*client.File, error) {
 
 }
 
-func GetMediaCaption(message *client.Message) *client.FormattedText {
+func GetMediaFormattedText(message *client.Message) *client.FormattedText {
 
 	switch message.Content.MessageContentType() {
 	case client.TypeMessagePhoto:

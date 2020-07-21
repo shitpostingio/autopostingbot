@@ -1,6 +1,8 @@
 package api
 
-import "github.com/zelenin/go-tdlib/client"
+import (
+	"github.com/zelenin/go-tdlib/client"
+)
 
 func SendVideo(chatID, replyToMessageID int64, remoteFileID, caption string, entities []*client.TextEntity) (*client.Message, error) {
 

@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
 	fpcompare "gitlab.com/shitposting/fingerprinting/comparer"
 	"go.mongodb.org/mongo-driver/bson"
@@ -15,7 +14,7 @@ import (
 	"time"
 )
 
-func AddPost(addedBy int32, media entities.Media, caption *client.FormattedText, collection *mongo.Collection) error {
+func AddPost(addedBy int32, media entities.Media, caption string, collection *mongo.Collection) error {
 
 	post := entities.Post{
 		AddedBy: addedBy,

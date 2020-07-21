@@ -1,12 +1,11 @@
 package dbwrapper
 
 import (
-	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/documentstore"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
 )
 
-func AddPost(addedBy int32, media entities.Media, caption *client.FormattedText) error {
+func AddPost(addedBy int32, media entities.Media, caption string) error {
 	return documentstore.AddPost(addedBy, media, caption, documentstore.PostCollection)
 }
 
