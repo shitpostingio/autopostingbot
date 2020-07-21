@@ -50,11 +50,11 @@ func GetMediaFileInfo(message *client.Message) (*client.File, error) {
 func GetMediaCaption(message *client.Message) *client.FormattedText {
 
 	switch message.Content.MessageContentType() {
-	case client.TypePhoto:
+	case client.TypeMessagePhoto:
 		return message.Content.(*client.MessagePhoto).Caption
-	case client.TypeAnimation:
+	case client.TypeMessageAnimation:
 		return message.Content.(*client.MessageAnimation).Caption
-	case client.TypeVideo:
+	case client.TypeMessageVideo:
 		return message.Content.(*client.MessageVideo).Caption
 	default:
 		return nil

@@ -41,7 +41,7 @@ func handleNonReplyCommands(command string, msg *tgbotapi.Message, repo *reposit
 	case "pause":
 		//_, err = handlePauseCommand(msg, repo)
 	case "peek":
-		_, err = handlePeekCommand(msg, repo)
+		//_, err = handlePeekCommand(msg, repo)
 	default:
 		err = errors.New("unsupported")
 	}

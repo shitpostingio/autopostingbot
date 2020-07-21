@@ -12,7 +12,7 @@ import (
 var (
 	handlers = map[string]commands.Handler{
 		"status": commands.StatusCommandHandler{},
-		//"peek":   commands.PeekCommandHandler{},
+		"peek":   commands.PeekCommandHandler{},
 		"pause": commands.PauseCommandHandler{},
 		"delete": commands.DeleteCommandHandler{}, //TODO: CONTROLLARE CHE SIA IN RISPOSTA A QUALCOSA
 	}

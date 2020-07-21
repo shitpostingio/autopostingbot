@@ -151,12 +151,38 @@ func DeletePostByUniqueID(uniqueID string, collection *mongo.Collection) error {
 
 }
 
-//// GetNextPost retrieves the oldest media in the queue
-//func GetNextPost() (entities.Post, error) {
-//
-//
-//}
-//
+// GetNextPost retrieves the oldest media in the queue
+func GetNextPost(collection *mongo.Collection) (post entities.Post, err error) {
+
+	//
+	ctx, cancelCtx := context.WithTimeout(context.Background(), opDeadline)
+	defer cancelCtx()
+
+	//
+	filter := bson.D{
+		{
+			Key: "messageid",
+			Value: 0,
+		},
+		{
+			Key: "media.postedat",
+			Value: nil, //TODO: CONTROLLARE
+		},
+		{
+			Key: "media.haserror",
+			Value: nil,
+		},
+	}
+
+	//
+	sortingOptions := options.FindOne().SetSort(bson.M{"addedat": 1})
+
+	//
+	err = collection.FindOne(ctx, filter, sortingOptions).Decode(&post)
+	return
+
+}
+
 // GetQueueLength returns the number of the enqueued posts
 func GetQueueLength(collection *mongo.Collection) (length int64) {
 
