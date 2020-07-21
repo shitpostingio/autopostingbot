@@ -31,5 +31,3 @@ func getDuplicateCaption(duplicatePost *entities.Post) (*client.FormattedText, e
 	return ft, err
 
 }
-
-

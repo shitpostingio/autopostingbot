@@ -7,28 +7,26 @@ import (
 	"unicode/utf16"
 )
 
-var(
-
-	openingTags = map[string] string {
-		client.TypeTextEntityTypeBold: "<b>",
-		client.TypeTextEntityTypeItalic: "<i>",
-		client.TypeTextEntityTypeUnderline: "<u>",
+var (
+	openingTags = map[string]string{
+		client.TypeTextEntityTypeBold:          "<b>",
+		client.TypeTextEntityTypeItalic:        "<i>",
+		client.TypeTextEntityTypeUnderline:     "<u>",
 		client.TypeTextEntityTypeStrikethrough: "<s>",
-		client.TypeTextEntityTypeCode: "<code>",
-		client.TypeTextEntityTypePre: "<pre>",
-		client.TypeTextEntityTypeTextUrl: `<a href="%s">`,
+		client.TypeTextEntityTypeCode:          "<code>",
+		client.TypeTextEntityTypePre:           "<pre>",
+		client.TypeTextEntityTypeTextUrl:       `<a href="%s">`,
 	}
 
-	closingTags = map[string] string {
-		client.TypeTextEntityTypeBold: "</b>",
-		client.TypeTextEntityTypeItalic: "</i>",
-		client.TypeTextEntityTypeUnderline: "</u>",
+	closingTags = map[string]string{
+		client.TypeTextEntityTypeBold:          "</b>",
+		client.TypeTextEntityTypeItalic:        "</i>",
+		client.TypeTextEntityTypeUnderline:     "</u>",
 		client.TypeTextEntityTypeStrikethrough: "</s>",
-		client.TypeTextEntityTypeCode: "</code>",
-		client.TypeTextEntityTypePre: "</pre>",
-		client.TypeTextEntityTypeTextUrl: "</a>",
+		client.TypeTextEntityTypeCode:          "</code>",
+		client.TypeTextEntityTypePre:           "</pre>",
+		client.TypeTextEntityTypeTextUrl:       "</a>",
 	}
-
 )
 
 func ToHTMLCaption(ft *client.FormattedText) string {
@@ -73,7 +71,7 @@ func ToHTMLCaption(ft *client.FormattedText) string {
 		for j := len(ft.Entities) - 1; j >= 0; j-- {
 
 			// Check end of entity
-			if ft.Entities[j].Offset + ft.Entities[j].Length == int32(i) {
+			if ft.Entities[j].Offset+ft.Entities[j].Length == int32(i) {
 
 				tag, found := closingTags[ft.Entities[j].Type.TextEntityTypeType()]
 				if found {
@@ -91,5 +89,3 @@ func ToHTMLCaption(ft *client.FormattedText) string {
 	return b.String()
 
 }
-
-
