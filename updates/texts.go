@@ -15,6 +15,7 @@ var (
 		"peek":   commands.PeekCommandHandler{},
 		"pause":  commands.PauseCommandHandler{},
 		"delete": commands.DeleteCommandHandler{}, //TODO: CONTROLLARE CHE SIA IN RISPOSTA A QUALCOSA
+		"info": commands.InfoCommandHandler{},
 	}
 )
 

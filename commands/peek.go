@@ -41,7 +41,6 @@ type PeekCommandHandler struct {
 
 func (PeekCommandHandler) Handle(arguments string, message *client.Message) error {
 
-	log.Println("PEEK HANDLER")
 	nextPost, err := dbwrapper.GetNextPost()
 	if err != nil {
 		log.Error(err)

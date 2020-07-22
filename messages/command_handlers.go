@@ -11,15 +11,12 @@ import (
 	log "github.com/sirupsen/logrus"
 	entities "gitlab.com/shitposting/datalibrary/entities/autopostingbot"
 
-	"gitlab.com/shitposting/autoposting-bot/algo"
 	"gitlab.com/shitposting/autoposting-bot/database/database"
 	"gitlab.com/shitposting/autoposting-bot/edition"
 	"gitlab.com/shitposting/autoposting-bot/manager"
 	"gitlab.com/shitposting/autoposting-bot/media"
 	"gitlab.com/shitposting/autoposting-bot/repository"
 	"gitlab.com/shitposting/autoposting-bot/utility"
-
-	"github.com/hako/durafmt"
 )
 
 func handleStatusCommand(chatID int64, repo *repository.Repository) (reply string, err error) {
@@ -52,58 +49,58 @@ func handlePauseCommand(msg *tgbotapi.Message, repo *repository.Repository) (rep
 }
 
 func handlePeekCommand(msg *tgbotapi.Message, repo *repository.Repository) (reply string, err error) {
-	nextPost, err := database.GetNextPost(repo.Db)
-	_, err = manager.SendPostToChatID(nextPost, msg.Chat.ID, "", msg.MessageID, false)
+	//nextPost, err := database.GetNextPost(repo.Db)
+	//_, err = manager.SendPostToChatID(nextPost, msg.Chat.ID, "", msg.MessageID, false)
 	return
 }
 
 func handleDeleteCommand(fileID string, user *entities.User, repo *repository.Repository) (reply string, err error) {
 
-	post := database.FindPostByFileID(fileID, repo.Db)
-	if post.ID == 0 {
-		err = errors.New("post not found")
-		return
-	}
-
-	if post.UserID != user.ID {
-		err = fmt.Errorf("you can't delete someone else's post: it was sent by @%s", post.User.Handle)
-		return
-	}
-
-	if post.PostedAt != nil {
-		err = fmt.Errorf("the post was already posted on %s", utility.FormatDate(*post.PostedAt))
-		return
-	}
-
-	err = database.DeletePostByFileID(fileID, repo.Db)
-	if err == nil {
-		reply = "Deleted! 🚮"
-	}
+	//post := database.FindPostByFileID(fileID, repo.Db)
+	//if post.ID == 0 {
+	//	err = errors.New("post not found")
+	//	return
+	//}
+	//
+	//if post.UserID != user.ID {
+	//	err = fmt.Errorf("you can't delete someone else's post: it was sent by @%s", post.User.Handle)
+	//	return
+	//}
+	//
+	//if post.PostedAt != nil {
+	//	err = fmt.Errorf("the post was already posted on %s", utility.FormatDate(*post.PostedAt))
+	//	return
+	//}
+	//
+	//err = database.DeletePostByFileID(fileID, repo.Db)
+	//if err == nil {
+	//	reply = "Deleted! 🚮"
+	//}
 
 	return
 }
 
 func handleInfoCommand(fileID string, repo *repository.Repository) (reply string, err error) {
 
-	post := database.FindPostByFileID(fileID, repo.Db)
-	if post.ID == 0 {
-		err = errors.New("post not found")
-		return
-	}
-
-	if post.PostedAt != nil {
-		reply = fmt.Sprintf("Post added by @%s on %s\nPosted on %s\nLink: t.me/%s/%d",
-			post.User.Handle, utility.FormatDate(post.CreatedAt), utility.FormatDate(*post.PostedAt),
-			edition.ChannelName, post.MessageID)
-		return
-	}
-
-	position := database.GetQueuePositionByDatabaseID(post.ID, repo.Db)
-	timeToPost := manager.GetNextPostTime().Add(algo.EstimatePostTime(position - 1))
-	durationUntilPost := durafmt.Parse(time.Until(timeToPost).Truncate(time.Minute))
-
-	reply = fmt.Sprintf("📋 The post is number %d in the queue\n👤 Added by @%s on %s\n\n🕜 It should be posted roughly in %s\n📅 On %s",
-		position, post.User.Handle, utility.FormatDate(post.CreatedAt), durationUntilPost.String(), utility.FormatDate(timeToPost))
+	//post := database.FindPostByFileID(fileID, repo.Db)
+	//if post.ID == 0 {
+	//	err = errors.New("post not found")
+	//	return
+	//}
+	//
+	//if post.PostedAt != nil {
+	//	reply = fmt.Sprintf("Post added by @%s on %s\nPosted on %s\nLink: t.me/%s/%d",
+	//		post.User.Handle, utility.FormatDate(post.CreatedAt), utility.FormatDate(*post.PostedAt),
+	//		edition.ChannelName, post.MessageID)
+	//	return
+	//}
+	//
+	//position := database.GetQueuePositionByDatabaseID(post.ID, repo.Db)
+	//timeToPost := manager.GetNextPostTime().Add(algo.EstimatePostTime(position - 1))
+	//durationUntilPost := durafmt.Parse(time.Until(timeToPost).Truncate(time.Minute))
+	//
+	//reply = fmt.Sprintf("📋 The post is number %d in the queue\n👤 Added by @%s on %s\n\n🕜 It should be posted roughly in %s\n📅 On %s",
+	//	position, post.User.Handle, utility.FormatDate(post.CreatedAt), durationUntilPost.String(), utility.FormatDate(timeToPost))
 	return
 }
 

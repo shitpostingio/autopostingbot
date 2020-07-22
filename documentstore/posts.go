@@ -210,11 +210,37 @@ func GetQueueLength(collection *mongo.Collection) (length int64) {
 
 }
 
-//
-//// GetQueuePositionByDatabaseID returns the position of the selected post in the queue
-//func GetQueuePositionByDatabaseID(id uint) (position int) {
-//
-//}
+// GetQueuePositionByDatabaseID returns the position of the selected post in the queue
+func GetQueuePositionByAddTime(addedAt time.Time, collection *mongo.Collection) (position int) {
+
+	//
+	ctx, cancelCtx := context.WithTimeout(context.Background(), opDeadline)
+	defer cancelCtx()
+
+	//
+	filter := bson.D{
+		{
+			Key: "addedat",
+			Value: bson.D{{"$lte", addedAt}},
+		},
+		{
+			Key:   "media.postedat",
+			Value: nil, //TODO: CONTROLLARE
+		},
+		{
+			Key:   "media.haserror",
+			Value: nil,
+		},
+	}
+
+	res, err := collection.CountDocuments(ctx, filter, options.Count())
+	if err != nil {
+		return -1
+	}
+
+	return int(res)
+
+}
 //
 //// MarkPostAsPosted marks a post as posted
 //func MarkPostAsPosted(post entities.Post, messageID int) error {

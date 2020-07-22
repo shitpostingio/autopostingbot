@@ -66,7 +66,7 @@ func handleReplyCommands(command string, msg *tgbotapi.Message, user *entities.U
 	case "delete":
 		//replyText, err = handleDeleteCommand(fileID, user, repo)
 	case "info":
-		replyText, err = handleInfoCommand(fileID, repo)
+		//replyText, err = handleInfoCommand(fileID, repo)
 	case "preview":
 		replyText, err = handlePreviewCommand(fileID, msg)
 	case "postnow":

@@ -3,6 +3,7 @@ package dbwrapper
 import (
 	"gitlab.com/shitposting/autoposting-bot/documentstore"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
+	"time"
 )
 
 func AddPost(addedBy int32, media entities.Media, caption string) error {
@@ -28,4 +29,8 @@ func GetQueueLength() (length int64) {
 
 func GetNextPost() (entities.Post, error) {
 	return documentstore.GetNextPost(documentstore.PostCollection)
+}
+
+func GetQueuePositionByAddTime(addedAt time.Time) (position int) {
+	return documentstore.GetQueuePositionByAddTime(addedAt, documentstore.PostCollection)
 }
