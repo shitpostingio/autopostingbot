@@ -5,7 +5,7 @@ import (
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
-	"gitlab.com/shitposting/autoposting-bot/manager"
+	"gitlab.com/shitposting/autoposting-bot/posting"
 	"time"
 )
 
@@ -19,10 +19,10 @@ type StatusCommandHandler struct {
 
 func (StatusCommandHandler) Handle(arguments string, message *client.Message) error {
 
-	nextPost := manager.GetNextPostTime()
+	nextPost := posting.GetNextPostTime()
 	text := fmt.Sprintf(statusText,
 		dbwrapper.GetQueueLength(),
-		manager.GetPostingRate().String(),
+		posting.GetPostingRate().String(),
 		time.Until(nextPost).Truncate(time.Minute),
 		nextPost.Format("15:04"))
 

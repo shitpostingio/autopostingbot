@@ -7,15 +7,13 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/analysisadapter"
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore"
+	"gitlab.com/shitposting/autoposting-bot/posting"
 	updates2 "gitlab.com/shitposting/autoposting-bot/updates"
 	"net/http"
 
 	"gitlab.com/shitposting/autoposting-bot/edition"
 
-	"gitlab.com/shitposting/autoposting-bot/manager"
-
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 
@@ -75,51 +73,54 @@ func main() {
 	go updates2.HandleUpdates(listener)
 
 	/* INITIALIZE BOT */
-	bot, err := tgbotapi.NewBotAPI(cfg.BotToken)
-	if err != nil {
-		log.Error(err.Error())
-		return
-	}
+	//bot, err := tgbotapi.NewBotAPI(cfg.BotToken)
+	//if err != nil {
+	//	log.Error(err.Error())
+	//	return
+	//}
 
 	/* SET EDITION */
-	if sushiEdition {
-		edition.SetEdition(edition.Sushiporn)
-	} else {
-		edition.SetEdition(edition.Shitpost)
-	}
+	//if sushiEdition {
+	//	edition.SetEdition(edition.Sushiporn)
+	//} else {
+	//	edition.SetEdition(edition.Shitpost)
+	//}
 
 	/* PRINT INFO */
-	bot.Debug = debug
+	//bot.Debug = debug
 	log.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, %s", Version, Build, edition.GetEditionString()))
-	log.Info(fmt.Sprintf("Authorized on account @%s", bot.Self.UserName))
+	//log.Info(fmt.Sprintf("Authorized on account @%s", bot.Self.UserName))
 
 	/* CONNECT TO THE DATABASE */
-	db, err := gorm.Open("mysql", cfg.DB.DatabaseConnectionString())
-	if err != nil {
-		log.Error(err.Error())
-		return
-	}
+	//db, err := gorm.Open("mysql", cfg.DB.DatabaseConnectionString())
+	//if err != nil {
+	//	log.Error(err.Error())
+	//	return
+	//}
 
 	documentstore.Connect(&cfg.DocumentStore)
 
 	/* CREATE Repository */
-	repo := repository.SetVariables(bot, db, &cfg)
+	repository.SetVariables(nil, nil, &cfg)
 
 	/* GET UPDATES CHANNEL */
-	updates := getUpdatesChannel(repo)
-	if updates == nil {
-		log.Error("Update channel nil")
-		return
-	}
+	//updates := getUpdatesChannel(repo)
+	//if updates == nil {
+	//	log.Error("Update channel nil")
+	//	return
+	//}
 
-	err = manager.StartManager(repo.Bot, repo.Db, repo.Config, debug, testing)
-	if err != nil {
-		log.Error(fmt.Sprintf("Unable to start manager: %s", err.Error()))
-		return
-	}
+	//err = manager.StartManager(repo.Bot, repo.Db, repo.Config, debug, testing)
+	//if err != nil {
+	//	log.Error(fmt.Sprintf("Unable to start manager: %s", err.Error()))
+	//	return
+	//}
+
+	posting.Start(&cfg, debug, testing)
+	posting.Listen()
 
 	/* HANDLE UPDATES */
-	handleUpdates(updates, repo)
+	//handleUpdates(updates, repo)
 }
 
 //handleUpdates iterates on the updates and passes them onto the handlers

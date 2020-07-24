@@ -8,7 +8,6 @@ import (
 	caption "gitlab.com/shitposting/autoposting-bot/caption"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
-	"gitlab.com/shitposting/autoposting-bot/files"
 )
 
 func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks bool) {
@@ -21,7 +20,7 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 	}
 
 	//
-	fileInfo, err = files.DownloadFile(fileInfo.Id)
+	fileInfo, err = api.DownloadFile(fileInfo.Id)
 	if err != nil {
 		log.Error("handleMedia: ", err)
 		return

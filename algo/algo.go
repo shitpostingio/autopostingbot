@@ -7,8 +7,8 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/edition"
 )
 
-// UpdatePostingRate updates the posting rate to a new value based
-// on the algorithm of the active edition
+// GetNewPostingRate updates the posting rate to a new value based
+// on the edition of the active edition
 func UpdatePostingRate(postingRate *time.Duration, queueLength int) {
 
 	switch {
@@ -20,7 +20,7 @@ func UpdatePostingRate(postingRate *time.Duration, queueLength int) {
 
 }
 
-// useSushipornScheduling uses the sushiporn algorithm
+// useSushipornScheduling uses the sushiporn edition
 // to update the posting rate
 func useSushipornScheduling(postingRate *time.Duration, queueLength int) {
 
@@ -35,7 +35,7 @@ func useSushipornScheduling(postingRate *time.Duration, queueLength int) {
 
 }
 
-// useShitpostScheduling uses the shitpost algorithm
+// useShitpostScheduling uses the shitpost edition
 // to update the posting rate
 func useShitpostScheduling(postingRate *time.Duration, queueLength int) {
 

@@ -31,6 +31,7 @@ type Manager struct {
 	postingSignal       <-chan time.Time
 	postingRateChanging chan bool
 	postingRateChanged  chan bool
+
 }
 
 const (

@@ -1,4 +1,4 @@
-package files
+package api
 
 import (
 	"github.com/zelenin/go-tdlib/client"

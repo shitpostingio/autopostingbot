@@ -18,6 +18,7 @@ import (
 type InfoCommandHandler struct {
 }
 
+//TODO: RIMUOVERE LE PRINT E TIRARE FUORI LE STRINGHE CABLATE
 func (InfoCommandHandler) Handle(arguments string, message *client.Message) error {
 
 	fmt.Println("HANDLING INFO")
@@ -49,7 +50,7 @@ func (InfoCommandHandler) Handle(arguments string, message *client.Message) erro
 		reply = fmt.Sprintf("Post added by <a href=\"tg://user?id=%d\">%s</a> on %s\nPosted on %s\nLink: t.me/%s/%d",
 			post.AddedBy, name, utility.FormatDate(post.AddedAt), utility.FormatDate(*post.PostedAt), edition.ChannelName, post.MessageID)
 
-		ft, err := api.FormattedTextFromCaption(reply)
+		ft, err := api.GetFormattedText(reply)
 		if err != nil {
 			return err
 		}
@@ -65,10 +66,10 @@ func (InfoCommandHandler) Handle(arguments string, message *client.Message) erro
 	timeToPost := manager.GetNextPostTime().Add(algo.EstimatePostTime(position - 1))
 	durationUntilPost := durafmt.Parse(time.Until(timeToPost).Truncate(time.Minute))
 
-	reply = fmt.Sprintf("📋 The post is number %d in the queue\n👤 Added by @%s on %s\n\n🕜 It should be posted roughly in %s\n📅 On %s",
-		position, name, utility.FormatDate(post.AddedAt), durationUntilPost.String(), utility.FormatDate(timeToPost))
+	reply = fmt.Sprintf("📋 The post is number %d in the queue\n👤 Added by <a href=\"tg://user?id=%d\">%s</a> on %s\n\n🕜 It should be posted roughly in %s\n📅 On %s",
+		position, post.AddedBy, name, utility.FormatDate(post.AddedAt), durationUntilPost.String(), utility.FormatDate(timeToPost))
 
-	ft, err := api.FormattedTextFromCaption(reply)
+	ft, err := api.GetFormattedText(reply)
 	if err != nil {
 		return err
 	}

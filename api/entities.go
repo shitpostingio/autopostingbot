@@ -6,7 +6,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/repository"
 )
 
-func FormattedTextFromCaption(caption string) (*client.FormattedText, error) {
+func GetFormattedText(caption string) (*client.FormattedText, error) {
 
 	formattedText, err := repository.Tdlib.ParseTextEntities(&client.ParseTextEntitiesRequest{
 		Text:      caption,
