@@ -6,12 +6,11 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
-	"gitlab.com/shitposting/autoposting-bot/edition"
 	"time"
 )
 
-const(
-	minIntervalBetweenPosts = 5 * time.Minute
+const (
+	minIntervalBetweenPosts  = 5 * time.Minute
 	minIntervalBetweenPauses = 5 * time.Minute
 )
 
@@ -26,7 +25,7 @@ func tryPosting(post *entities.Post) error {
 
 	// Prepare caption
 	//TODO: levare stringa cablata
-	caption := fmt.Sprintf("%s\n\n@%s", post.Caption, edition.ChannelName)
+	caption := fmt.Sprintf("%s\n\n@%s", post.Caption, m.e.GetEditionName())
 	ft, err := api.GetFormattedText(caption)
 	if err != nil {
 		return fmt.Errorf("unable to parse caption: %s", err)
@@ -34,19 +33,19 @@ func tryPosting(post *entities.Post) error {
 
 	message, err := api.SendMedia(post.Media.Type, m.config.ChannelID, api.NoReply, post.Media.FileID, ft.Text, ft.Entities)
 	if err != nil {
+		_ = dbwrapper.MarkPostAsFailed(post)
 		return err
 	}
 
 	//New PostTime
 
 	//set messageid etc
-	fmt.Println(message)
+	err = dbwrapper.MarkPostAsPosted(post, int(message.Id))
 
 	// update tickers
 
-
 	// reschedule
-	schedulePosting()
+	schedulePosting(time.Now())
 
 	return err
 
@@ -67,7 +66,7 @@ func tryPausing(duration time.Duration) error {
 
 	//
 	if !m.timer.Stop() {
-		<- m.timer.C
+		<-m.timer.C
 	}
 
 	m.timer = time.NewTimer(time.Until(newTime))
@@ -75,12 +74,10 @@ func tryPausing(duration time.Duration) error {
 
 }
 
-func schedulePosting() {
-
-	postTime := time.Now()
+func schedulePosting(postTime time.Time) {
 
 	if !m.timer.Stop() {
-		<- m.timer.C
+		<-m.timer.C
 	}
 
 	queueLength := dbwrapper.GetQueueLength()
@@ -90,7 +87,7 @@ func schedulePosting() {
 
 	//
 	m.previousPostTime = postTime
-	m.nextPostScheduled = postTime.Add(newRate)
+	m.nextPostScheduled = time.Now().Add(newRate)
 
 }
 

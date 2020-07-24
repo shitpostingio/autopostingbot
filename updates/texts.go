@@ -11,11 +11,12 @@ import (
 
 var (
 	handlers = map[string]commands.Handler{
-		"status": commands.StatusCommandHandler{},
-		"peek":   commands.PeekCommandHandler{},
-		"pause":  commands.PauseCommandHandler{},
-		"delete": commands.DeleteCommandHandler{}, //TODO: CONTROLLARE CHE SIA IN RISPOSTA A QUALCOSA
-		"info": commands.InfoCommandHandler{},
+		"status":  commands.StatusCommandHandler{},
+		"peek":    commands.PeekCommandHandler{},
+		"pause":   commands.PauseCommandHandler{},
+		"delete":  commands.DeleteCommandHandler{}, //TODO: CONTROLLARE CHE SIA IN RISPOSTA A QUALCOSA
+		"info":    commands.InfoCommandHandler{},
+		"postnow": commands.PostNowCommandHandler{},
 	}
 )
 

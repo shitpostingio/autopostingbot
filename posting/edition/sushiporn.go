@@ -6,7 +6,6 @@ import (
 )
 
 type SushiPornEdition struct {
-
 }
 
 func (SushiPornEdition) GetEditionName() string {

@@ -9,16 +9,15 @@ import (
 )
 
 type Manager struct {
-
 	config      *configuration.Config
 	isDebugging bool
 	isTesting   bool
 
 	/* POSTING */
-	nextPostScheduled   time.Time
-	previousPostTime    time.Time
-	previousPauseTime   time.Time
-	postingRate         time.Duration
+	nextPostScheduled time.Time
+	previousPostTime  time.Time
+	previousPauseTime time.Time
+	postingRate       time.Duration
 
 	//
 	e edition.Edition
@@ -27,17 +26,16 @@ type Manager struct {
 	timer *time.Timer
 
 	//
-	requestPostChannel chan *entities.Post
+	requestPostChannel  chan *entities.Post
 	requestPauseChannel chan time.Duration
-	timedPostChannel chan bool
-
+	timedPostChannel    chan bool
 }
 
 var (
-	m Manager
-	editions = map[string] edition.Edition {
-		"shitposting": edition.ShitpostingEdition{},
-		"sushiporn": edition.SushiPornEdition{},
+	m        Manager
+	editions = map[string]edition.Edition{
+		"shitposting": edition.ShitpostEdition{},
+		"sushiporn":   edition.SushiPornEdition{},
 	}
 )
 
@@ -59,7 +57,7 @@ func Start(config *configuration.Config, debug, testing bool) {
 	m.requestPauseChannel = make(chan time.Duration)
 	m.timer = time.NewTimer(time.Minute)
 
-	schedulePosting()
+	schedulePosting(time.Unix(0, 0))
 
 }
 
@@ -70,11 +68,11 @@ func Listen() {
 	for {
 		select {
 
-		case postRequest := <- m.requestPostChannel:
+		case postRequest := <-m.requestPostChannel:
 			err = tryPosting(postRequest)
-		case pauseRequest := <- m.requestPauseChannel:
+		case pauseRequest := <-m.requestPauseChannel:
 			err = tryPausing(pauseRequest)
-		case <- m.timer.C:
+		case <-m.timer.C:
 			err = postScheduled()
 		}
 

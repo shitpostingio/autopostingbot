@@ -4,21 +4,20 @@ import (
 	"time"
 )
 
-type ShitpostingEdition struct {
-
+type ShitpostEdition struct {
 }
 
-func (ShitpostingEdition) GetEditionName() string {
-	return "shitposting"
+func (ShitpostEdition) GetEditionName() string {
+	return "shitpost"
 }
 
 // GetNewPostingRate updates the posting rate to a new value based
 // on the edition of the active edition
-func (e ShitpostingEdition) GetNewPostingRate(queueLength int) time.Duration {
+func (e ShitpostEdition) GetNewPostingRate(queueLength int) time.Duration {
 	return e.timeToNextPost(queueLength)
 }
 
-func (e ShitpostingEdition) timeToNextPost(queueLength int) time.Duration {
+func (e ShitpostEdition) timeToNextPost(queueLength int) time.Duration {
 
 	//
 	postPerHour := e.postsPerHour(queueLength)
@@ -35,7 +34,7 @@ func (e ShitpostingEdition) timeToNextPost(queueLength int) time.Duration {
 
 // postsPerHour will distribute the amount of posts in the queue
 // over a 24 hour period
-func (ShitpostingEdition) postsPerHour(queueLength int) int {
+func (ShitpostEdition) postsPerHour(queueLength int) int {
 
 	if queueLength == 0 {
 		return 0
@@ -53,7 +52,7 @@ func (ShitpostingEdition) postsPerHour(queueLength int) int {
 
 // EstimatePostTime estimates the time until the posting of a
 // certain item in the queue
-func (e ShitpostingEdition) EstimatePostTime(queueLength int) (totalDuration time.Duration) {
+func (e ShitpostEdition) EstimatePostTime(queueLength int) (totalDuration time.Duration) {
 
 	for i := queueLength; i > 0; i-- {
 		totalDuration += e.timeToNextPost(i)
@@ -62,4 +61,3 @@ func (e ShitpostingEdition) EstimatePostTime(queueLength int) (totalDuration tim
 	return
 
 }
-

@@ -1,14 +1,13 @@
 package commands
 
 import (
-	"fmt"
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
+	"gitlab.com/shitposting/autoposting-bot/posting"
 )
 
 type PostNowCommandHandler struct {
-
 }
 
 func (PostNowCommandHandler) Handle(arguments string, message *client.Message) error {
@@ -24,7 +23,7 @@ func (PostNowCommandHandler) Handle(arguments string, message *client.Message) e
 	}
 
 	//POST
-	fmt.Println(post)
+	posting.RequestPost(&post)
 	return err
 
 }

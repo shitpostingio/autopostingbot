@@ -220,7 +220,7 @@ func GetQueuePositionByAddTime(addedAt time.Time, collection *mongo.Collection) 
 	//
 	filter := bson.D{
 		{
-			Key: "addedat",
+			Key:   "addedat",
 			Value: bson.D{{"$lte", addedAt}},
 		},
 		{
@@ -241,17 +241,50 @@ func GetQueuePositionByAddTime(addedAt time.Time, collection *mongo.Collection) 
 	return int(res)
 
 }
-//
-//// MarkPostAsPosted marks a post as posted
-//func MarkPostAsPosted(post entities.Post, messageID int) error {
-//
-//}
-//
-//// MarkPostAsFailed marks a post as failed
-//func MarkPostAsFailed(post entities.Post) error {
-//
-//
-//}
+
+// MarkPostAsPosted marks a post as posted
+func MarkPostAsPosted(post *entities.Post, messageID int, collection *mongo.Collection) error {
+
+	//
+	ctx, cancelCtx := context.WithTimeout(context.Background(), opDeadline)
+	defer cancelCtx()
+
+	//
+	filter := bson.M{"_id": post.ID}
+	update := bson.D{
+		{
+			Key: "$set",
+			Value: bson.D{
+				{"messageid", messageID},
+				{"media.postedat", time.Now()},
+			},
+		},
+	}
+
+	_, err := collection.UpdateOne(ctx, filter, update, options.Update())
+	return err
+
+}
+
+// MarkPostAsFailed marks a post as failed
+func MarkPostAsFailed(post *entities.Post, collection *mongo.Collection) error {
+
+	//
+	ctx, cancelCtx := context.WithTimeout(context.Background(), opDeadline)
+	defer cancelCtx()
+
+	//
+	filter := bson.M{"_id": post.ID}
+	update := bson.D{
+		{
+			Key:   "$set",
+			Value: bson.D{{"haserror", true}},
+		}}
+
+	_, err := collection.UpdateOne(ctx, filter, update, options.Update())
+	return err
+
+}
 
 // ============================================================================
 

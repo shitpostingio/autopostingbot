@@ -34,3 +34,13 @@ func GetNextPost() (entities.Post, error) {
 func GetQueuePositionByAddTime(addedAt time.Time) (position int) {
 	return documentstore.GetQueuePositionByAddTime(addedAt, documentstore.PostCollection)
 }
+
+// MarkPostAsPosted marks a post as posted
+func MarkPostAsPosted(post *entities.Post, messageID int) error {
+	return documentstore.MarkPostAsPosted(post, messageID, documentstore.PostCollection)
+}
+
+// MarkPostAsFailed marks a post as failed
+func MarkPostAsFailed(post *entities.Post) error {
+	return documentstore.MarkPostAsFailed(post, documentstore.PostCollection)
+}
