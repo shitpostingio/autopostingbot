@@ -12,7 +12,7 @@ import (
 type PauseCommandHandler struct {
 }
 
-func (PauseCommandHandler) Handle(arguments string, message *client.Message) error {
+func (PauseCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
 	var toParse string
 	if arguments == "" {
@@ -28,6 +28,6 @@ func (PauseCommandHandler) Handle(arguments string, message *client.Message) err
 
 	// TODO: SISTEMARE PRINT
 	log.Info(fmt.Sprintf("%d paused posting", message.SenderUserId))
-	return StatusCommandHandler{}.Handle("", message)
+	return StatusCommandHandler{}.Handle("", message, replyToMessage)
 
 }

@@ -36,11 +36,29 @@ func AddPost(addedBy int32, media entities.Media, caption string, collection *mo
 
 }
 
-//// UpdatePostCaptionByFileID updates the caption of a post given its fileID
-//func UpdatePostCaptionByFileID(fileID, caption string) bool {
-//
-//}
-//
+// UpdatePostCaptionByFileID updates the caption of a post given its fileID
+func UpdatePostCaptionByUniqueID(uniqueID, caption string, collection *mongo.Collection) error {
+
+	//
+	ctx, cancelCtx := context.WithTimeout(context.Background(), opDeadline)
+	defer cancelCtx()
+
+	//
+	filter := bson.M{"media.fileuniqueid": uniqueID}
+	update := bson.D{
+		{
+			Key: "$set",
+			Value: bson.D{
+				{"caption", caption},
+			},
+		},
+	}
+
+	fmt.Println("Update document: ", update)
+	_, err := collection.UpdateOne(ctx, filter, update, options.Update())
+	return err
+
+}
 
 // FindPostByFeatures finds a post by its features
 func FindPostByFeatures(histogram []float64, pHash string, approximation float64, collection *mongo.Collection) (post entities.Post, err error) {

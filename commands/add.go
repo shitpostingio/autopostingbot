@@ -11,14 +11,14 @@ import (
 type AddCommandHandler struct {
 }
 
-func (AddCommandHandler) Handle(arguments string, message *client.Message) error {
+func (AddCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
-	fileInfo, err := api.GetMediaFileInfo(message)
+	fileInfo, err := api.GetMediaFileInfo(replyToMessage)
 	if err != nil {
 		return err
 	}
 
-	mediaType := api.GetTypeFromMessageType(message.Content.MessageContentType())
+	mediaType := api.GetTypeFromMessageType(replyToMessage.Content.MessageContentType())
 
 	fingerprint, err := analysisadapter.Request(fileInfo.Local.Path, mediaType, fileInfo.Remote.UniqueId)
 	if err != nil {
@@ -39,7 +39,7 @@ func (AddCommandHandler) Handle(arguments string, message *client.Message) error
 	}
 
 	//TODO: VEDERE CHE FARE CON LA CAPTION
-	err = dbwrapper.AddPost(message.SenderUserId, media, "")
+	err = dbwrapper.AddPost(replyToMessage.SenderUserId, media, "")
 	return err
 
 }

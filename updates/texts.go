@@ -18,6 +18,7 @@ var (
 		"info":    commands.InfoCommandHandler{},
 		"postnow": commands.PostNowCommandHandler{},
 		"add":     commands.AddCommandHandler{},
+		"caption": commands.CaptionCommandHandler{},
 	}
 )
 
@@ -46,13 +47,13 @@ func handleText(message *client.Message) {
 
 	var err error
 	if message.ReplyToMessageId == 0 {
-		err = handler.Handle(arguments, message)
+		err = handler.Handle(arguments, message, nil)
 	} else {
 		replyMessage, err := api.GetMessage(message.ChatId, message.ReplyToMessageId)
 		if err != nil {
 			//TODO: ERRORE
 		}
-		err = handler.Handle(arguments, replyMessage)
+		err = handler.Handle(arguments, message, replyMessage)
 	}
 
 	if err != nil {

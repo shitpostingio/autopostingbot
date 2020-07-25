@@ -17,10 +17,10 @@ type InfoCommandHandler struct {
 }
 
 //TODO: RIMUOVERE LE PRINT E TIRARE FUORI LE STRINGHE CABLATE
-func (InfoCommandHandler) Handle(arguments string, message *client.Message) error {
+func (InfoCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
 	fmt.Println("HANDLING INFO")
-	fileInfo, err := api.GetMediaFileInfo(message)
+	fileInfo, err := api.GetMediaFileInfo(replyToMessage)
 	if err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func (InfoCommandHandler) Handle(arguments string, message *client.Message) erro
 			return err
 		}
 
-		_, err = api.SendText(message.ChatId, message.Id, ft.Text, ft.Entities)
+		_, err = api.SendText(replyToMessage.ChatId, replyToMessage.Id, ft.Text, ft.Entities)
 		return err
 
 	}
@@ -72,7 +72,7 @@ func (InfoCommandHandler) Handle(arguments string, message *client.Message) erro
 		return err
 	}
 
-	_, err = api.SendText(message.ChatId, message.Id, ft.Text, ft.Entities)
+	_, err = api.SendText(replyToMessage.ChatId, replyToMessage.Id, ft.Text, ft.Entities)
 	return err
 
 }

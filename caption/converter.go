@@ -86,6 +86,21 @@ func ToHTMLCaption(ft *client.FormattedText) string {
 
 	}
 
+	// check for entities that end after the text
+	for j := len(ft.Entities) - 1; j >= 0; j-- {
+
+		// Check end of entity
+		if ft.Entities[j].Offset+ft.Entities[j].Length == int32(len(u16Text)) {
+
+			tag, found := closingTags[ft.Entities[j].Type.TextEntityTypeType()]
+			if found {
+				b.WriteString(tag)
+			}
+
+		}
+
+	}
+
 	return b.String()
 
 }

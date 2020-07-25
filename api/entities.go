@@ -13,6 +13,10 @@ func GetFormattedText(caption string) (*client.FormattedText, error) {
 		ParseMode: &client.TextParseModeHTML{},
 	})
 
+	if err != nil {
+		return nil, err
+	}
+
 	fmt.Println("ERRORE? ", err)
 	if formattedText.Entities != nil && len(formattedText.Entities) > 0 {
 		fmt.Println(formattedText.Entities[0].Type.TextEntityTypeType())

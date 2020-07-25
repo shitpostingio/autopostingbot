@@ -39,7 +39,7 @@ type PeekCommandHandler struct {
 //
 //}
 
-func (PeekCommandHandler) Handle(arguments string, message *client.Message) error {
+func (PeekCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
 	nextPost, err := dbwrapper.GetNextPost()
 	if err != nil {

@@ -10,9 +10,9 @@ import (
 type PostNowCommandHandler struct {
 }
 
-func (PostNowCommandHandler) Handle(arguments string, message *client.Message) error {
+func (PostNowCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
-	fileInfo, err := api.GetMediaFileInfo(message)
+	fileInfo, err := api.GetMediaFileInfo(replyToMessage)
 	if err != nil {
 		return err
 	}

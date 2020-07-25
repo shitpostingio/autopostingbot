@@ -44,3 +44,7 @@ func MarkPostAsPosted(post *entities.Post, messageID int) error {
 func MarkPostAsFailed(post *entities.Post) error {
 	return documentstore.MarkPostAsFailed(post, documentstore.PostCollection)
 }
+
+func UpdatePostCaptionByUniqueID(uniqueID, caption string) error {
+	return documentstore.UpdatePostCaptionByUniqueID(uniqueID, caption, documentstore.PostCollection)
+}
