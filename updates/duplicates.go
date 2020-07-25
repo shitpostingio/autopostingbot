@@ -5,7 +5,7 @@ import (
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
-	"gitlab.com/shitposting/autoposting-bot/edition"
+	"gitlab.com/shitposting/autoposting-bot/posting"
 	"gitlab.com/shitposting/autoposting-bot/telegram"
 	"gitlab.com/shitposting/autoposting-bot/utility"
 )
@@ -23,7 +23,7 @@ func getDuplicateCaption(duplicatePost *entities.Post) (*client.FormattedText, e
 		duplicatePost.AddedBy, telegram.GetNameFromUser(user), utility.FormatDate(duplicatePost.AddedAt))
 
 	if duplicatePost.MessageID != 0 {
-		caption = fmt.Sprintf("%s\nPosted on %s\nLink: t.me/%s/%d", caption, utility.FormatDate(*duplicatePost.PostedAt), edition.ChannelName, duplicatePost.MessageID)
+		caption = fmt.Sprintf("%s\nPosted on %s\nLink: t.me/%s/%d", caption, utility.FormatDate(*duplicatePost.PostedAt), posting.GetPostingManager().GetEditionName(), duplicatePost.MessageID)
 	}
 
 	ft, err := api.GetFormattedText(caption)

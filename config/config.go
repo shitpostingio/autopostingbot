@@ -8,6 +8,7 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
+//TODO: ASSOLUTAMENTE SISTEMARE STO PORCAIO GALATTICO
 const (
 	defaultFileSizeThreshold  = 20971520 //20MB
 	defaultPostAlertThreshold = 10

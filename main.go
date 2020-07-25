@@ -11,8 +11,6 @@ import (
 	updates2 "gitlab.com/shitposting/autoposting-bot/updates"
 	"net/http"
 
-	"gitlab.com/shitposting/autoposting-bot/edition"
-
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	_ "github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -87,7 +85,6 @@ func main() {
 
 	/* PRINT INFO */
 	//bot.Debug = debug
-	log.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, %s", Version, Build, edition.GetEditionString()))
 	//log.Info(fmt.Sprintf("Authorized on account @%s", bot.Self.UserName))
 
 	/* CONNECT TO THE DATABASE */
@@ -117,6 +114,8 @@ func main() {
 
 	posting.Start(&cfg, debug, testing)
 	posting.Listen()
+
+	log.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, %s", Version, Build, posting.GetPostingManager().GetEditionName()))
 
 	/* HANDLE UPDATES */
 	//handleUpdates(updates, repo)

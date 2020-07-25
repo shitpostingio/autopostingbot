@@ -2,17 +2,17 @@ package legacy
 
 import (
 	"github.com/zelenin/go-tdlib/client"
-	"gitlab.com/shitposting/autoposting-bot/types"
 )
 
 func NewMediaTypeFromOld(typeID uint) (string, bool) {
 
+	//TODO: CONTROLLARE I VALORI
 	switch typeID {
-	case types.Image:
+	case 0:
 		return client.TypePhoto, true
-	case types.Video:
+	case 1:
 		return client.TypeVideo, true
-	case types.Animation:
+	case 2:
 		return client.TypeAnimation, true
 	}
 

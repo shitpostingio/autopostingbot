@@ -6,7 +6,6 @@ import (
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
-	"gitlab.com/shitposting/autoposting-bot/edition"
 	"gitlab.com/shitposting/autoposting-bot/posting"
 	"gitlab.com/shitposting/autoposting-bot/telegram"
 	"gitlab.com/shitposting/autoposting-bot/utility"
@@ -47,7 +46,7 @@ func (InfoCommandHandler) Handle(arguments string, message *client.Message) erro
 
 		fmt.Println("POSTED")
 		reply = fmt.Sprintf("Post added by <a href=\"tg://user?id=%d\">%s</a> on %s\nPosted on %s\nLink: t.me/%s/%d",
-			post.AddedBy, name, utility.FormatDate(post.AddedAt), utility.FormatDate(*post.PostedAt), edition.ChannelName, post.MessageID)
+			post.AddedBy, name, utility.FormatDate(post.AddedAt), utility.FormatDate(*post.PostedAt), posting.GetPostingManager().GetEditionName(), post.MessageID)
 
 		ft, err := api.GetFormattedText(reply)
 		if err != nil {
