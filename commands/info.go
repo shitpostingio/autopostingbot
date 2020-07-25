@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"github.com/hako/durafmt"
 	"github.com/zelenin/go-tdlib/client"
-	"gitlab.com/shitposting/autoposting-bot/algo"
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 	"gitlab.com/shitposting/autoposting-bot/edition"
-	"gitlab.com/shitposting/autoposting-bot/manager"
+	"gitlab.com/shitposting/autoposting-bot/posting"
 	"gitlab.com/shitposting/autoposting-bot/telegram"
 	"gitlab.com/shitposting/autoposting-bot/utility"
 	"strconv"
@@ -63,7 +62,7 @@ func (InfoCommandHandler) Handle(arguments string, message *client.Message) erro
 	fmt.Println("NOT POSTED")
 	position := dbwrapper.GetQueuePositionByAddTime(post.AddedAt)
 	fmt.Println("POSITION FOUND: ", position)
-	timeToPost := manager.GetNextPostTime().Add(algo.EstimatePostTime(position - 1))
+	timeToPost := posting.GetNextPostTime().Add(posting.GetPostingManager().EstimatePostTime(position - 1))
 	durationUntilPost := durafmt.Parse(time.Until(timeToPost).Truncate(time.Minute))
 
 	reply = fmt.Sprintf("📋 The post is number %d in the queue\n👤 Added by <a href=\"tg://user?id=%d\">%s</a> on %s\n\n🕜 It should be posted roughly in %s\n📅 On %s",

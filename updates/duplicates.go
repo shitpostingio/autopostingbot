@@ -6,7 +6,6 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
 	"gitlab.com/shitposting/autoposting-bot/edition"
-	"gitlab.com/shitposting/autoposting-bot/legacy"
 	"gitlab.com/shitposting/autoposting-bot/telegram"
 	"gitlab.com/shitposting/autoposting-bot/utility"
 )
@@ -27,7 +26,7 @@ func getDuplicateCaption(duplicatePost *entities.Post) (*client.FormattedText, e
 		caption = fmt.Sprintf("%s\nPosted on %s\nLink: t.me/%s/%d", caption, utility.FormatDate(*duplicatePost.PostedAt), edition.ChannelName, duplicatePost.MessageID)
 	}
 
-	ft, err := legacy.NewFormattedTextFromCaption(caption)
+	ft, err := api.GetFormattedText(caption)
 	return ft, err
 
 }

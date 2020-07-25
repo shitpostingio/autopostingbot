@@ -18,7 +18,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 
 	configuration "gitlab.com/shitposting/autoposting-bot/config"
-	"gitlab.com/shitposting/autoposting-bot/messages"
 	"gitlab.com/shitposting/autoposting-bot/repository"
 )
 
@@ -123,17 +122,17 @@ func main() {
 	//handleUpdates(updates, repo)
 }
 
-//handleUpdates iterates on the updates and passes them onto the handlers
-func handleUpdates(updates tgbotapi.UpdatesChannel, repo *repository.Repository) {
-	for update := range updates {
-		switch {
-		case update.EditedMessage != nil:
-			go messages.HandleEdited(update.EditedMessage, repo)
-		case update.Message != nil:
-			go messages.HandleNew(update.Message, repo)
-		}
-	}
-}
+////handleUpdates iterates on the updates and passes them onto the handlers
+//func handleUpdates(updates tgbotapi.UpdatesChannel, repo *repository.Repository) {
+//	for update := range updates {
+//		switch {
+//		case update.EditedMessage != nil:
+//			go messages.HandleEdited(update.EditedMessage, repo)
+//		case update.Message != nil:
+//			go messages.HandleNew(update.Message, repo)
+//		}
+//	}
+//}
 
 func loadCLIParams() {
 	flag.StringVar(&configFilePath, "config", "./config.toml", "configuration file path")

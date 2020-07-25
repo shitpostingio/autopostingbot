@@ -41,6 +41,9 @@ func tryPosting(post *entities.Post) error {
 
 	//set messageid etc
 	err = dbwrapper.MarkPostAsPosted(post, int(message.Id))
+	//TODO: NOTIFICARE SE CI SONO TROPPI POCHI POST
+
+	//TODO: CONTROLLARE IL SALVATAGGIO DEI MEME: saranno da spostare
 
 	// update tickers
 

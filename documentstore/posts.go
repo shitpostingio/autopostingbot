@@ -305,6 +305,7 @@ func findBestMatch(referencePHash string, cursor *mongo.Cursor) (post entities.P
 		// it will always keep being true.
 		var res entities.Post
 		err = cursor.Decode(&res)
+		//TODO: pensare di cambiare photosaresimilarenough in un qualcosa che dia un valore numerico
 		if err == nil && fpcompare.PhotosAreSimilarEnough(referencePHash, res.Media.PHash) {
 			post = res
 			fmt.Println("match in ", i, "iterations. FileID", post.Media.FileUniqueID)

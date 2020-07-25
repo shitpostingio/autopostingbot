@@ -2,6 +2,7 @@ package posting
 
 import (
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
+	"gitlab.com/shitposting/autoposting-bot/posting/edition"
 	"time"
 )
 
@@ -21,4 +22,8 @@ func GetPostingRate() time.Duration {
 // GetNextPostTime returns the time at which the next post is scheduled
 func GetNextPostTime() time.Time {
 	return m.nextPostScheduled
+}
+
+func GetPostingManager() edition.Edition {
+	return m.e
 }

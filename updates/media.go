@@ -35,7 +35,11 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 
 	if !skipDuplicateChecks {
 
-		post, err := dbwrapper.FindPostByFeatures(fingerprint.Histogram, fingerprint.PHash)
+		post, err := dbwrapper.FindPostByUniqueID(fileInfo.Remote.UniqueId)
+		if err != nil {
+			post, err = dbwrapper.FindPostByFeatures(fingerprint.Histogram, fingerprint.PHash)
+		}
+
 		if err == nil {
 			log.Println("Match found: ", post)
 			//TODO: VEDERE L'ERRORE

@@ -17,6 +17,7 @@ var (
 		"delete":  commands.DeleteCommandHandler{}, //TODO: CONTROLLARE CHE SIA IN RISPOSTA A QUALCOSA
 		"info":    commands.InfoCommandHandler{},
 		"postnow": commands.PostNowCommandHandler{},
+		"add":     commands.AddCommandHandler{},
 	}
 )
 
