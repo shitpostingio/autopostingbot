@@ -20,6 +20,7 @@ var (
 		"add":     commands.AddCommandHandler{},
 		"caption": commands.CaptionCommandHandler{},
 		"thanks": commands.ThanksCommandHandler{},
+		"preview": commands.PreviewCommandHandler{},
 	}
 )
 
