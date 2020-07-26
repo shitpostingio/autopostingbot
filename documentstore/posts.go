@@ -304,6 +304,25 @@ func MarkPostAsFailed(post *entities.Post, collection *mongo.Collection) error {
 
 }
 
+func MarkPostAsDeletedByMessageID(messageID int64, collection *mongo.Collection) error {
+
+	//
+	ctx, cancelCtx := context.WithTimeout(context.Background(), opDeadline)
+	defer cancelCtx()
+
+	//
+	filter := bson.M{"messageid": messageID}
+	update := bson.D{
+		{
+			Key:   "$set",
+			Value: bson.D{{"deletedat", time.Now()}},
+		}}
+
+	_, err := collection.UpdateOne(ctx, filter, update, options.Update())
+	return err
+
+}
+
 // ============================================================================
 
 func findBestMatch(referencePHash string, cursor *mongo.Cursor) (post entities.Post, err error) {

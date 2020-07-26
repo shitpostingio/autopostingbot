@@ -79,6 +79,8 @@ func tryPausing(duration time.Duration) error {
 
 func schedulePosting(postTime time.Time) {
 
+	//TODO: gestire caso 0 post
+
 	if !m.timer.Stop() {
 		<-m.timer.C
 	}
