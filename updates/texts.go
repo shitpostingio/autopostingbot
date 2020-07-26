@@ -21,6 +21,7 @@ var (
 		"caption": commands.CaptionCommandHandler{},
 		"thanks": commands.ThanksCommandHandler{},
 		"preview": commands.PreviewCommandHandler{},
+		"credit": commands.CreditCommandHandler{},
 	}
 )
 
