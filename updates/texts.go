@@ -19,6 +19,7 @@ var (
 		"postnow": commands.PostNowCommandHandler{},
 		"add":     commands.AddCommandHandler{},
 		"caption": commands.CaptionCommandHandler{},
+		"thanks": commands.ThanksCommandHandler{},
 	}
 )
 
