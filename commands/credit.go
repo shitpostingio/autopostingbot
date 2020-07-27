@@ -81,8 +81,8 @@ func getCreditCaption(arguments string, message, replyToMessage *client.Message)
 			msgLengthDifference := len(text.Text) - len(arguments)
 			startParsing := msgLengthDifference + urlStart + urlEnd
 			comment = caption.ToHTMLCaptionWithCustomStart(message.Content.(*client.MessageText).Text, startParsing)
+			comment = strings.TrimSpace(comment[startParsing:])
 			fmt.Println("startParsing: ", startParsing, " comment: ", comment)
-			comment = strings.TrimSpace(comment)
 
 		} else {
 			url = leftoverText
