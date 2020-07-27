@@ -2,31 +2,30 @@ package api
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"github.com/zelenin/go-tdlib/client"
 )
 
 var (
-	sendFunction = map[string]func(int64, int64, string, string, []*client.TextEntity) (*client.Message, error){
+
+	sendFunctions = map[string]func(int64, int64, string, string, []*client.TextEntity) (*client.Message, error){
 		client.TypeAnimation: SendAnimation,
 		client.TypePhoto:     SendPhoto,
 		client.TypeVideo:     SendVideo,
 	}
 
-	fileIDFunction = map[string]func(*client.Message) *client.File{
+	fileInfoFunctions = map[string]func(*client.Message) *client.File{
 		client.TypeMessageAnimation: GetAnimationFileInfoFromMessage,
 		client.TypeMessagePhoto:     GetPhotoFileInfoFromMessage,
 		client.TypeMessageVideo:     GetVideoFileInfoFromMessage,
 	}
+
 )
 
 func SendMedia(mediaType string, chatID, replyToMessageID int64, remoteFileID, caption string, entities []*client.TextEntity) (*client.Message, error) {
 
-	send, found := sendFunction[mediaType]
+	send, found := sendFunctions[mediaType]
 	if !found {
-		err := fmt.Errorf("send function not found for media type %s", mediaType)
-		log.Error(err)
-		return nil, err
+		return nil, fmt.Errorf("send function not found for media type %s", mediaType)
 	}
 
 	return send(chatID, replyToMessageID, remoteFileID, caption, entities)
@@ -35,12 +34,13 @@ func SendMedia(mediaType string, chatID, replyToMessageID int64, remoteFileID, c
 
 func GetMediaFileInfo(message *client.Message) (*client.File, error) {
 
+	//
 	mediaType := message.Content.MessageContentType()
-	getIDs, found := fileIDFunction[mediaType]
+
+	//
+	getIDs, found := fileInfoFunctions[mediaType]
 	if !found {
-		err := fmt.Errorf("get file id function not found for media type %s", mediaType)
-		log.Error(err)
-		return nil, err
+		return nil, fmt.Errorf("get file info function not found for media type %s", mediaType)
 	}
 
 	return getIDs(message), nil

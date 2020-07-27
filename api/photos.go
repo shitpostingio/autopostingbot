@@ -24,16 +24,14 @@ func SendPhoto(chatID, replyToMessageID int64, remoteFileID, caption string, ent
 
 }
 
-func SendPlainPhoto(chatID int64, remoteFileID, caption string) (*client.Message, error) {
-	return SendPhoto(chatID, NoReply, remoteFileID, caption, nil)
-}
-
-func SendPlainReplyPhoto(chatID, replyToMessageID int64, remoteFileID, caption string) (*client.Message, error) {
-	return SendPhoto(chatID, replyToMessageID, remoteFileID, caption, nil)
-}
-
 //TODO: POSSIBILI PROBLEMI CON SIZE = 0
 func GetPhotoFileInfoFromMessage(message *client.Message) *client.File {
+
+	//
 	photo := message.Content.(*client.MessagePhoto).Photo
+
+	//There's no reason why photo.Sizes should be 0
+	//but that would definitely cause issues
 	return photo.Sizes[len(photo.Sizes)-1].Photo
+
 }

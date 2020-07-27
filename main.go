@@ -47,6 +47,10 @@ func main() {
 	/* LOAD CLI ARGUMENTS */
 	loadCLIParams()
 
+	if debug {
+		log.SetLevel(log.DebugLevel)
+	}
+
 	/* LOAD CONFIGURATION */
 	cfg, err := configuration.Load(configFilePath, !polling)
 	if err != nil {
@@ -112,10 +116,12 @@ func main() {
 	//	return
 	//}
 
+
+
 	posting.Start(&cfg, debug, testing)
+	log.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, %s", Version, Build, posting.GetPostingManager().GetEditionName()))
 	posting.Listen()
 
-	log.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, %s", Version, Build, posting.GetPostingManager().GetEditionName()))
 
 	/* HANDLE UPDATES */
 	//handleUpdates(updates, repo)

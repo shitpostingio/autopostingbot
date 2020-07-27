@@ -1,26 +1,16 @@
 package api
 
 import (
-	"fmt"
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/repository"
 )
 
-func GetFormattedText(caption string) (*client.FormattedText, error) {
+func GetFormattedText(text string) (*client.FormattedText, error) {
 
 	formattedText, err := repository.Tdlib.ParseTextEntities(&client.ParseTextEntitiesRequest{
-		Text:      caption,
+		Text:      text,
 		ParseMode: &client.TextParseModeHTML{},
 	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	fmt.Println("ERRORE? ", err)
-	if formattedText.Entities != nil && len(formattedText.Entities) > 0 {
-		fmt.Println(formattedText.Entities[0].Type.TextEntityTypeType())
-	}
 
 	return formattedText, err
 

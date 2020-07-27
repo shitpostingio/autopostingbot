@@ -22,14 +22,6 @@ func SendAnimation(chatID, replyToMessageID int64, remoteFileID, caption string,
 
 }
 
-func SendPlainAnimation(chatID int64, remoteFileID, caption string) (*client.Message, error) {
-	return SendAnimation(chatID, NoReply, remoteFileID, caption, nil)
-}
-
-func SendPlainReplyAnimation(chatID, replyToMessageID int64, remoteFileID, caption string) (*client.Message, error) {
-	return SendAnimation(chatID, replyToMessageID, remoteFileID, caption, nil)
-}
-
 func GetAnimationFileInfoFromMessage(message *client.Message) *client.File {
 	return message.Content.(*client.MessageAnimation).Animation.Animation
 }

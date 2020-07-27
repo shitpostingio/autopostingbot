@@ -182,11 +182,11 @@ func GetNextPost(collection *mongo.Collection) (post entities.Post, err error) {
 			Value: 0,
 		},
 		{
-			Key:   "media.postedat",
+			Key:   "postedat",
 			Value: nil, //TODO: CONTROLLARE
 		},
 		{
-			Key:   "media.haserror",
+			Key:   "haserror",
 			Value: nil,
 		},
 	}
@@ -210,11 +210,11 @@ func GetQueueLength(collection *mongo.Collection) (length int64) {
 	//
 	filter := bson.D{
 		{
-			Key:   "media.postedat",
+			Key:   "postedat",
 			Value: nil, //TODO: CONTROLLARE
 		},
 		{
-			Key:   "media.haserror",
+			Key:   "haserror",
 			Value: nil,
 		},
 	}
@@ -242,11 +242,11 @@ func GetQueuePositionByAddTime(addedAt time.Time, collection *mongo.Collection) 
 			Value: bson.D{{"$lte", addedAt}},
 		},
 		{
-			Key:   "media.postedat",
+			Key:   "postedat",
 			Value: nil, //TODO: CONTROLLARE
 		},
 		{
-			Key:   "media.haserror",
+			Key:   "haserror",
 			Value: nil,
 		},
 	}
@@ -274,7 +274,7 @@ func MarkPostAsPosted(post *entities.Post, messageID int, collection *mongo.Coll
 			Key: "$set",
 			Value: bson.D{
 				{"messageid", messageID},
-				{"media.postedat", time.Now()},
+				{"postedat", time.Now()},
 			},
 		},
 	}

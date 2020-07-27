@@ -6,9 +6,13 @@ import (
 )
 
 func DownloadFile(fileID int32) (*client.File, error) {
-	return repository.Tdlib.DownloadFile(&client.DownloadFileRequest{
+
+	file, err := repository.Tdlib.DownloadFile(&client.DownloadFileRequest{
 		FileId:      fileID,
 		Priority:    32,
 		Synchronous: true,
 	})
+
+	return file, err
+
 }
