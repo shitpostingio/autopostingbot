@@ -7,8 +7,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 )
 
-type DeleteCommandHandler struct {
-}
+type DeleteCommandHandler struct {}
 
 func (DeleteCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 

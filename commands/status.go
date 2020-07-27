@@ -14,18 +14,24 @@ const (
 	statusText = "📋 Posts enqueued: %d\n🕜 Post rate: %s\n\n🔮 Next post in: %s (%s)"
 )
 
-type StatusCommandHandler struct {
-}
+type StatusCommandHandler struct {}
 
 func (StatusCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
+	//
 	nextPost := posting.GetNextPostTime()
+	queueLength := dbwrapper.GetQueueLength()
+	postingRate := posting.GetPostingRate().String()
+	minutesUntilNextPost := time.Until(nextPost).Truncate(time.Minute)
+
+	//
 	text := fmt.Sprintf(statusText,
-		dbwrapper.GetQueueLength(),
-		posting.GetPostingRate().String(),
-		time.Until(nextPost).Truncate(time.Minute),
+		queueLength,
+		postingRate,
+		minutesUntilNextPost,
 		nextPost.Format("15:04"))
 
+	//
 	_, err := api.SendPlainText(message.ChatId, text)
 	return err
 

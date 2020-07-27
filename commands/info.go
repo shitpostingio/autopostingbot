@@ -15,8 +15,7 @@ import (
 	"time"
 )
 
-type InfoCommandHandler struct {
-}
+type InfoCommandHandler struct {}
 
 //TODO: RIMUOVERE LE PRINT E TIRARE FUORI LE STRINGHE CABLATE
 func (InfoCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {

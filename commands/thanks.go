@@ -9,34 +9,35 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 )
 
-type ThanksCommandHandler struct {
-}
+type ThanksCommandHandler struct {}
 
 func (ThanksCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
+	//
 	if replyToMessage == nil {
-		return errors.New("no reply message")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "This command needs to be used in reply to a media file")
+		return errors.New("reply to message nil")
 	}
 
+	//
 	fi, err := api.GetMediaFileInfo(replyToMessage)
 	if err != nil {
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "This command needs to be used in reply to a media file")
 		return err
 	}
 
+	//
 	var newCaption string
 	if arguments != "" {
 
 		text := message.Content.(*client.MessageText).Text
 		msgLengthDifference := len(text.Text) - len(arguments)
-		fmt.Println("Text: ", text.Text, " len diff: ", msgLengthDifference)
-
 		newCaption = caption.ToHTMLCaption(text)
-		fmt.Println("NewCaption: ", newCaption)
 		newCaption = newCaption[msgLengthDifference:]
-		fmt.Println("NC should be: ", newCaption)
 
 	}
 
+	//
 	thanks, err := getThanksCaption(replyToMessage)
 	if err == nil {
 		newCaption = fmt.Sprintf("%s\n\n%s", newCaption, thanks)

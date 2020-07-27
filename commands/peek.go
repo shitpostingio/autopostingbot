@@ -1,54 +1,33 @@
 package commands
 
 import (
-	log "github.com/sirupsen/logrus"
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 )
 
-type PeekCommandHandler struct {
-}
-
-//func (PeekCommandHandler) Handle(arguments string, message *client.Message) error {
-//
-//	log.Println("PEEK HANDLER")
-//	nextPost, err := database.GetNextPost(repository.Db)
-//	if err != nil {
-//		log.Error(err)
-//		return err
-//	}
-//
-//	mediaType, found := legacy.NewMediaTypeFromOld(nextPost.TypeID)
-//	if !found {
-//		err := fmt.Errorf("new media type not found for old typeid %d", nextPost.TypeID)
-//		log.Error(err)
-//		return err
-//	}
-//	log.Println("Media type found:", mediaType)
-//
-//	formattedText, err := legacy.NewFormattedTextFromCaption(nextPost.Caption)
-//	if err != nil {
-//		log.Error(err)
-//		return err
-//	}
-//
-//	log.Println("Formatted text found:", formattedText.Text)
-//	_, err = api.SendMedia(mediaType, message.ChatId, message.Id, nextPost.FileID, formattedText.Text, formattedText.Entities)
-//	return err
-//
-//}
+type PeekCommandHandler struct {}
 
 func (PeekCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
+	//
 	nextPost, err := dbwrapper.GetNextPost()
 	if err != nil {
-		log.Error(err)
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "Unable to find the next post. Is the queue empty?")
 		return err
 	}
 
-	entities, _ := api.GetFormattedText(nextPost.Caption)
-	_, err = api.SendMedia(nextPost.Media.Type, message.ChatId, message.Id, nextPost.Media.FileID, entities.Text, entities.Entities)
+	//
+	ft, err := api.GetFormattedText(nextPost.Caption)
+	if err != nil {
+		ft = &client.FormattedText{
+			Text:     nextPost.Caption,
+			Entities: nil,
+		}
+	}
+
+	//
+	_, err = api.SendMedia(nextPost.Media.Type, message.ChatId, message.Id, nextPost.Media.FileID, ft.Text, ft.Entities)
 	return err
 
 }
