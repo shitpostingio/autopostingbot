@@ -10,142 +10,116 @@ import (
 	"strings"
 )
 
-type CreditCommandHandler struct {
-}
+type CreditCommandHandler struct {}
 
 func (CreditCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
+	//
 	if replyToMessage == nil {
-		return errors.New("no reply message")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "This command needs to be used in reply to a media file")
+		return errors.New("reply to message nil")
 	}
 
+	//
 	fi, err := api.GetMediaFileInfo(replyToMessage)
 	if err != nil {
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "This command needs to be used in reply to a media file")
 		return err
 	}
 
-	var newCaption string
-	//if arguments != "" {
 	//
-	//	text := message.Content.(*client.MessageText).Text
-	//	msgLengthDifference := len(text.Text) - len(arguments)
-	//	fmt.Println("Text: ", text.Text, " len diff: ", msgLengthDifference)
-	//
-	//	newCaption = caption.ToHTMLCaption(text)
-	//	fmt.Println("NewCaption: ", newCaption)
-	//	newCaption = newCaption[msgLengthDifference:]
-	//	fmt.Println("NC should be: ", newCaption)
-	//
-	//}
-
-	thanks, err := getCreditCaption(arguments, message, replyToMessage)
-	if err == nil {
-		newCaption = fmt.Sprintf("%s\n\n%s", newCaption, thanks)
+	credit, err := getCreditCaption(arguments, message, replyToMessage)
+	if err != nil {
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "Unable to credit correctly")
+		credit = ""
 	}
 
-	return dbwrapper.UpdatePostCaptionByUniqueID(fi.Remote.UniqueId, newCaption)
+	//
+	err = dbwrapper.UpdatePostCaptionByUniqueID(fi.Remote.UniqueId, credit)
+
+	//
+	_ = PreviewCommandHandler{}.Handle("", message, replyToMessage)
+	return err
 
 }
 
-//TODO: MIGLIORARE *TANTO*
-// Veramente putrido
 func getCreditCaption(arguments string, message, replyToMessage *client.Message) (string, error) {
 
-	fmt.Println("Forward type: ", replyToMessage.ForwardInfo.Origin.MessageForwardOriginType())
+	// Different behavior whether we have a URL or not
 	urlStart := strings.Index(arguments, "http")
 
 	// We have a URL
 	if urlStart != -1 {
-
-		/* WHO TO CREDIT: SUBSTRING UNTIL THE FIRST URL STARTS */
-		whoToCredit := arguments[:urlStart]
-
-		/* ISOLATE THE LEFTOVER TEXT */
-		leftoverText := arguments[urlStart:]
-
-		/* FIND THE END OF THE URL */
-		var url string
-		var comment string
-
-		urlEnd := strings.IndexAny(leftoverText, " \t\n")
-		if urlEnd != -1 {
-
-			/* URL: SUBSTRING OF leftoverText UNTIL urlEnd */
-			url = leftoverText[:urlEnd]
-
-			/* COMMENT: SUBSTRING OF leftoverText FROM urlEnd */
-			//comment = strings.TrimSpace(leftoverText[urlEnd:])
-
-			text := message.Content.(*client.MessageText).Text
-			msgLengthDifference := len(text.Text) - len(arguments)
-			startParsing := msgLengthDifference + urlStart + urlEnd
-			comment = caption.ToHTMLCaptionWithCustomStart(message.Content.(*client.MessageText).Text, startParsing)
-			comment = strings.TrimSpace(comment[startParsing:])
-			fmt.Println("startParsing: ", startParsing, " comment: ", comment)
-
-		} else {
-			url = leftoverText
-		}
-
-		/* CREATE NEW CAPTION */
-		return fmt.Sprintf("%s\n\n[By <a href=\"%s\">%s</a>]", strings.TrimSpace(comment), url, strings.TrimSpace(whoToCredit)), nil
-
+		return creditCaptionForURL(urlStart, arguments, message, replyToMessage)
 	}
 
+	return creditCaptionWithoutURL(arguments, message, replyToMessage)
+
+}
+
+func creditCaptionForURL(urlStart int, arguments string, message, replyToMessage *client.Message) (string, error) {
+
+	/*
+	 *	STRUCTURE:
+	 *	/credit whoToCredit http://some-url additional comments
+	 */
+
+	//
+	whoToCredit := strings.TrimSpace(arguments[:urlStart])
+	leftoverText := arguments[urlStart:]
+
+	//
+	urlEnd := strings.IndexAny(leftoverText, " \t\n")
+	if urlEnd == -1 {
+		return fmt.Sprintf("[By <a href=\"%s\">%s</a>]", leftoverText, whoToCredit), nil
+	}
+
+	// Isolate the URL
+	url := leftoverText[:urlEnd]
+
+	// Parse entities and isolate comment
 	text := message.Content.(*client.MessageText).Text
 	msgLengthDifference := len(text.Text) - len(arguments)
-	fmt.Println("Text: ", text.Text, " len diff: ", msgLengthDifference)
+	commentStart := msgLengthDifference + urlStart + urlEnd
+	comment := caption.ToHTMLCaptionWithCustomStart(message.Content.(*client.MessageText).Text, commentStart)
+	comment = strings.TrimSpace(comment[commentStart:])
 
-	newCaption := ""
-	newCaption = caption.ToHTMLCaption(text)
-	fmt.Println("NewCaption: ", newCaption)
+	//
+	return fmt.Sprintf("%s\n\n[By <a href=\"%s\">%s</a>]", comment, url, whoToCredit), nil
+
+}
+
+func creditCaptionWithoutURL(arguments string, message, replyToMessage *client.Message) (string, error) {
+
+	//
+	text := message.Content.(*client.MessageText).Text
+	msgLengthDifference := len(text.Text) - len(arguments)
+	newCaption := caption.ToHTMLCaption(text)
 	newCaption = newCaption[msgLengthDifference:]
-	fmt.Println("NC should be: ", newCaption)
 
+	// Channel forwards shouldn't be credited
 	if replyToMessage.ForwardInfo.Origin.MessageForwardOriginType() == client.TypeMessageForwardOriginChannel {
 		return newCaption, nil
 	}
 
+	// Hidden users can only be users
 	if replyToMessage.ForwardInfo.Origin.MessageForwardOriginType() == client.TypeMessageForwardOriginHiddenUser {
 		return fmt.Sprintf("%s\n\n[By %s]", newCaption, replyToMessage.ForwardInfo.Origin.(*client.MessageForwardOriginHiddenUser).SenderName), nil
 	}
 
+	// Get the user and check it isn't a bot
 	user, err := api.GetUserByID(replyToMessage.SenderUserId)
 	if err != nil {
 		return newCaption, err
 	}
 
+	//
 	if user.Type.UserTypeType() == client.TypeUserTypeBot {
 		return newCaption, nil
 	}
 
+	// Use only the first name for normal users
 	return fmt.Sprintf("%s\n\n[By %s]", newCaption, user.FirstName), nil
 
-	//words := strings.Fields(arguments)
-	//fmt.Println("len words: ", len(words))
-	//if len(words) < 2 {
-	//
-	//	if replyToMessage.ForwardInfo.Origin.MessageForwardOriginType() == client.TypeMessageForwardOriginChannel {
-	//		return "", nil
-	//	}
-	//
-	//	if replyToMessage.ForwardInfo.Origin.MessageForwardOriginType() == client.TypeMessageForwardOriginHiddenUser {
-	//		return fmt.Sprintf("[By %s]", replyToMessage.ForwardInfo.Origin.(*client.MessageForwardOriginHiddenUser).SenderName), nil
-	//	}
-	//
-	//	user, err := api.GetUserByID(replyToMessage.SenderUserId)
-	//	if err != nil {
-	//		return "", err
-	//	}
-	//
-	//	if user.Type.UserTypeType() == client.TypeUserTypeBot {
-	//		return "", nil
-	//	}
-	//
-	//	return fmt.Sprintf("[By %s]", user.FirstName), nil
-	//
-	//}
-	//
-	//return fmt.Sprintf(`[By <a href="%s">%s</a>]`, words[1], words[0]), nil
-
 }
+

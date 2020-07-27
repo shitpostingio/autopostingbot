@@ -9,8 +9,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 )
 
-type CaptionCommandHandler struct {
-}
+type CaptionCommandHandler struct {}
 
 func (CaptionCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
