@@ -116,12 +116,9 @@ func main() {
 	//	return
 	//}
 
-
-
 	posting.Start(&cfg, debug, testing)
 	log.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, %s", Version, Build, posting.GetPostingManager().GetEditionName()))
 	posting.Listen()
-
 
 	/* HANDLE UPDATES */
 	//handleUpdates(updates, repo)

@@ -11,7 +11,6 @@ import (
 )
 
 type CreditCommandHandler struct {
-
 }
 
 func (CreditCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
@@ -93,36 +92,34 @@ func getCreditCaption(arguments string, message, replyToMessage *client.Message)
 
 	}
 
-		text := message.Content.(*client.MessageText).Text
-		msgLengthDifference := len(text.Text) - len(arguments)
-		fmt.Println("Text: ", text.Text, " len diff: ", msgLengthDifference)
+	text := message.Content.(*client.MessageText).Text
+	msgLengthDifference := len(text.Text) - len(arguments)
+	fmt.Println("Text: ", text.Text, " len diff: ", msgLengthDifference)
 
-		newCaption := ""
-		newCaption = caption.ToHTMLCaption(text)
-		fmt.Println("NewCaption: ", newCaption)
-		newCaption = newCaption[msgLengthDifference:]
-		fmt.Println("NC should be: ", newCaption)
+	newCaption := ""
+	newCaption = caption.ToHTMLCaption(text)
+	fmt.Println("NewCaption: ", newCaption)
+	newCaption = newCaption[msgLengthDifference:]
+	fmt.Println("NC should be: ", newCaption)
 
-		if replyToMessage.ForwardInfo.Origin.MessageForwardOriginType() == client.TypeMessageForwardOriginChannel {
-			return newCaption, nil
-		}
+	if replyToMessage.ForwardInfo.Origin.MessageForwardOriginType() == client.TypeMessageForwardOriginChannel {
+		return newCaption, nil
+	}
 
-		if replyToMessage.ForwardInfo.Origin.MessageForwardOriginType() == client.TypeMessageForwardOriginHiddenUser {
-			return fmt.Sprintf("%s\n\n[By %s]",newCaption, replyToMessage.ForwardInfo.Origin.(*client.MessageForwardOriginHiddenUser).SenderName), nil
-		}
+	if replyToMessage.ForwardInfo.Origin.MessageForwardOriginType() == client.TypeMessageForwardOriginHiddenUser {
+		return fmt.Sprintf("%s\n\n[By %s]", newCaption, replyToMessage.ForwardInfo.Origin.(*client.MessageForwardOriginHiddenUser).SenderName), nil
+	}
 
-		user, err := api.GetUserByID(replyToMessage.SenderUserId)
-		if err != nil {
-			return newCaption, err
-		}
+	user, err := api.GetUserByID(replyToMessage.SenderUserId)
+	if err != nil {
+		return newCaption, err
+	}
 
-		if user.Type.UserTypeType() == client.TypeUserTypeBot {
-			return newCaption, nil
-		}
+	if user.Type.UserTypeType() == client.TypeUserTypeBot {
+		return newCaption, nil
+	}
 
-		return fmt.Sprintf("%s\n\n[By %s]", newCaption, user.FirstName), nil
-
-
+	return fmt.Sprintf("%s\n\n[By %s]", newCaption, user.FirstName), nil
 
 	//words := strings.Fields(arguments)
 	//fmt.Println("len words: ", len(words))
@@ -151,8 +148,4 @@ func getCreditCaption(arguments string, message, replyToMessage *client.Message)
 	//
 	//return fmt.Sprintf(`[By <a href="%s">%s</a>]`, words[1], words[0]), nil
 
-
-
-
 }
-

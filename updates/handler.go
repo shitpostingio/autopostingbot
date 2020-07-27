@@ -8,7 +8,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/repository"
 )
 
-const(
+const (
 	tdlibdeletemessageidfuckery = 1048575
 )
 

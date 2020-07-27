@@ -6,7 +6,6 @@ import (
 )
 
 var (
-
 	sendFunctions = map[string]func(int64, int64, string, string, []*client.TextEntity) (*client.Message, error){
 		client.TypeAnimation: SendAnimation,
 		client.TypePhoto:     SendPhoto,
@@ -18,7 +17,6 @@ var (
 		client.TypeMessagePhoto:     GetPhotoFileInfoFromMessage,
 		client.TypeMessageVideo:     GetVideoFileInfoFromMessage,
 	}
-
 )
 
 func SendMedia(mediaType string, chatID, replyToMessageID int64, remoteFileID, caption string, entities []*client.TextEntity) (*client.Message, error) {

@@ -8,7 +8,6 @@ import (
 )
 
 type PreviewCommandHandler struct {
-
 }
 
 func (PreviewCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
