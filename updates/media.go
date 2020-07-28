@@ -8,6 +8,7 @@ import (
 	caption "gitlab.com/shitposting/autoposting-bot/caption"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
+	"gitlab.com/shitposting/autoposting-bot/posting"
 )
 
 func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks bool) {
@@ -70,5 +71,10 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 	}
 
 	_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "Media added!")
+
+	//
+	if dbwrapper.GetQueueLength() == 1 {
+		posting.ForcePostScheduling()
+	}
 
 }

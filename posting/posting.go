@@ -24,7 +24,6 @@ func tryPosting(post *entities.Post) error {
 	}
 
 	// Prepare caption
-	//TODO: levare stringa cablata
 	caption := fmt.Sprintf("%s\n\n@%s", post.Caption, m.e.GetEditionName())
 	ft, err := api.GetFormattedText(caption)
 	if err != nil {
@@ -41,7 +40,6 @@ func tryPosting(post *entities.Post) error {
 
 	//set messageid etc
 	err = dbwrapper.MarkPostAsPosted(post, int(message.Id))
-	//TODO: NOTIFICARE SE CI SONO TROPPI POCHI POST
 
 	//TODO: CONTROLLARE IL SALVATAGGIO DEI MEME: saranno da spostare
 
@@ -61,15 +59,15 @@ func tryPausing(duration time.Duration) error {
 	}
 
 	//
-	m.timer.Stop()
-
-	//
 	newTime := m.nextPostScheduled.Add(duration)
 	m.nextPostScheduled = newTime
 
 	//
 	if !m.timer.Stop() {
-		<-m.timer.C
+		select{
+		case <-m.timer.C:
+		default:
+		}
 	}
 
 	m.timer = time.NewTimer(time.Until(newTime))
@@ -79,12 +77,15 @@ func tryPausing(duration time.Duration) error {
 
 func schedulePosting(postTime time.Time) {
 
-	//TODO: gestire caso 0 post
-
+	// Stop the timer and drain the channel if need be
 	if !m.timer.Stop() {
-		<-m.timer.C
+		select{
+		case <-m.timer.C:
+		default:
+		}
 	}
 
+	//
 	queueLength := dbwrapper.GetQueueLength()
 	newRate := m.e.GetNewPostingRate(int(queueLength))
 	m.postingRate = newRate
@@ -93,6 +94,11 @@ func schedulePosting(postTime time.Time) {
 	//
 	m.previousPostTime = postTime
 	m.nextPostScheduled = time.Now().Add(newRate)
+
+	// Send alerts if there are less than X amount of posts enqueued
+	if int(queueLength) < m.config.PostAlertThreshold {
+		sendLowPostAlerts(int(queueLength))
+	}
 
 }
 

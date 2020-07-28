@@ -47,4 +47,15 @@ func UserIsAuthorized(userID int32, collection *mongo.Collection) bool {
 
 }
 
+func GetUsers(collection *mongo.Collection) (*mongo.Cursor, error) {
+
+	//
+	ctx, cancelCtx := context.WithTimeout(context.Background(), opDeadline)
+	defer cancelCtx()
+
+	//
+	return collection.Find(ctx, bson.M{}, options.Find())
+
+}
+
 //TODO: DeleteUser

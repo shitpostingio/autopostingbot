@@ -27,3 +27,7 @@ func GetNextPostTime() time.Time {
 func GetPostingManager() edition.Edition {
 	return m.e
 }
+
+func ForcePostScheduling() {
+	schedulePosting(time.Unix(0, 0))
+}
