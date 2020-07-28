@@ -48,6 +48,11 @@ func tryPosting(post *entities.Post) error {
 	// reschedule
 	schedulePosting(time.Now())
 
+
+	//
+	err = moveToDirectory(post)
+
+
 	return err
 
 }

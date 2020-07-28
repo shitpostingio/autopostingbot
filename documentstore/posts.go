@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
 	fpcompare "gitlab.com/shitposting/fingerprinting/comparer"
 	"go.mongodb.org/mongo-driver/bson"
@@ -16,6 +17,7 @@ import (
 
 func AddPost(addedBy int32, media entities.Media, caption string, collection *mongo.Collection) error {
 
+	//
 	post := entities.Post{
 		AddedBy: addedBy,
 		Media:   media,
@@ -27,6 +29,7 @@ func AddPost(addedBy int32, media entities.Media, caption string, collection *mo
 	ctx, cancelCtx := context.WithTimeout(context.Background(), opDeadline)
 	defer cancelCtx()
 
+	//
 	_, err := collection.InsertOne(ctx, post)
 	if err != nil {
 		err = fmt.Errorf("AddPost: %v", err)
@@ -54,7 +57,7 @@ func UpdatePostCaptionByUniqueID(uniqueID, caption string, collection *mongo.Col
 		},
 	}
 
-	fmt.Println("Update document: ", update)
+	//
 	_, err := collection.UpdateOne(ctx, filter, update, options.Update())
 	return err
 
@@ -69,6 +72,7 @@ func FindPostByFeatures(histogram []float64, pHash string, approximation float64
 		return
 	}
 
+	//
 	if pHash == "" {
 		err = xerrors.New("FindPostByFeatures: pHash was empty")
 		return
@@ -112,6 +116,7 @@ func FindPostByFeatures(histogram []float64, pHash string, approximation float64
 		return
 	}
 
+	//
 	post, err = findBestMatch(pHash, cursor)
 	if err != nil {
 		err = xerrors.Errorf("FindMediaByFeatures: %s", err)
@@ -125,6 +130,7 @@ func FindPostByFeatures(histogram []float64, pHash string, approximation float64
 // FindPostByFileID retrieves a post via its fileID
 func FindPostByUniqueID(uniqueID string, collection *mongo.Collection) (post entities.Post, err error) {
 
+	//
 	if uniqueID == "" {
 		return post, errors.New("uniqueID empty")
 	}
@@ -151,6 +157,7 @@ func FindPostByUniqueID(uniqueID string, collection *mongo.Collection) (post ent
 // DeletePostByFileID deletes a post entity via its fileID
 func DeletePostByUniqueID(uniqueID string, collection *mongo.Collection) error {
 
+	//
 	if uniqueID == "" {
 		return errors.New("uniqueID empty")
 	}
@@ -219,6 +226,7 @@ func GetQueueLength(collection *mongo.Collection) (length int64) {
 		},
 	}
 
+	//
 	res, err := collection.CountDocuments(ctx, filter, options.Count())
 	if err != nil {
 		return -1
@@ -251,6 +259,7 @@ func GetQueuePositionByAddTime(addedAt time.Time, collection *mongo.Collection) 
 		},
 	}
 
+	//
 	res, err := collection.CountDocuments(ctx, filter, options.Count())
 	if err != nil {
 		return -1
@@ -279,6 +288,7 @@ func MarkPostAsPosted(post *entities.Post, messageID int, collection *mongo.Coll
 		},
 	}
 
+	//
 	_, err := collection.UpdateOne(ctx, filter, update, options.Update())
 	return err
 
@@ -299,6 +309,7 @@ func MarkPostAsFailed(post *entities.Post, collection *mongo.Collection) error {
 			Value: bson.D{{"haserror", true}},
 		}}
 
+	//
 	_, err := collection.UpdateOne(ctx, filter, update, options.Update())
 	return err
 
@@ -318,6 +329,7 @@ func MarkPostAsDeletedByMessageID(messageID int64, collection *mongo.Collection)
 			Value: bson.D{{"deletedat", time.Now()}},
 		}}
 
+	//
 	_, err := collection.UpdateOne(ctx, filter, update, options.Update())
 	return err
 
@@ -345,7 +357,7 @@ func findBestMatch(referencePHash string, cursor *mongo.Cursor) (post entities.P
 		//TODO: pensare di cambiare photosaresimilarenough in un qualcosa che dia un valore numerico
 		if err == nil && fpcompare.PhotosAreSimilarEnough(referencePHash, res.Media.PHash) {
 			post = res
-			fmt.Println("match in ", i, "iterations. FileID", post.Media.FileUniqueID)
+			log.Debugln("match in ", i, "iterations. FileID", post.Media.FileUniqueID)
 			return
 		}
 

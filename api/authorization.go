@@ -29,7 +29,7 @@ func Authorize(botToken string, cfg *configuration.TdlibConfiguration) (tClient 
 		SystemVersion:          "1.0.0",
 		ApplicationVersion:     "1.0.0",
 		EnableStorageOptimizer: true,
-		IgnoreFileNames:        false,
+		IgnoreFileNames:        true,
 	}
 
 	logVerbosity := client.WithLogVerbosity(&client.SetLogVerbosityLevelRequest{

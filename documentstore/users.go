@@ -27,6 +27,7 @@ func AddUser(userID int32, collection *mongo.Collection) error {
 	ctx, cancelCtx := context.WithTimeout(context.Background(), opDeadline)
 	defer cancelCtx()
 
+	//
 	_, err := collection.InsertOne(ctx, user)
 	if err != nil {
 		return fmt.Errorf("AddUser: %v", err)
@@ -38,6 +39,12 @@ func AddUser(userID int32, collection *mongo.Collection) error {
 
 func UserIsAuthorized(userID int32, collection *mongo.Collection) bool {
 
+	//
+	if userID <= 0 {
+		return false
+	}
+
+	//
 	ctx, cancelCtx := context.WithTimeout(context.Background(), opDeadline)
 	defer cancelCtx()
 
@@ -58,4 +65,17 @@ func GetUsers(collection *mongo.Collection) (*mongo.Cursor, error) {
 
 }
 
-//TODO: DeleteUser
+func DeleteUser(userID int32, collection *mongo.Collection) error {
+
+	//
+	ctx, cancelCtx := context.WithTimeout(context.Background(), opDeadline)
+	defer cancelCtx()
+
+	//
+	filter := bson.M{"telegramid": userID}
+
+	//
+	_, err := collection.DeleteOne(ctx, filter, options.Delete())
+	return err
+
+}
