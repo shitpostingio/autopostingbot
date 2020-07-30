@@ -33,6 +33,7 @@ func (PostNowCommandHandler) Handle(arguments string, message, replyToMessage *c
 	}
 
 	//
+	_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "Attempting to post!")
 	posting.RequestPost(&post)
 	return err
 
