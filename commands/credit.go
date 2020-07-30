@@ -107,8 +107,12 @@ func creditCaptionWithoutURL(arguments string, message, replyToMessage *client.M
 		return fmt.Sprintf("%s\n\n[By %s]", newCaption, replyToMessage.ForwardInfo.Origin.(*client.MessageForwardOriginHiddenUser).SenderName), nil
 	}
 
-	// Get the user and check it isn't a bot
-	user, err := api.GetUserByID(replyToMessage.SenderUserId)
+	if replyToMessage.ForwardInfo.Origin.MessageForwardOriginType() != client.TypeMessageForwardOriginUser {
+		return "", errors.New("unsupported forward type")
+	}
+
+	fwd := replyToMessage.ForwardInfo.Origin.(*client.MessageForwardOriginUser)
+	user, err := api.GetUserByID(fwd.SenderUserId)
 	if err != nil {
 		return newCaption, err
 	}

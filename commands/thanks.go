@@ -81,7 +81,12 @@ func getThanks(message *client.Message) (string, error) {
 		return fmt.Sprintf("[Thanks to %s]", message.ForwardInfo.Origin.(*client.MessageForwardOriginHiddenUser).SenderName), nil
 	}
 
-	user, err := api.GetUserByID(message.SenderUserId)
+	if message.ForwardInfo.Origin.MessageForwardOriginType() != client.TypeMessageForwardOriginUser {
+		return "", errors.New("unsupported forward type")
+	}
+
+	fwd := message.ForwardInfo.Origin.(*client.MessageForwardOriginUser)
+	user, err := api.GetUserByID(fwd.SenderUserId)
 	if err != nil {
 		return "", err
 	}
