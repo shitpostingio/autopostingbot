@@ -7,6 +7,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/caption"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
+	l "gitlab.com/shitposting/autoposting-bot/localization"
 )
 
 type CaptionCommandHandler struct {}
@@ -15,14 +16,14 @@ func (CaptionCommandHandler) Handle(arguments string, message, replyToMessage *c
 
 	//
 	if replyToMessage == nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "This command needs to be used in reply to a media file")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_REPLY_TO_MEDIA_FILE))
 		return errors.New("reply to message nil")
 	}
 
 	//
 	fi, err := api.GetMediaFileInfo(replyToMessage)
 	if err != nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "This command needs to be used in reply to a media file")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_REPLY_TO_MEDIA_FILE))
 		return err
 	}
 

@@ -1,0 +1,12 @@
+{
+  "commands_reply_to_media_file": "Questo comando va usato in risposta ad un file multimediale",
+  "analysis_no_media_fingerprint": "Impossibile ottenere il fingerprint del file multimediale",
+  "commands_add_error": "Errore nell'aggiunta del post",
+  "media_added_correctly": "Media aggiunto correttamente",
+  "commands_credit_unable_to_credit": "L'aggiunta dei crediti ha dato errore",
+  "commands_delete_deleted_correctly": "Post cancellato con successo",
+  "commands_delete_unable_to_delete": "Impossibile cancellare il post",
+  "database_unable_to_find_post": "Post non trovato",
+  "commands_info_post_already_posted": "Post aggiunto da <a href=\"tg://user?id=%d\">%s</a> il %s\nPostato il %s\nLink: t.me/%s/%d",
+  "commands_info_post_not_yet_posted": "📋 Il post è in posizione %d nella coda\n👤 Aggiunto da <a href=\"tg://user?id=%d\">%s</a> il %s\n\n🕜 Dovrebbe essere postato circa tra %s\n📅 Il %s"
+}

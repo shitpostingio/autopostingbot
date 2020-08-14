@@ -13,6 +13,7 @@ type Config struct {
 	Tdlib              TdlibConfiguration
 	DocumentStore      DocumentStoreConfiguration
 	AnalysisAPI        AnalysisAPIConfig
+	Localization       Localization
 }
 
 type AnalysisAPIConfig struct {

@@ -7,6 +7,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/caption"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
+	l "gitlab.com/shitposting/autoposting-bot/localization"
 	"strings"
 )
 
@@ -16,21 +17,21 @@ func (CreditCommandHandler) Handle(arguments string, message, replyToMessage *cl
 
 	//
 	if replyToMessage == nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "This command needs to be used in reply to a media file")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_REPLY_TO_MEDIA_FILE))
 		return errors.New("reply to message nil")
 	}
 
 	//
 	fi, err := api.GetMediaFileInfo(replyToMessage)
 	if err != nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "This command needs to be used in reply to a media file")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_REPLY_TO_MEDIA_FILE))
 		return err
 	}
 
 	//
 	credit, err := getCreditCaption(arguments, message, replyToMessage)
 	if err != nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "Unable to credit correctly")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_CREDIT_UNABLE_TO_CREDIT))
 		credit = ""
 	}
 

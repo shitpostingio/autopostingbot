@@ -8,6 +8,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/caption"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
+	l "gitlab.com/shitposting/autoposting-bot/localization"
 )
 
 type AddCommandHandler struct {}
@@ -16,14 +17,14 @@ func (AddCommandHandler) Handle(arguments string, message, replyToMessage *clien
 
 	//
 	if replyToMessage == nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "This command needs to be used in reply to a media file")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_REPLY_TO_MEDIA_FILE))
 		return errors.New("reply to message nil")
 	}
 
 	//
 	fileInfo, err := api.GetMediaFileInfo(replyToMessage)
 	if err != nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "This command needs to be used in reply to a media file")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_REPLY_TO_MEDIA_FILE))
 		return err
 	}
 
@@ -31,7 +32,7 @@ func (AddCommandHandler) Handle(arguments string, message, replyToMessage *clien
 	mediaType := api.GetTypeFromMessageType(replyToMessage.Content.MessageContentType())
 	fingerprint, err := analysisadapter.Request(fileInfo.Local.Path, mediaType, fileInfo.Remote.UniqueId)
 	if err != nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "Unable to get media fingerprint")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.ANALYSIS_NO_MEDIA_FINGERPRINT))
 		return err
 	}
 
@@ -61,9 +62,9 @@ func (AddCommandHandler) Handle(arguments string, message, replyToMessage *clien
 
 	err = dbwrapper.AddPost(replyToMessage.SenderUserId, media, postCaption)
 	if err != nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "Error while trying to add the post")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_ADD_ERROR))
 	} else {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "Media added correctly!")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.MEDIA_ADDED_CORRECTLY))
 	}
 
 	return err

@@ -3,7 +3,8 @@ module gitlab.com/shitposting/autoposting-bot
 go 1.15
 
 require (
-	github.com/BurntSushi/toml v0.3.1
+	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/bykovme/gotrans v1.0.0
 	github.com/corona10/goimagehash v1.0.2 // indirect
 	github.com/fsnotify/fsnotify v1.4.7
 	github.com/go-sql-driver/mysql v1.5.0 // indirect

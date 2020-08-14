@@ -8,6 +8,7 @@ import (
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
+	l "gitlab.com/shitposting/autoposting-bot/localization"
 	"gitlab.com/shitposting/autoposting-bot/posting"
 	"gitlab.com/shitposting/autoposting-bot/telegram"
 	"gitlab.com/shitposting/autoposting-bot/utility"
@@ -17,26 +18,25 @@ import (
 
 type InfoCommandHandler struct {}
 
-//TODO: RIMUOVERE LE PRINT E TIRARE FUORI LE STRINGHE CABLATE
 func (InfoCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
 	//
 	if replyToMessage == nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "This command needs to be used in reply to a media file")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_REPLY_TO_MEDIA_FILE))
 		return errors.New("reply to message nil")
 	}
 
 	//
 	fi, err := api.GetMediaFileInfo(replyToMessage)
 	if err != nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "This command needs to be used in reply to a media file")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_REPLY_TO_MEDIA_FILE))
 		return err
 	}
 
 	//
 	post, err := dbwrapper.FindPostByUniqueID(fi.Remote.UniqueId)
 	if err != nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "Unable to find the post")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.DATABASE_UNABLE_TO_FIND_POST))
 		return err
 	}
 
@@ -57,7 +57,7 @@ func (InfoCommandHandler) Handle(arguments string, message, replyToMessage *clie
 	if post.PostedAt != nil {
 		
 		//
-		reply = fmt.Sprintf("Post added by <a href=\"tg://user?id=%d\">%s</a> on %s\nPosted on %s\nLink: t.me/%s/%d",
+		reply = fmt.Sprintf(l.GetString(l.COMMANDS_INFO_ALREADY_POSTED),
 			post.AddedBy, name, utility.FormatDate(post.AddedAt), utility.FormatDate(*post.PostedAt), posting.GetPostingManager().GetEditionName(), post.MessageID)
 
 		//
@@ -78,7 +78,7 @@ func (InfoCommandHandler) Handle(arguments string, message, replyToMessage *clie
 	position := dbwrapper.GetQueuePositionByAddTime(post.AddedAt)
 	timeToPost := posting.GetNextPostTime().Add(posting.GetPostingManager().EstimatePostTime(position - 1))
 	durationUntilPost := durafmt.Parse(time.Until(timeToPost).Truncate(time.Minute))
-	reply = fmt.Sprintf("📋 The post is number %d in the queue\n👤 Added by <a href=\"tg://user?id=%d\">%s</a> on %s\n\n🕜 It should be posted roughly in %s\n📅 On %s",
+	reply = fmt.Sprintf(l.GetString(l.COMMANDS_INFO_NOT_YET_POSTED),
 		position, post.AddedBy, name, utility.FormatDate(post.AddedAt), durationUntilPost.String(), utility.FormatDate(timeToPost))
 
 	//

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/bykovme/gotrans"
 	_ "github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	log "github.com/sirupsen/logrus"
@@ -10,6 +11,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/config"
 	"gitlab.com/shitposting/autoposting-bot/documentstore"
+	"gitlab.com/shitposting/autoposting-bot/localization"
 	"gitlab.com/shitposting/autoposting-bot/posting"
 	updates2 "gitlab.com/shitposting/autoposting-bot/updates"
 
@@ -54,6 +56,15 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Localization
+	err = gotrans.InitLocales(cfg.Localization.Path)
+	if err != nil {
+		log.Fatal("Unable to load language files:", err)
+	}
+
+	localization.SetLanguage(cfg.Localization.Language)
+
+	//
 	tdlibClient, err := api.Authorize(cfg.BotToken, &cfg.Tdlib)
 	if err != nil {
 		log.Fatalf("NewClient error: %s", err)
