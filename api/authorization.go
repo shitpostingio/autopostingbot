@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/zelenin/go-tdlib/client"
-	"gitlab.com/shitposting/autoposting-bot/config"
+	"gitlab.com/shitposting/autoposting-bot/config/structs"
 )
 
 var (
@@ -10,7 +10,7 @@ var (
 )
 
 // Authorize logs the bot into the provided account using tdlib.
-func Authorize(botToken string, cfg *configuration.TdlibConfiguration) (tClient *client.Client, err error) {
+func Authorize(botToken string, cfg *structs.TdlibConfiguration) (tClient *client.Client, err error) {
 
 	authorizer := client.BotAuthorizer(botToken)
 

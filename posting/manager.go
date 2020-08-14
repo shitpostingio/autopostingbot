@@ -2,14 +2,14 @@ package posting
 
 import (
 	log "github.com/sirupsen/logrus"
-	configuration "gitlab.com/shitposting/autoposting-bot/config"
+	"gitlab.com/shitposting/autoposting-bot/config/structs"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
 	"gitlab.com/shitposting/autoposting-bot/posting/edition"
 	"time"
 )
 
 type Manager struct {
-	config      *configuration.Config
+	config      *structs.Config
 	isDebugging bool
 	isTesting   bool
 
@@ -39,7 +39,7 @@ var (
 	}
 )
 
-func Start(config *configuration.Config, debug, testing bool) {
+func Start(config *structs.Config, debug, testing bool) {
 
 	m.config = config
 	m.isDebugging = debug

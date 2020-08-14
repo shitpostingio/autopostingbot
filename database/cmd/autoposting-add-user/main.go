@@ -3,11 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"gitlab.com/shitposting/autoposting-bot/config/old"
 	"log"
 
 	entities "gitlab.com/shitposting/datalibrary/entities/autopostingbot"
-
-	configuration "gitlab.com/shitposting/autoposting-bot/config"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -34,7 +33,7 @@ func main() {
 	}
 
 	/* LOAD CONFIG */
-	cfg, err := configuration.Load(configFilePath, false)
+	cfg, err := old.Load(configFilePath, false)
 	if err != nil {
 		log.Fatal(err)
 	}

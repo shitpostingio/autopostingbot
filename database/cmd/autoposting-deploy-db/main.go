@@ -2,11 +2,11 @@ package main
 
 import (
 	"flag"
+	"gitlab.com/shitposting/autoposting-bot/config/old"
 	"log"
 
 	entities "gitlab.com/shitposting/datalibrary/entities/autopostingbot"
 
-	configuration "gitlab.com/shitposting/autoposting-bot/config"
 	"gitlab.com/shitposting/autoposting-bot/database/migrations"
 
 	"github.com/jinzhu/gorm"
@@ -27,7 +27,7 @@ func main() {
 	flag.Parse()
 
 	/* LOAD CONFIG */
-	cfg, err := configuration.Load(configFilePath, false)
+	cfg, err := old.Load(configFilePath, false)
 	fatalIfErr(err)
 
 	/* CONNECT TO DB */

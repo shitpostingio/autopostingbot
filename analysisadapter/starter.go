@@ -1,13 +1,13 @@
 package analysisadapter
 
 import (
-	configuration "gitlab.com/shitposting/autoposting-bot/config"
+	"gitlab.com/shitposting/autoposting-bot/config/structs"
 )
 
 var (
-	config configuration.AnalysisAPIConfig
+	config structs.AnalysisAPIConfig
 )
 
-func Start(analysisConfig configuration.AnalysisAPIConfig) {
+func Start(analysisConfig structs.AnalysisAPIConfig) {
 	config = analysisConfig
 }

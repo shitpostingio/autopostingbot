@@ -3,19 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
+	_ "github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	log "github.com/sirupsen/logrus"
 	"gitlab.com/shitposting/autoposting-bot/analysisadapter"
 	"gitlab.com/shitposting/autoposting-bot/api"
+	"gitlab.com/shitposting/autoposting-bot/config"
 	"gitlab.com/shitposting/autoposting-bot/documentstore"
 	"gitlab.com/shitposting/autoposting-bot/posting"
 	updates2 "gitlab.com/shitposting/autoposting-bot/updates"
-	"net/http"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	_ "github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-
-	configuration "gitlab.com/shitposting/autoposting-bot/config"
 	"gitlab.com/shitposting/autoposting-bot/repository"
 )
 
@@ -52,7 +49,7 @@ func main() {
 	}
 
 	/* LOAD CONFIGURATION */
-	cfg, err := configuration.Load(configFilePath, !polling)
+	cfg, err := config.Load(configFilePath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -145,69 +142,69 @@ func loadCLIParams() {
 	flag.Parse()
 }
 
-//getUpdatesChannel uses webhooks or polling to get an `UpdatesChannel`
-func getUpdatesChannel(repo *repository.Repository) tgbotapi.UpdatesChannel {
-
-	/* WEBHOOKS IF WE'RE NOT TESTING */
-	if !polling {
-		return useWebhook(repo)
-	}
-
-	/* POLLING OTHERWISE */
-	_, err := repo.Bot.Request(tgbotapi.RemoveWebhookConfig{})
-	if err != nil {
-		log.Error(fmt.Sprintf("Unable to remove webhook: %s", err.Error()))
-		return nil
-	}
-
-	return usePolling(repo)
-}
-
-//usePolling gets an `UpdatesChannel` using polling
-func usePolling(repo *repository.Repository) tgbotapi.UpdatesChannel {
-
-	updateConfig := tgbotapi.UpdateConfig{
-		Offset:  0,
-		Limit:   0,
-		Timeout: 60,
-	}
-
-	return repo.Bot.GetUpdatesChan(updateConfig)
-}
-
-//useWebhook ets an `UpdatesChannel` using webhooks
-func useWebhook(repo *repository.Repository) tgbotapi.UpdatesChannel {
-
-	go startServer(repo.Config.Server)
-
-	/* TRY TO RETRIEVE WEBHOOK INFORMATION FROM TELEGRAM */
-	webhook, err := repo.Bot.GetWebhookInfo()
-
-	/* SET UP NEW WEBHOOK */
-	if err != nil || !webhook.IsSet() {
-		newWebhook := tgbotapi.NewWebhook(repo.Config.WebHookURL())
-		webhookConfig := tgbotapi.WebhookConfig{
-			URL:            newWebhook.URL,
-			Certificate:    newWebhook.Certificate,
-			MaxConnections: newWebhook.MaxConnections,
-			AllowedUpdates: newWebhook.AllowedUpdates,
-		}
-
-		_, err := repo.Bot.Request(webhookConfig)
-		if err != nil {
-			log.Error(fmt.Sprintf("Unable to request webhookConfig: %s", err.Error()))
-			return nil
-		}
-	}
-
-	return repo.Bot.ListenForWebhook(repo.Config.WebHookPath())
-}
-
-//startServer starts serving HTTP requests with or without TLS
-func startServer(config configuration.ServerDetails) {
-	if config.TLS {
-		log.Error((http.ListenAndServeTLS(config.BindString(), config.TLSCertPath, config.TLSKeyPath, nil)).Error())
-	} else {
-		log.Error((http.ListenAndServe(config.BindString(), nil)).Error())
-	}
-}
+////getUpdatesChannel uses webhooks or polling to get an `UpdatesChannel`
+//func getUpdatesChannel(repo *repository.Repository) tgbotapi.UpdatesChannel {
+//
+//	/* WEBHOOKS IF WE'RE NOT TESTING */
+//	if !polling {
+//		return useWebhook(repo)
+//	}
+//
+//	/* POLLING OTHERWISE */
+//	_, err := repo.Bot.Request(tgbotapi.RemoveWebhookConfig{})
+//	if err != nil {
+//		log.Error(fmt.Sprintf("Unable to remove webhook: %s", err.Error()))
+//		return nil
+//	}
+//
+//	return usePolling(repo)
+//}
+//
+////usePolling gets an `UpdatesChannel` using polling
+//func usePolling(repo *repository.Repository) tgbotapi.UpdatesChannel {
+//
+//	updateConfig := tgbotapi.UpdateConfig{
+//		Offset:  0,
+//		Limit:   0,
+//		Timeout: 60,
+//	}
+//
+//	return repo.Bot.GetUpdatesChan(updateConfig)
+//}
+//
+////useWebhook ets an `UpdatesChannel` using webhooks
+//func useWebhook(repo *repository.Repository) tgbotapi.UpdatesChannel {
+//
+//	go startServer(repo.Config.Server)
+//
+//	/* TRY TO RETRIEVE WEBHOOK INFORMATION FROM TELEGRAM */
+//	webhook, err := repo.Bot.GetWebhookInfo()
+//
+//	/* SET UP NEW WEBHOOK */
+//	if err != nil || !webhook.IsSet() {
+//		newWebhook := tgbotapi.NewWebhook(repo.Config.WebHookURL())
+//		webhookConfig := tgbotapi.WebhookConfig{
+//			URL:            newWebhook.URL,
+//			Certificate:    newWebhook.Certificate,
+//			MaxConnections: newWebhook.MaxConnections,
+//			AllowedUpdates: newWebhook.AllowedUpdates,
+//		}
+//
+//		_, err := repo.Bot.Request(webhookConfig)
+//		if err != nil {
+//			log.Error(fmt.Sprintf("Unable to request webhookConfig: %s", err.Error()))
+//			return nil
+//		}
+//	}
+//
+//	return repo.Bot.ListenForWebhook(repo.Config.WebHookPath())
+//}
+//
+////startServer starts serving HTTP requests with or without TLS
+//func startServer(config old.ServerDetails) {
+//	if config.TLS {
+//		log.Error((http.ListenAndServeTLS(config.BindString(), config.TLSCertPath, config.TLSKeyPath, nil)).Error())
+//	} else {
+//		log.Error((http.ListenAndServe(config.BindString(), nil)).Error())
+//	}
+//}

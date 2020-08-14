@@ -2,7 +2,7 @@ package documentstore
 
 import (
 	"context"
-	configuration "gitlab.com/shitposting/autoposting-bot/config"
+	"gitlab.com/shitposting/autoposting-bot/config/structs"
 	"log"
 	"time"
 
@@ -31,7 +31,7 @@ var (
 )
 
 // Connect connects to the document store
-func Connect(cfg *configuration.DocumentStoreConfiguration) {
+func Connect(cfg *structs.DocumentStoreConfiguration) {
 
 	client, err := mongo.Connect(context.Background(), cfg.MongoDBConnectionOptions())
 	if err != nil {
