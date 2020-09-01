@@ -12,6 +12,10 @@ import (
 	"strconv"
 )
 
+const(
+	telegramMessageIDConversionFactor = 1048576
+)
+
 func getDuplicateCaption(duplicatePost *entities.Post) (*client.FormattedText, error) {
 
 	var userName string
@@ -28,11 +32,16 @@ func getDuplicateCaption(duplicatePost *entities.Post) (*client.FormattedText, e
 
 	if duplicatePost.MessageID != 0 {
 
-		link, err := api.GetMessageLink(repository.Config.Autoposting.ChannelID, duplicatePost.MessageID)
-		if err != nil {
-			link = l.GetString(l.UPDATES_DUPLICATE_LINK_UNAVAILABLE)
-		}
-
+		// In order to work well with private channels, we need to use the
+		// t.me/c/chatid/messageid format
+		// We need a few changes, though.
+		// For channels we need to substring the chatID from the 4th position,
+		// effectively removing the prefix -100
+		// We then need to convert the messageID from tdlib to normal telegram
+		// Since bots cannot call the getLink method, we need to divide
+		// our message id by the magic number and add 1
+		chatIDStr := strconv.FormatInt(repository.Config.Autoposting.ChannelID, 10)
+		link := fmt.Sprintf("t.me/c/%s/%d", chatIDStr[4:], duplicatePost.MessageID/telegramMessageIDConversionFactor + 1)
 		captionEnd := fmt.Sprintf(l.GetString(l.UPDATES_DUPLICATE_DUPLICATE_ADDED_AT), utility.FormatDate(*duplicatePost.PostedAt), link)
 		caption = fmt.Sprintf("%s\n%s", caption, captionEnd)
 

@@ -23,7 +23,7 @@ func HandleUpdates(listener *client.Listener) {
 				handleNewDeletion(update.(*client.UpdateDeleteMessages))
 
 			default:
-				log.Debugln("Type: %s, Value: %#v", update.GetType(), update)
+				log.Debugf("Type: %s, Value: %#v", update.GetType(), update)
 			}
 
 		}

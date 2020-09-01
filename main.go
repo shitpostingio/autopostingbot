@@ -55,6 +55,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	repository.Config = &cfg
 
 	// Localization
 	err = gotrans.InitLocales(cfg.Localization.Path)
