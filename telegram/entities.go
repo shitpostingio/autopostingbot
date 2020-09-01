@@ -7,12 +7,11 @@ import (
 )
 
 // The found variable allows us to be sure entities won't be nil
-//goland:noinspection GoNilness
 func GetCommand(text []uint16, entities []*client.TextEntity) (command, arguments string, found bool) {
 
 	// A bot command for us needs to be in the beginning of the message
-	found = entities != nil && len(entities) > 0 &&
-		entities[0].Type.TextEntityTypeType() == client.TypeTextEntityTypeBotCommand
+	// len(entities) will return 0 if the slice is nil
+	found = len(entities) > 0 && entities[0].Type.TextEntityTypeType() == client.TypeTextEntityTypeBotCommand
 
 	if !found {
 		return

@@ -52,7 +52,7 @@ func UpdatePostCaptionByUniqueID(uniqueID, caption string, collection *mongo.Col
 		{
 			Key: "$set",
 			Value: bson.D{
-				{"caption", caption},
+				{Key: "caption", Value: caption},
 			},
 		},
 	}
@@ -90,15 +90,15 @@ func FindPostByFeatures(histogram []float64, pHash string, approximation float64
 		{
 			Key: "media.histogramaverage",
 			Value: bson.D{
-				{"$gte", minAvg},
-				{"$lte", maxAvg},
+				{Key: "$gte", Value: minAvg},
+				{Key: "$lte", Value: maxAvg},
 			},
 		},
 		{
 			Key: "media.histogramsum",
 			Value: bson.D{
-				{"$gte", minSum},
-				{"$lte", maxSum},
+				{Key: "$gte", Value: minSum},
+				{Key: "$lte", Value: maxSum},
 			},
 		},
 	}
@@ -245,7 +245,7 @@ func GetQueuePositionByAddTime(addedAt time.Time, collection *mongo.Collection) 
 	filter := bson.D{
 		{
 			Key:   "addedat",
-			Value: bson.D{{"$lte", addedAt}},
+			Value: bson.D{{Key: "$lte", Value: addedAt}},
 		},
 		{
 			Key:   "postedat",
@@ -280,8 +280,8 @@ func MarkPostAsPosted(post *entities.Post, messageID int, collection *mongo.Coll
 		{
 			Key: "$set",
 			Value: bson.D{
-				{"messageid", messageID},
-				{"postedat", time.Now()},
+				{Key: "messageid", Value: messageID},
+				{Key: "postedat", Value: time.Now()},
 			},
 		},
 	}
@@ -304,7 +304,7 @@ func MarkPostAsFailed(post *entities.Post, collection *mongo.Collection) error {
 	update := bson.D{
 		{
 			Key:   "$set",
-			Value: bson.D{{"haserror", true}},
+			Value: bson.D{{Key: "haserror", Value: true}},
 		}}
 
 	//
@@ -324,7 +324,7 @@ func MarkPostAsDeletedByMessageID(messageID int64, collection *mongo.Collection)
 	update := bson.D{
 		{
 			Key:   "$set",
-			Value: bson.D{{"deletedat", time.Now()}},
+			Value: bson.D{{Key: "deletedat", Value: time.Now()}},
 		}}
 
 	//

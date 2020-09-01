@@ -27,7 +27,6 @@ type Manager struct {
 	//
 	requestPostChannel  chan RequestPostStruct
 	requestPauseChannel chan RequestPauseStruct
-	timedPostChannel    chan bool
 }
 
 var (

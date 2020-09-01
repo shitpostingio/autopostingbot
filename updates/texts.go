@@ -49,9 +49,10 @@ func handleText(message *client.Message) {
 
 	//
 	var err error
+	var replyMessage *client.Message
 	if message.ReplyToMessageId != 0 {
 
-		replyMessage, err := api.GetMessage(message.ChatId, message.ReplyToMessageId)
+		replyMessage, err = api.GetMessage(message.ChatId, message.ReplyToMessageId)
 		if err != nil {
 			log.Error("Unable to get reply to message: ", err)
 			_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.UPDATES_TEXTS_UNABLE_TO_GET_REPLY_MESSAGE))
