@@ -2,6 +2,7 @@ package posting
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
@@ -28,27 +29,24 @@ func tryPosting(post *entities.Post) error {
 		return fmt.Errorf(l.GetString(l.POSTING_POSTING_UNABLE_TO_PARSE_CAPTION), err)
 	}
 
+	//
 	message, err := api.SendMedia(post.Media.Type, m.config.Autoposting.ChannelID, api.NoReply, post.Media.FileID, ft.Text, ft.Entities)
 	if err != nil {
 		_ = dbwrapper.MarkPostAsFailed(post)
 		return err
 	}
 
-	//New PostTime
-
-	//set messageid etc
+	//
 	err = dbwrapper.MarkPostAsPosted(post, int(message.Id))
+	if err != nil {
+		log.Error("Unable to mark post ", post.ID, " as posted")
+	}
 
-	//TODO: CONTROLLARE IL SALVATAGGIO DEI MEME: saranno da spostare
-
-	// update tickers
-
-	// reschedule
+	//
 	schedulePosting(time.Now())
 
 	//
-	err = moveToDirectory(post)
-
+	_ = moveToDirectory(post)
 	return err
 
 }

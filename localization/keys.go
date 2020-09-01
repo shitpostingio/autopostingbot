@@ -46,4 +46,5 @@ const (
 	UPDATES_TEXTS_COMMAND_UNIMPLEMENTED           = "updates_texts_command_unimplemented"
 	UPDATES_TEXTS_UNABLE_TO_GET_REPLY_MESSAGE     = "updates_texts_unable_to_get_reply_message"
 	UPDATES_MEDIA_UNABLE_TO_GET_DUPLICATE_CAPTION = "updates_media_unable_to_get_duplicate_caption"
+	UPDATES_MEDIA_UNABLE_TO_GET_FINGERPRINT       = "updates_media_unable_to_get_fingerprint"
 )

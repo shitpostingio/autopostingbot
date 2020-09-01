@@ -107,8 +107,6 @@ func FindPostByFeatures(histogram []float64, pHash string, approximation float64
 	ctx, cancelCtx := context.WithTimeout(context.Background(), opDeadline)
 	defer cancelCtx()
 
-	//TODO: ordinare secondo qualcosa i dati
-
 	//
 	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
@@ -190,7 +188,7 @@ func GetNextPost(collection *mongo.Collection) (post entities.Post, err error) {
 		},
 		{
 			Key:   "postedat",
-			Value: nil, //TODO: CONTROLLARE
+			Value: nil,
 		},
 		{
 			Key:   "haserror",
@@ -218,7 +216,7 @@ func GetQueueLength(collection *mongo.Collection) (length int64) {
 	filter := bson.D{
 		{
 			Key:   "postedat",
-			Value: nil, //TODO: CONTROLLARE
+			Value: nil,
 		},
 		{
 			Key:   "haserror",
@@ -251,7 +249,7 @@ func GetQueuePositionByAddTime(addedAt time.Time, collection *mongo.Collection) 
 		},
 		{
 			Key:   "postedat",
-			Value: nil, //TODO: CONTROLLARE
+			Value: nil,
 		},
 		{
 			Key:   "haserror",

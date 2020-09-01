@@ -24,7 +24,6 @@ func SendPhoto(chatID, replyToMessageID int64, remoteFileID, caption string, ent
 
 }
 
-//TODO: POSSIBILI PROBLEMI CON SIZE = 0
 func GetPhotoFileInfoFromMessage(message *client.Message) *client.File {
 
 	//

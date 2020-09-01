@@ -23,7 +23,7 @@ func checkStruct(isReload bool, typeToCheck reflect.Type, valueToCheck reflect.V
 
 		if currentField.Type.Kind() == reflect.Struct {
 			err = checkStruct(isReload, currentField.Type, currentValue)
-		} else if currentField.Type.Kind() == reflect.Slice { //TODO: capire
+		} else if currentField.Type.Kind() == reflect.Slice {
 			err = checkSlice(isReload, currentField, currentValue)
 		} else {
 			err = checkField(isReload, currentField, currentValue)

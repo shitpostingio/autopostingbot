@@ -36,5 +36,5 @@
   "updates_duplicate_link_unavailable": "unavailable",
   "updates_texts_command_unimplemented": "Unimplemented",
   "updates_texts_unable_to_get_reply_message": "Unable to get the target message for the command",
-  "updates_media_unable_to_get_duplicate_caption": "Unable to get the duplicate caption, but here's the duplicate media"
+  "updates_media_unable_to_get_duplicate_caption": "Unable to get the duplicate caption, but here's the duplicate media",
 }

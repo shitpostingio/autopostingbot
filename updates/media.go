@@ -32,7 +32,7 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 	fingerprint, err := analysisadapter.Request(fileInfo.Local.Path, mediatype, fileInfo.Remote.UniqueId)
 	log.Debugln("Analysis response: ", fingerprint, err)
 	if err != nil {
-		//TODO: RESTITUIRE ERRORE
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.ANALYSIS_NO_MEDIA_FINGERPRINT))
 		return
 	}
 
