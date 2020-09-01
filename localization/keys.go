@@ -15,8 +15,16 @@ const(
 	COMMANDS_DELETE_FAILURE = "Unable to delete the post"
 	COMMANDS_INFO_ALREADY_POSTED = "commands_info_post_already_posted"
 	COMMANDS_INFO_NOT_YET_POSTED = "commands_info_post_not_yet_posted"
+	COMMANDS_PEEK_NO_POST_FOUND = "commands_peek_no_post_found"
+	COMMANDS_POSTNOW_ATTEMPTING_POST = "commands_postnow_attempting_post"
+	COMMANDS_STATUS_POSTS_ENQUEUED = "commands_status_posts_enqueued"
+	COMMANDS_THANK_UNABLE_TO_THANK =   "commands_thanks_unable_to_thank"
+	COMMANDS_THANK_CANT_THANK_CHANNELS = "commands_thanks_cant_thank_channels"
+	COMMANDS_THANK_CANT_THANK_BOTS = "commands_thanks_cant_thank_bots"
+	COMMANDS_THANK_UNSUPPORTED_FORWARD_TYPE = "commands_thanks_unsupported_forward_type"
+	COMMANDS_THANK_THANK_CAPTION = "commands_thanks_thank_caption"
 
-	// DATABASE
+// DATABASE
 	DATABASE_UNABLE_TO_FIND_POST = "database_unable_to_find_post"
 
 	// MEDIA

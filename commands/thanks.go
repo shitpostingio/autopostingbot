@@ -7,6 +7,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/caption"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
+	l "gitlab.com/shitposting/autoposting-bot/localization"
 	"strings"
 )
 
@@ -16,21 +17,22 @@ func (ThanksCommandHandler) Handle(arguments string, message, replyToMessage *cl
 
 	//
 	if replyToMessage == nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "This command needs to be used in reply to a media file")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_REPLY_TO_MEDIA_FILE))
 		return errors.New("reply to message nil")
 	}
 
 	//
 	fi, err := api.GetMediaFileInfo(replyToMessage)
 	if err != nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "This command needs to be used in reply to a media file")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_REPLY_TO_MEDIA_FILE))
 		return err
 	}
 
 	//
 	newCaption, err := getThanksCaption(arguments, message, replyToMessage)
 	if err != nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, fmt.Sprintf("Error while creating thank caption: %v", err))
+		thankError := fmt.Sprintf(l.GetString(l.COMMANDS_THANK_UNABLE_TO_THANK), err)
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, thankError)
 	}
 
 	//
@@ -74,15 +76,15 @@ func getComment(arguments string, message *client.Message) string {
 func getThanks(message *client.Message) (string, error) {
 
 	if message.ForwardInfo.Origin.MessageForwardOriginType() == client.TypeMessageForwardOriginChannel {
-		return "", errors.New("can't thank channels")
+		return "", errors.New(l.GetString(l.COMMANDS_THANK_CANT_THANK_CHANNELS))
 	}
 
 	if message.ForwardInfo.Origin.MessageForwardOriginType() == client.TypeMessageForwardOriginHiddenUser {
-		return fmt.Sprintf("[Thanks to %s]", message.ForwardInfo.Origin.(*client.MessageForwardOriginHiddenUser).SenderName), nil
+		return fmt.Sprintf(l.GetString(l.COMMANDS_THANK_THANK_CAPTION), message.ForwardInfo.Origin.(*client.MessageForwardOriginHiddenUser).SenderName), nil
 	}
 
 	if message.ForwardInfo.Origin.MessageForwardOriginType() != client.TypeMessageForwardOriginUser {
-		return "", errors.New("unsupported forward type")
+		return "", errors.New(l.GetString(l.COMMANDS_THANK_UNSUPPORTED_FORWARD_TYPE))
 	}
 
 	fwd := message.ForwardInfo.Origin.(*client.MessageForwardOriginUser)
@@ -92,9 +94,9 @@ func getThanks(message *client.Message) (string, error) {
 	}
 
 	if user.Type.UserTypeType() == client.TypeUserTypeBot {
-		return "", errors.New("can't thank bots")
+		return "", errors.New(l.GetString(l.COMMANDS_THANK_CANT_THANK_BOTS))
 	}
 
-	return fmt.Sprintf("[Thanks to %s]", user.FirstName), nil
+	return fmt.Sprintf(l.GetString(l.COMMANDS_THANK_THANK_CAPTION), user.FirstName), nil
 
 }

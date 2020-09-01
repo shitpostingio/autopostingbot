@@ -4,16 +4,17 @@ import (
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
+	l "gitlab.com/shitposting/autoposting-bot/localization"
 )
 
 type PeekCommandHandler struct {}
 
-func (PeekCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
+func (PeekCommandHandler) Handle(_ string, message, _ *client.Message) error {
 
 	//
 	nextPost, err := dbwrapper.GetNextPost()
 	if err != nil {
-		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "Unable to find the next post. Is the queue empty?")
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_PEEK_NO_POST_FOUND))
 		return err
 	}
 

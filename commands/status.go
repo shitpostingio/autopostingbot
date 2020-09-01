@@ -5,18 +5,14 @@ import (
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
+	l "gitlab.com/shitposting/autoposting-bot/localization"
 	"gitlab.com/shitposting/autoposting-bot/posting"
 	"time"
 )
 
-const (
-	//TODO: ASSOLUTAMENTE NON QUA, POSSIBILMENTE STRINGA TRADOTTA
-	statusText = "📋 Posts enqueued: %d\n🕜 Post rate: %s\n\n🔮 Next post in: %s (%s)"
-)
-
 type StatusCommandHandler struct {}
 
-func (StatusCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
+func (StatusCommandHandler) Handle(_ string, message, _ *client.Message) error {
 
 	//
 	nextPost := posting.GetNextPostTime()
@@ -25,7 +21,7 @@ func (StatusCommandHandler) Handle(arguments string, message, replyToMessage *cl
 	minutesUntilNextPost := time.Until(nextPost).Truncate(time.Minute)
 
 	//
-	text := fmt.Sprintf(statusText,
+	text := fmt.Sprintf(l.GetString(l.COMMANDS_STATUS_POSTS_ENQUEUED),
 		queueLength,
 		postingRate,
 		minutesUntilNextPost,
