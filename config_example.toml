@@ -1,47 +1,51 @@
-# Telegram bot token
-BotToken = "000000000:abcdefghijklmnopqrstuvwxyz123456789"
 
-# Tekegram Channel ID
-ChannelID = -0000000000000
+[analysisapi]
+address = ""
+authorizationheadername = ""
+authorizationheadervalue = ""
+callerapikeyheadername = ""
+imageendpoint = ""
+videoendpoint = ""
 
-# Webhook listening port
-# can be 443, 80, 88, 8443, assuming that ReverseProxy has been set to false
-Port = 88
+[autoposting]
+bottoken = ""
+channelid = -10000000000000
+edition = ""
+filesizethreshold = 20971520
+mediaapproximation = 0.08
+mediapath = ""
+postalertthreshold = 10
+similaritythreshold = 6
 
-# Assert that this bot will be run behind a reverse proxy.
-# This means that Port can be whatever you want (not only what Telegram says),
-# and that IP will be 127.0.0.1, even if not specified.
-ReverseProxy = false
+[documentstore]
+authmechanism = "SCRAM-SHA-1"
+authsource = ""
+databasename = ""
+hosts = ["localhost:27017"]
+password = ""
+replicasetname = ""
+useauthentication = false
+usereplicaset = false
+username = ""
 
-# Port where this bot will listen, on the reverse proxy side
-ReverseProxyPort = 1234
+[localization]
+language = ""
+path = ""
 
-# IP to bind on
-IP = "127.0.0.1"
-
-# Domain where Telegram will send updates
-Domain = "shitposting.io"
-
-# Assert that the webhook webserver will use TLS
-TLS = false
-
-# TLS certificate path
-TLSCertPath = "/path/to/the/tls/certificate"
-
-# TLS key path
-TLSKeyPath = "/path/to/the/tls/key"
-
-# Name of the database
-DatabaseName = "dbname"
-
-# Username
-DatabaseUsername = "user"
-
-# Password 
-DatabasePassword = "password"
-
-# Database Address
-DatabaseAddress =  "127.0.0.1"
-
-# SocketPath
-SocketPath = "/tmp/loglog.socket"
+[tdlib]
+apihash = ""
+apiid = 123456
+applicationversion = "1.0.0"
+databasedirectory = ""
+devicemodel = ""
+enablestorageoptimizer = true
+filesdirectory = ""
+ignorefilenames = true
+logverbositylevel = 0
+systemlanguagecode = ""
+systemversion = ""
+usechatinfodatabase = true
+usefiledatabase = true
+usemessagedatabase = true
+usesecretchats = false
+usetestdc = false

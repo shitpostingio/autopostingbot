@@ -11,7 +11,6 @@ type DocumentStoreConfiguration struct {
 	Username          string `type:"optional"`
 	Password          string `type:"optional"`
 	AuthSource        string `type:"optional"`
-	CollectionName    string
 	ReplicaSetName    string   `type:"optional"`
 	Hosts             []string `type:"optional"`
 }
