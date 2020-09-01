@@ -14,6 +14,7 @@ func Request(path, mediaType, fileUniqueID string) (fingerprint *structs.Fingerp
 	//
 	file, err := os.Open(path)
 	if err != nil {
+		log.Debugln("analisysadapter.Request: unable to open file ", path, ", error: ", err)
 		return
 	}
 

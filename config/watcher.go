@@ -2,9 +2,9 @@ package config
 
 import (
 	"github.com/fsnotify/fsnotify"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gitlab.com/shitposting/autoposting-bot/config/structs"
-	log "github.com/sirupsen/logrus"
 )
 
 // WatchConfig monitors the configuration for changes.
@@ -17,13 +17,13 @@ func WatchConfig(cfg *structs.Config) {
 		var tempCfg structs.Config
 		err := viper.Unmarshal(&tempCfg)
 		if err != nil {
-			log.Error("The configuration file was changed but it couldn't be unmarshaled")
+			log.Error("The configuration file was changed but it couldn't be unmarshalled")
 			return
 		}
 
 		//Oddly, for each config change, two events seem to be triggered.
 		//The first one will have an empty configuration, causing an error here.
-		err = CheckMandatoryFields(true, tempCfg)
+		err = checkMandatoryFields(true, tempCfg)
 		if err != nil {
 			log.Error("The configuration file was changed but there were issues:", err)
 			return

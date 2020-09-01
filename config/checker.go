@@ -6,9 +6,9 @@ import (
 	"reflect"
 )
 
-// CheckMandatoryFields uses reflection to see if there are
+// checkMandatoryFields uses reflection to see if there are
 // mandatory fields with zero value
-func CheckMandatoryFields(isReload bool, config structs.Config) error {
+func checkMandatoryFields(isReload bool, config structs.Config) error {
 	return checkStruct(isReload, reflect.TypeOf(config), reflect.ValueOf(config))
 }
 
@@ -32,6 +32,7 @@ func checkStruct(isReload bool, typeToCheck reflect.Type, valueToCheck reflect.V
 		if err != nil {
 			return
 		}
+
 	}
 
 	return nil
