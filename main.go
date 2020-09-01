@@ -108,9 +108,6 @@ func main() {
 
 	documentstore.Connect(&cfg.DocumentStore, cfg.Autoposting.MediaApproximation, cfg.Autoposting.SimilarityThreshold)
 
-	/* CREATE Repository */
-	repository.SetVariables(nil, nil, &cfg)
-
 	/* GET UPDATES CHANNEL */
 	//updates := getUpdatesChannel(repo)
 	//if updates == nil {
