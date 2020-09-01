@@ -6,6 +6,8 @@ import (
 	"unicode/utf16"
 )
 
+// The found variable allows us to be sure entities won't be nil
+//goland:noinspection GoNilness
 func GetCommand(text []uint16, entities []*client.TextEntity) (command, arguments string, found bool) {
 
 	// A bot command for us needs to be in the beginning of the message

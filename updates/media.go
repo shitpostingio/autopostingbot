@@ -5,7 +5,7 @@ import (
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/analysisadapter"
 	"gitlab.com/shitposting/autoposting-bot/api"
-	caption "gitlab.com/shitposting/autoposting-bot/caption"
+	"gitlab.com/shitposting/autoposting-bot/caption"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
 	l "gitlab.com/shitposting/autoposting-bot/localization"

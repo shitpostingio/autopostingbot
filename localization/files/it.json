@@ -11,7 +11,6 @@
   "commands_status_posts_enqueued": "📋 Post in coda: %d\n🕜 Post rate: %s\n\n🔮 Prossimo post in: %s (%s)",
   "commands_delete_unable_to_delete": "Impossibile cancellare il post",
   "commands_pause_unsuccessful": "Impossibile pausare il posting: %s",
-  "commands_postnow_attempting_post": "Tento il post!",
   "commands_postnow_successful": "Successo!",
   "commands_postnow_unsuccessful": "Impossibile postare!",
   "commands_thanks_unable_to_thank": "Impossibile effettuare il thank correttamente: %s",
@@ -28,7 +27,6 @@
   "posting_posting_previous_pause_too_close": "sono passati solo %s dall'ultima pausa",
   "updates_duplicates_duplicate_added_by": "🚨 Trovato duplicato! 🚨\n\nAggiunto per la prima volta da <a href=\"tg://user?id=%d\">%s</a>\nil %s",
   "updates_duplicates_duplicate_posted_at_link": "Postato il %s\nLink: %s",
-  "updates_duplicate_link_unavailable": "non disponibile",
   "updates_texts_command_unimplemented": "Non implementato",
   "updates_texts_unable_to_get_reply_message": "Impossibile ottenere il messaggio su cui è stato usato il comando",
   "updates_media_unable_to_get_duplicate_caption": "Impossibile ottenere la didascalia del duplicato.\nQuesto è il media duplicato."

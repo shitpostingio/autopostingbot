@@ -1,5 +1,6 @@
 package localization
 
+//goland:noinspection GoSnakeCaseUsage
 const (
 
 	// ANALYSIS
@@ -17,7 +18,6 @@ const (
 	COMMANDS_INFO_NOT_YET_POSTED            = "commands_info_post_not_yet_posted"
 	COMMANDS_PEEK_NO_POST_FOUND             = "commands_peek_no_post_found"
 	COMMANDS_PAUSE_UNSUCCESSFUL             = "commands_pause_unsuccessful"
-	COMMANDS_POSTNOW_ATTEMPTING_POST        = "commands_postnow_attempting_post"
 	COMMANDS_POSTNOW_SUCCESSFUL             = "commands_postnow_successful"
 	COMMANDS_POSTNOW_UNSUCCESSFUL           = "commands_postnow_unsuccessful"
 	COMMANDS_STATUS_POSTS_ENQUEUED          = "commands_status_posts_enqueued"
@@ -42,9 +42,7 @@ const (
 	// UPDATES
 	UPDATES_DUPLICATES_DUPLICATE_ADDED_BY         = "updates_duplicates_duplicate_added_by"
 	UPDATES_DUPLICATE_DUPLICATE_ADDED_AT          = "updates_duplicates_duplicate_posted_at_link"
-	UPDATES_DUPLICATE_LINK_UNAVAILABLE            = "updates_duplicate_link_unavailable"
 	UPDATES_TEXTS_COMMAND_UNIMPLEMENTED           = "updates_texts_command_unimplemented"
 	UPDATES_TEXTS_UNABLE_TO_GET_REPLY_MESSAGE     = "updates_texts_unable_to_get_reply_message"
 	UPDATES_MEDIA_UNABLE_TO_GET_DUPLICATE_CAPTION = "updates_media_unable_to_get_duplicate_caption"
-	UPDATES_MEDIA_UNABLE_TO_GET_FINGERPRINT       = "updates_media_unable_to_get_fingerprint"
 )
