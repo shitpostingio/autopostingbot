@@ -34,8 +34,13 @@ func (PostNowCommandHandler) Handle(_ string, message, replyToMessage *client.Me
 	}
 
 	//
-	_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_POSTNOW_ATTEMPTING_POST))
-	posting.RequestPost(&post)
+	err = posting.RequestPost(&post)
+	if err != nil {
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_POSTNOW_UNSUCCESSFUL))
+	} else {
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_POSTNOW_SUCCESSFUL))
+	}
+
 	return err
 
 }

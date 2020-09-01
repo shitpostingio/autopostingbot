@@ -8,4 +8,5 @@ type AutopostingConfiguration struct {
 	PostAlertThreshold  int     `type:"optional"`
 	MediaApproximation  float64 `type:"optional"`
 	SimilarityThreshold int     `type:"optional"`
+	Edition             string
 }

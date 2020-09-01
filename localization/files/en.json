@@ -11,7 +11,10 @@
   "commands_info_post_already_posted": "Post added by <a href=\"tg://user?id=%d\">%s</a> on %s\nPosted on %s\nLink: t.me/%s/%d",
   "commands_info_post_not_yet_posted": "📋 The post is number %d in the queue\n👤 Added by <a href=\"tg://user?id=%d\">%s</a> on %s\n\n🕜 It should be posted roughly in %s\n📅 On %s",
   "commands_peek_no_post_found":  "Unable to find the next post. Is the queue empty?",
+  "commands_pause_unsuccessful": "Unable to pause posting: %s",
   "commands_postnow_attempting_post": "Attempting to post!",
+  "commands_postnow_successful": "Success!",
+  "commands_postnow_unsuccessful": "Unable to post!",
   "commands_status_posts_enqueued": "📋 Posts enqueued: %d\n🕜 Post rate: %s\n\n🔮 Next post in: %s (%s)",
   "commands_thanks_unable_to_thank": "Unable to thank correctly: %s",
   "commands_thanks_cant_thank_channels": "can't thank channels",
@@ -21,5 +24,7 @@
 
   "database_unable_to_find_post": "Unable to find the post",
 
-  "media_added_correctly": "Media added correctly"
+  "media_added_correctly": "Media added correctly",
+
+  "posting_alerts_low_posts": "🚨 We're running out of posts!\nEnqueued: %d"
 }

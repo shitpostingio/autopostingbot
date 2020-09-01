@@ -6,12 +6,38 @@ import (
 	"time"
 )
 
-func RequestPost(post *entities.Post) {
-	m.requestPostChannel <- post
+type RequestPostStruct struct {
+	Post *entities.Post
+	ErrorChan chan error
 }
 
-func RequestPause(duration time.Duration) {
-	m.requestPauseChannel <- duration
+type RequestPauseStruct struct {
+	Duration time.Duration
+	ErrorChan chan error
+}
+
+func RequestPost(post *entities.Post) error {
+
+	rps := RequestPostStruct{
+		Post:      post,
+		ErrorChan: make(chan error, 1),
+	}
+
+	m.requestPostChannel <- rps
+	return <- rps.ErrorChan
+
+}
+
+func RequestPause(duration time.Duration) error {
+
+	rps := RequestPauseStruct{
+		Duration:      duration,
+		ErrorChan: make(chan error, 1),
+	}
+
+	m.requestPauseChannel <- rps
+	return <- rps.ErrorChan
+
 }
 
 // GetPostingRate returns the current posting rate

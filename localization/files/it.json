@@ -10,7 +10,10 @@
   "commands_delete_deleted_correctly": "Post cancellato con successo",
   "commands_status_posts_enqueued": "📋 Post in coda: %d\n🕜 Post rate: %s\n\n🔮 Prossimo post in: %s (%s)",
   "commands_delete_unable_to_delete": "Impossibile cancellare il post",
+  "commands_pause_unsuccessful": "Impossibile pausare il posting: %s",
   "commands_postnow_attempting_post": "Tento il post!",
+  "commands_postnow_successful": "Successo!",
+  "commands_postnow_unsuccessful": "Impossibile postare!",
   "commands_thanks_unable_to_thank": "Impossibile effettuare il thank correttamente: %s",
   "commands_thanks_cant_thank_channels": "non posso ringraziare canali",
   "commands_thanks_cant_thank_bots": "non posso ringraziare bot",
@@ -18,5 +21,6 @@
   "commands_thanks_thank_caption": "[Grazie a %s]",
   "database_unable_to_find_post": "Post non trovato",
   "commands_info_post_already_posted": "Post aggiunto da <a href=\"tg://user?id=%d\">%s</a> il %s\nPostato il %s\nLink: t.me/%s/%d",
-  "commands_info_post_not_yet_posted": "📋 Il post è in posizione %d nella coda\n👤 Aggiunto da <a href=\"tg://user?id=%d\">%s</a> il %s\n\n🕜 Dovrebbe essere postato circa tra %s\n📅 Il %s"
+  "commands_info_post_not_yet_posted": "📋 Il post è in posizione %d nella coda\n👤 Aggiunto da <a href=\"tg://user?id=%d\">%s</a> il %s\n\n🕜 Dovrebbe essere postato circa tra %s\n📅 Il %s",
+  "posting_alerts_low_posts": "🚨 I media da postare scarseggiano!\nIn coda: %d"
 }

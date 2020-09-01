@@ -3,7 +3,6 @@ package posting
 import (
 	log "github.com/sirupsen/logrus"
 	"gitlab.com/shitposting/autoposting-bot/config/structs"
-	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
 	"gitlab.com/shitposting/autoposting-bot/posting/edition"
 	"time"
 )
@@ -26,35 +25,36 @@ type Manager struct {
 	timer *time.Timer
 
 	//
-	requestPostChannel  chan *entities.Post
-	requestPauseChannel chan time.Duration
+	requestPostChannel  chan RequestPostStruct
+	requestPauseChannel chan RequestPauseStruct
 	timedPostChannel    chan bool
 }
 
 var (
 	m        Manager
 	editions = map[string]edition.Edition{
-		"shitposting": edition.ShitpostEdition{},
+		"shitpost": edition.ShitpostEdition{},
 		"sushiporn":   edition.SushiPornEdition{},
 	}
 )
 
 func Start(config *structs.Config, debug, testing bool) {
 
+	//
 	m.config = config
 	m.isDebugging = debug
 	m.isTesting = testing
-	//TODO: LEVARE STRINGA CABLATA
+
+	//
 	var found bool
-	m.e, found = editions["shitposting"]
+	m.e, found = editions[config.Autoposting.Edition]
 	if !found {
 		log.Fatal("edition not found")
 	}
 
 	//
-
-	m.requestPostChannel = make(chan *entities.Post)
-	m.requestPauseChannel = make(chan time.Duration)
+	m.requestPostChannel = make(chan RequestPostStruct)
+	m.requestPauseChannel = make(chan RequestPauseStruct)
 	m.timer = time.NewTimer(time.Minute)
 
 	schedulePosting(time.Unix(0, 0))
@@ -69,9 +69,11 @@ func Listen() {
 		select {
 
 		case postRequest := <-m.requestPostChannel:
-			err = tryPosting(postRequest)
+			err = tryPosting(postRequest.Post)
+			postRequest.ErrorChan <- err
 		case pauseRequest := <-m.requestPauseChannel:
-			err = tryPausing(pauseRequest)
+			err = tryPausing(pauseRequest.Duration)
+			pauseRequest.ErrorChan <- err
 		case <-m.timer.C:
 			err = postScheduled()
 		}

@@ -7,6 +7,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
+	l "gitlab.com/shitposting/autoposting-bot/localization"
 )
 
 func sendLowPostAlerts(postsEnqueued int) {
@@ -24,7 +25,7 @@ func sendLowPostAlerts(postsEnqueued int) {
 	}()
 
 	//
-	alert := fmt.Sprintf("🚨 We're running out of posts!\nEnqueued: %d", postsEnqueued)
+	alert := fmt.Sprintf(l.GetString(l.POSTING_ALERTS_LOW_POSTS), postsEnqueued)
 
 	//
 	for cur.Next(context.TODO()) {
