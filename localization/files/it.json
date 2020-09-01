@@ -28,7 +28,12 @@
   "posting_posting_previous_pause_too_close": "sono passati solo %s dall'ultima pausa",
   "updates_duplicates_duplicate_added_by": "🚨 Trovato duplicato! 🚨\n\nAggiunto per la prima volta da <a href=\"tg://user?id=%d\">%s</a>\nil %s",
   "updates_duplicates_duplicate_posted_at_link": "Postato il %s\nLink: %s",
-  "updates_duplicate_link_unavailable": "non disponibile"
+  "updates_duplicate_link_unavailable": "non disponibile",
+  "updates_texts_command_unimplemented": "Non implementato",
+  "updates_texts_unable_to_get_reply_message": "Impossibile ottenere il messaggio su cui è stato usato il comando",
+  "updates_media_unable_to_get_duplicate_caption": "Impossibile ottenere la didascalia del duplicato.\nQuesto è il media duplicato."
+
+
 
 
 }

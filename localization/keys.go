@@ -43,4 +43,7 @@ const(
 	UPDATES_DUPLICATES_DUPLICATE_ADDED_BY = "updates_duplicates_duplicate_added_by"
 	UPDATES_DUPLICATE_DUPLICATE_ADDED_AT = "updates_duplicates_duplicate_posted_at_link"
 	UPDATES_DUPLICATE_LINK_UNAVAILABLE = "updates_duplicate_link_unavailable"
+	UPDATES_TEXTS_COMMAND_UNIMPLEMENTED = "updates_texts_command_unimplemented"
+	UPDATES_TEXTS_UNABLE_TO_GET_REPLY_MESSAGE = "updates_texts_unable_to_get_reply_message"
+	UPDATES_MEDIA_UNABLE_TO_GET_DUPLICATE_CAPTION = "updates_media_unable_to_get_duplicate_caption"
 )

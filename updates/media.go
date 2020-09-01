@@ -8,6 +8,7 @@ import (
 	caption "gitlab.com/shitposting/autoposting-bot/caption"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
+	l "gitlab.com/shitposting/autoposting-bot/localization"
 	"gitlab.com/shitposting/autoposting-bot/posting"
 )
 
@@ -27,13 +28,15 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 		return
 	}
 
+	//
 	fingerprint, err := analysisadapter.Request(fileInfo.Local.Path, mediatype, fileInfo.Remote.UniqueId)
-	log.Debugln("Ottenuta risposta da analysis: ", fingerprint, err)
+	log.Debugln("Analysis response: ", fingerprint, err)
 	if err != nil {
 		//TODO: RESTITUIRE ERRORE
 		return
 	}
 
+	//
 	if !skipDuplicateChecks {
 
 		post, err := dbwrapper.FindPostByUniqueID(fileInfo.Remote.UniqueId)
@@ -43,15 +46,27 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 
 		if err == nil {
 			log.Debugln("Match found: ", post)
-			//TODO: VEDERE L'ERRORE
-			formattedText, _ := getDuplicateCaption(&post)
-			_, _ = api.SendMedia(mediatype, message.ChatId, message.Id, post.Media.FileID, formattedText.Text, formattedText.Entities)
+			formattedText, err := getDuplicateCaption(&post)
+			if err != nil {
+				_, _ = api.SendMedia(mediatype, message.ChatId, message.Id, post.Media.FileID, l.GetString(l.UPDATES_MEDIA_UNABLE_TO_GET_DUPLICATE_CAPTION), nil)
+			} else {
+				_, _ = api.SendMedia(mediatype, message.ChatId, message.Id, post.Media.FileID, formattedText.Text, formattedText.Entities)
+			}
+
 			return
 		}
 
 	}
 
-	log.Debugln("AGGIUNGO IL POST AL DB")
+	log.Debugln("Adding the post to the database")
+
+	// Remove caption from forwarded posts
+	var c string
+	if message.ForwardInfo == nil {
+		c = caption.ToHTMLCaption(api.GetMediaFormattedText(message))
+	}
+
+	//
 	avg, sum := entities.GetHistogramAverageAndSum(fingerprint.Histogram)
 	media := entities.Media{
 		Type:             mediatype,
@@ -64,12 +79,12 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 		PHash:            fingerprint.PHash,
 	}
 
-	c := caption.ToHTMLCaption(api.GetMediaFormattedText(message))
 	err = dbwrapper.AddPost(message.SenderUserId, media, c)
 	if err != nil {
 		log.Error(err)
 	}
 
+	//
 	_, _ = api.SendPlainReplyText(message.ChatId, message.Id, "Media added!")
 
 	//

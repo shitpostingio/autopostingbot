@@ -33,5 +33,8 @@
 
   "updates_duplicates_duplicate_added_by": "🚨 Duplicate detected! 🚨\n\nFirst added by <a href=\"tg://user?id=%d\">%s</a>\non %s",
   "updates_duplicates_duplicate_posted_at_link": "Posted on %s\nLink: %s",
-  "updates_duplicate_link_unavailable": "unavailable"
+  "updates_duplicate_link_unavailable": "unavailable",
+  "updates_texts_command_unimplemented": "Unimplemented",
+  "updates_texts_unable_to_get_reply_message": "Unable to get the target message for the command",
+  "updates_media_unable_to_get_duplicate_caption": "Unable to get the duplicate caption, but here's the duplicate media"
 }
