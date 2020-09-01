@@ -30,7 +30,7 @@ func tryPosting(post *entities.Post) error {
 		return fmt.Errorf("unable to parse caption: %s", err)
 	}
 
-	message, err := api.SendMedia(post.Media.Type, m.config.ChannelID, api.NoReply, post.Media.FileID, ft.Text, ft.Entities)
+	message, err := api.SendMedia(post.Media.Type, m.config.Autoposting.ChannelID, api.NoReply, post.Media.FileID, ft.Text, ft.Entities)
 	if err != nil {
 		_ = dbwrapper.MarkPostAsFailed(post)
 		return err
@@ -101,7 +101,7 @@ func schedulePosting(postTime time.Time) {
 	m.nextPostScheduled = time.Now().Add(newRate)
 
 	// Send alerts if there are less than X amount of posts enqueued
-	if int(queueLength) < m.config.PostAlertThreshold {
+	if int(queueLength) < m.config.Autoposting.PostAlertThreshold {
 		sendLowPostAlerts(int(queueLength))
 	}
 

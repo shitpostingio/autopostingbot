@@ -65,7 +65,7 @@ func main() {
 	localization.SetLanguage(cfg.Localization.Language)
 
 	//
-	tdlibClient, err := api.Authorize(cfg.BotToken, &cfg.Tdlib)
+	tdlibClient, err := api.Authorize(cfg.Autoposting.BotToken, &cfg.Tdlib)
 	if err != nil {
 		log.Fatalf("NewClient error: %s", err)
 	}

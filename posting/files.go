@@ -24,7 +24,7 @@ func moveToDirectory(post *entities.Post) error {
 	extension := fileName[strings.LastIndex(fileName, ".") + 1:]
 	log.Debugln("Extension: ", extension)
 
-	err = os.Rename(file.Local.Path, fmt.Sprintf("%s/%s.%s", m.config.MediaPath, post.Media.FileID, extension))
+	err = os.Rename(file.Local.Path, fmt.Sprintf("%s/%s.%s", m.config.Autoposting.MediaPath, post.Media.FileID, extension))
 	return err
 
 }

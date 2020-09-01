@@ -58,7 +58,7 @@ func handleNewMessage(message *client.Message) {
 func handleNewDeletion(messages *client.UpdateDeleteMessages) {
 
 	// We care only about permanent deletions in the channel
-	if messages.ChatId != repository.Config.ChannelID || !messages.IsPermanent {
+	if messages.ChatId != repository.Config.Autoposting.ChannelID || !messages.IsPermanent {
 		return
 	}
 
