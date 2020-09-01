@@ -2,10 +2,10 @@ package posting
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
+	l "gitlab.com/shitposting/autoposting-bot/localization"
 	"time"
 )
 
@@ -16,18 +16,16 @@ const (
 
 func tryPosting(post *entities.Post) error {
 
-	//
-
 	// Check post time
 	if time.Since(m.previousPostTime) <= minIntervalBetweenPosts {
-		return fmt.Errorf("only %s has passed since the last post", time.Since(m.previousPostTime))
+		return fmt.Errorf(l.GetString(l.POSTING_POSTING_PREVIOUS_POST_TOO_CLOSE), time.Since(m.previousPostTime))
 	}
 
 	// Prepare caption
 	caption := fmt.Sprintf("%s\n\n@%s", post.Caption, m.e.GetEditionName())
 	ft, err := api.GetFormattedText(caption)
 	if err != nil {
-		return fmt.Errorf("unable to parse caption: %s", err)
+		return fmt.Errorf(l.GetString(l.POSTING_POSTING_UNABLE_TO_PARSE_CAPTION), err)
 	}
 
 	message, err := api.SendMedia(post.Media.Type, m.config.Autoposting.ChannelID, api.NoReply, post.Media.FileID, ft.Text, ft.Entities)
@@ -60,7 +58,7 @@ func tryPosting(post *entities.Post) error {
 func tryPausing(duration time.Duration) error {
 
 	if time.Since(m.previousPauseTime) <= minIntervalBetweenPauses {
-		return fmt.Errorf("only %s has passed since the last pause", time.Since(m.previousPauseTime))
+		return fmt.Errorf(l.GetString(l.POSTING_POSTING_PREVIOUS_PAUSE_TOO_CLOSE), time.Since(m.previousPauseTime))
 	}
 
 	//
@@ -111,7 +109,6 @@ func postScheduled() error {
 
 	post, err := dbwrapper.GetNextPost()
 	if err != nil {
-		log.Error("postScheduled:", err)
 		return err
 	}
 

@@ -35,5 +35,8 @@ const(
 
 	// POSTING
 	POSTING_ALERTS_LOW_POSTS = "posting_alerts_low_posts"
+	POSTING_POSTING_PREVIOUS_POST_TOO_CLOSE = "posting_posting_previous_post_too_close"
+	POSTING_POSTING_UNABLE_TO_PARSE_CAPTION = "posting_posting_unable_to_parse_caption"
+	POSTING_POSTING_PREVIOUS_PAUSE_TOO_CLOSE = "posting_posting_previous_pause_too_close"
 
 )

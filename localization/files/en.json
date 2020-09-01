@@ -26,5 +26,8 @@
 
   "media_added_correctly": "Media added correctly",
 
-  "posting_alerts_low_posts": "🚨 We're running out of posts!\nEnqueued: %d"
+  "posting_alerts_low_posts": "🚨 We're running out of posts!\nEnqueued: %d",
+  "posting_posting_previous_post_too_close": "only %s has passed since the last post",
+  "posting_posting_unable_to_parse_caption": "unable to parse caption: %s",
+  "posting_posting_previous_pause_too_close": "only %s has passed since the last pause"
 }

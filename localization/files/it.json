@@ -22,5 +22,9 @@
   "database_unable_to_find_post": "Post non trovato",
   "commands_info_post_already_posted": "Post aggiunto da <a href=\"tg://user?id=%d\">%s</a> il %s\nPostato il %s\nLink: t.me/%s/%d",
   "commands_info_post_not_yet_posted": "📋 Il post è in posizione %d nella coda\n👤 Aggiunto da <a href=\"tg://user?id=%d\">%s</a> il %s\n\n🕜 Dovrebbe essere postato circa tra %s\n📅 Il %s",
-  "posting_alerts_low_posts": "🚨 I media da postare scarseggiano!\nIn coda: %d"
+  "posting_alerts_low_posts": "🚨 I media da postare scarseggiano!\nIn coda: %d",
+  "posting_posting_previous_post_too_close": "sono passati solo %s dall'ultimo post",
+  "posting_posting_unable_to_parse_caption": "impossibile effettuare il parse della descrizione: %s",
+  "posting_posting_previous_pause_too_close": "sono passati solo %s dall'ultima pausa"
+
 }
