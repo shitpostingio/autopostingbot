@@ -4,6 +4,8 @@
   "commands_add_error": "Errore nell'aggiunta del post",
   "media_added_correctly": "Media aggiunto correttamente",
   "commands_credit_unable_to_credit": "L'aggiunta dei crediti ha dato errore",
+  "commands_credit_caption_with_url": "[Da <a href=\"%s\">%s</a>]",
+  "commands_credit_caption_without_url": "[Da %s]",
   "commands_delete_deleted_correctly": "Post cancellato con successo",
   "commands_delete_unable_to_delete": "Impossibile cancellare il post",
   "database_unable_to_find_post": "Post non trovato",

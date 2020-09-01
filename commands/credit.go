@@ -51,14 +51,14 @@ func getCreditCaption(arguments string, message, replyToMessage *client.Message)
 
 	// We have a URL
 	if urlStart != -1 {
-		return creditCaptionForURL(urlStart, arguments, message, replyToMessage)
+		return creditCaptionForURL(urlStart, arguments, message)
 	}
 
 	return creditCaptionWithoutURL(arguments, message, replyToMessage)
 
 }
 
-func creditCaptionForURL(urlStart int, arguments string, message, replyToMessage *client.Message) (string, error) {
+func creditCaptionForURL(urlStart int, arguments string, message *client.Message) (string, error) {
 
 	/*
 	 *	STRUCTURE:
@@ -72,7 +72,7 @@ func creditCaptionForURL(urlStart int, arguments string, message, replyToMessage
 	//
 	urlEnd := strings.IndexAny(leftoverText, " \t\n")
 	if urlEnd == -1 {
-		return fmt.Sprintf("[By <a href=\"%s\">%s</a>]", leftoverText, whoToCredit), nil
+		return fmt.Sprintf(l.GetString(l.COMMANDS_CREDIT_CAPTION_WITH_URL), leftoverText, whoToCredit), nil
 	}
 
 	// Isolate the URL
@@ -86,7 +86,8 @@ func creditCaptionForURL(urlStart int, arguments string, message, replyToMessage
 	comment = strings.TrimSpace(comment[commentStart:])
 
 	//
-	return fmt.Sprintf("%s\n\n[By <a href=\"%s\">%s</a>]", comment, url, whoToCredit), nil
+	captionEnd := fmt.Sprintf(l.GetString(l.COMMANDS_CREDIT_CAPTION_WITH_URL), url, whoToCredit)
+	return fmt.Sprintf("%s\n\n%s", comment, captionEnd), nil
 
 }
 
@@ -105,7 +106,8 @@ func creditCaptionWithoutURL(arguments string, message, replyToMessage *client.M
 
 	// Hidden users can only be users
 	if replyToMessage.ForwardInfo.Origin.MessageForwardOriginType() == client.TypeMessageForwardOriginHiddenUser {
-		return fmt.Sprintf("%s\n\n[By %s]", newCaption, replyToMessage.ForwardInfo.Origin.(*client.MessageForwardOriginHiddenUser).SenderName), nil
+		captionEnd := fmt.Sprintf(l.GetString(l.COMMANDS_CREDIT_CAPTION_WITHOUT_URL), replyToMessage.ForwardInfo.Origin.(*client.MessageForwardOriginHiddenUser).SenderName)
+		return fmt.Sprintf("%s\n\n%s", newCaption, captionEnd), nil
 	}
 
 	if replyToMessage.ForwardInfo.Origin.MessageForwardOriginType() != client.TypeMessageForwardOriginUser {
@@ -124,7 +126,8 @@ func creditCaptionWithoutURL(arguments string, message, replyToMessage *client.M
 	}
 
 	// Use only the first name for normal users
-	return fmt.Sprintf("%s\n\n[By %s]", newCaption, user.FirstName), nil
+	captionEnd := fmt.Sprintf(l.GetString(l.COMMANDS_CREDIT_CAPTION_WITHOUT_URL), user.FirstName)
+	return fmt.Sprintf("%s\n\n%s", newCaption, captionEnd), nil
 
 }
 

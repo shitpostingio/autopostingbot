@@ -13,7 +13,7 @@ import (
 
 type AddCommandHandler struct {}
 
-func (AddCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
+func (AddCommandHandler) Handle(_ string, message, replyToMessage *client.Message) error {
 
 	//
 	if replyToMessage == nil {

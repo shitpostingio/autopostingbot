@@ -9,6 +9,8 @@ const(
 	COMMANDS_ADD_ERROR = "commands_add_error"
 	COMMANDS_REPLY_TO_MEDIA_FILE = "commands_reply_to_media_file"
 	COMMANDS_CREDIT_UNABLE_TO_CREDIT = "commands_credit_unable_to_credit"
+	COMMANDS_CREDIT_CAPTION_WITH_URL = "commands_credit_caption_with_url"
+	COMMANDS_CREDIT_CAPTION_WITHOUT_URL = "commands_credit_caption_without_url"
 	COMMANDS_DELETE_SUCCESS = "commands_delete_deleted_correctly"
 	COMMANDS_DELETE_FAILURE = "Unable to delete the post"
 	COMMANDS_INFO_ALREADY_POSTED = "commands_info_post_already_posted"

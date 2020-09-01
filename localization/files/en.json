@@ -4,6 +4,8 @@
   "commands_reply_to_media_file": "This command needs to be used in reply to a media file",
   "commands_add_error": "Error while trying to add the post",
   "commands_credit_unable_to_credit": "Unable to credit correctly",
+  "commands_credit_caption_with_url": "[By <a href=\"%s\">%s</a>]",
+  "commands_credit_caption_without_url": "[By %s]",
   "commands_delete_deleted_correctly": "Post deleted correctly",
   "commands_delete_unable_to_delete": "Unable to delete the post",
   "commands_info_post_already_posted": "Post added by <a href=\"tg://user?id=%d\">%s</a> on %s\nPosted on %s\nLink: t.me/%s/%d",

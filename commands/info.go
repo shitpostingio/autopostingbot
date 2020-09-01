@@ -18,7 +18,7 @@ import (
 
 type InfoCommandHandler struct {}
 
-func (InfoCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
+func (InfoCommandHandler) Handle(_ string, message, replyToMessage *client.Message) error {
 
 	//
 	if replyToMessage == nil {

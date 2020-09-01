@@ -10,7 +10,7 @@ import (
 
 type DeleteCommandHandler struct {}
 
-func (DeleteCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
+func (DeleteCommandHandler) Handle(_ string, message, replyToMessage *client.Message) error {
 
 	//
 	if replyToMessage == nil {
