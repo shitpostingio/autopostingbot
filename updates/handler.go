@@ -1,7 +1,6 @@
 package updates
 
 import (
-	"fmt"
 	log "github.com/sirupsen/logrus"
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
@@ -24,7 +23,7 @@ func HandleUpdates(listener *client.Listener) {
 				handleNewDeletion(update.(*client.UpdateDeleteMessages))
 
 			default:
-				log.Printf("Type: %s, Value: %#v", update.GetType(), update)
+				log.Debugln("Type: %s, Value: %#v", update.GetType(), update)
 			}
 
 		}
@@ -33,6 +32,11 @@ func HandleUpdates(listener *client.Listener) {
 }
 
 func handleNewMessage(message *client.Message) {
+
+	if message.SenderUserId == repository.Me.Id {
+		log.Debugln("Message from self")
+		return
+	}
 
 	//
 	if !dbwrapper.UserIsAuthorized(message.SenderUserId) {
@@ -62,7 +66,7 @@ func handleNewDeletion(messages *client.UpdateDeleteMessages) {
 		return
 	}
 
-	fmt.Println("permanent deletions: ", messages.MessageIds)
+	log.Debugln("permanent deletions: ", messages.MessageIds)
 
 	for _, id := range messages.MessageIds {
 

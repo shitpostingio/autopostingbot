@@ -39,4 +39,8 @@ const(
 	POSTING_POSTING_UNABLE_TO_PARSE_CAPTION = "posting_posting_unable_to_parse_caption"
 	POSTING_POSTING_PREVIOUS_PAUSE_TOO_CLOSE = "posting_posting_previous_pause_too_close"
 
+	// UPDATES
+	UPDATES_DUPLICATES_DUPLICATE_ADDED_BY = "updates_duplicates_duplicate_added_by"
+	UPDATES_DUPLICATE_DUPLICATE_ADDED_AT = "updates_duplicates_duplicate_posted_at_link"
+	UPDATES_DUPLICATE_LINK_UNAVAILABLE = "updates_duplicate_link_unavailable"
 )

@@ -12,3 +12,18 @@ func GetMessage(chatID, messageID int64) (*client.Message, error) {
 	return message, err
 
 }
+
+func GetMessageLink(chatID, messageID int64) (string, error) {
+
+	link, err := tdlibClient.GetMessageLink(&client.GetMessageLinkRequest{
+		ChatId:    chatID,
+		MessageId: messageID,
+	})
+
+	if err != nil {
+		return "", err
+	}
+
+	return link.Url, nil
+
+}

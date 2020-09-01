@@ -5,25 +5,37 @@ import (
 	"github.com/zelenin/go-tdlib/client"
 	"gitlab.com/shitposting/autoposting-bot/api"
 	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
-	"gitlab.com/shitposting/autoposting-bot/posting"
+	l "gitlab.com/shitposting/autoposting-bot/localization"
+	"gitlab.com/shitposting/autoposting-bot/repository"
 	"gitlab.com/shitposting/autoposting-bot/telegram"
 	"gitlab.com/shitposting/autoposting-bot/utility"
+	"strconv"
 )
 
 func getDuplicateCaption(duplicatePost *entities.Post) (*client.FormattedText, error) {
 
+	var userName string
 	user, err := api.GetUserByID(duplicatePost.AddedBy)
 	if err != nil {
-		//TODO: pensare a qualcosa
+		userName = strconv.Itoa(int(duplicatePost.AddedBy))
+	} else {
+		userName = telegram.GetNameFromUser(user)
 	}
 
-	//TODO: USARE GOTRANS E USARE STRINGHE DI TRADUZIONE
 	caption := fmt.Sprintf(
-		"🚨 Duplicate detected! 🚨\n\nFirst added by <a href=\"tg://user?id=%d\">%s</a>\non %s",
-		duplicatePost.AddedBy, telegram.GetNameFromUser(user), utility.FormatDate(duplicatePost.AddedAt))
+		l.GetString(l.UPDATES_DUPLICATES_DUPLICATE_ADDED_BY),
+		duplicatePost.AddedBy, userName, utility.FormatDate(duplicatePost.AddedAt))
 
 	if duplicatePost.MessageID != 0 {
-		caption = fmt.Sprintf("%s\nPosted on %s\nLink: t.me/%s/%d", caption, utility.FormatDate(*duplicatePost.PostedAt), posting.GetPostingManager().GetEditionName(), duplicatePost.MessageID)
+
+		link, err := api.GetMessageLink(repository.Config.Autoposting.ChannelID, duplicatePost.MessageID)
+		if err != nil {
+			link = l.GetString(l.UPDATES_DUPLICATE_LINK_UNAVAILABLE)
+		}
+
+		captionEnd := fmt.Sprintf(l.GetString(l.UPDATES_DUPLICATE_DUPLICATE_ADDED_AT), utility.FormatDate(*duplicatePost.PostedAt), link)
+		caption = fmt.Sprintf("%s\n%s", caption, captionEnd)
+
 	}
 
 	ft, err := api.GetFormattedText(caption)

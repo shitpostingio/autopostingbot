@@ -29,5 +29,9 @@
   "posting_alerts_low_posts": "🚨 We're running out of posts!\nEnqueued: %d",
   "posting_posting_previous_post_too_close": "only %s has passed since the last post",
   "posting_posting_unable_to_parse_caption": "unable to parse caption: %s",
-  "posting_posting_previous_pause_too_close": "only %s has passed since the last pause"
+  "posting_posting_previous_pause_too_close": "only %s has passed since the last pause",
+
+  "updates_duplicates_duplicate_added_by": "🚨 Duplicate detected! 🚨\n\nFirst added by <a href=\"tg://user?id=%d\">%s</a>\non %s",
+  "updates_duplicates_duplicate_posted_at_link": "Posted on %s\nLink: %s",
+  "updates_duplicate_link_unavailable": "unavailable"
 }

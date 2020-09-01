@@ -28,7 +28,7 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 	}
 
 	fingerprint, err := analysisadapter.Request(fileInfo.Local.Path, mediatype, fileInfo.Remote.UniqueId)
-	log.Println("Ottenuta risposta da analysis: ", fingerprint, err)
+	log.Debugln("Ottenuta risposta da analysis: ", fingerprint, err)
 	if err != nil {
 		//TODO: RESTITUIRE ERRORE
 		return
@@ -42,7 +42,7 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 		}
 
 		if err == nil {
-			log.Println("Match found: ", post)
+			log.Debugln("Match found: ", post)
 			//TODO: VEDERE L'ERRORE
 			formattedText, _ := getDuplicateCaption(&post)
 			_, _ = api.SendMedia(mediatype, message.ChatId, message.Id, post.Media.FileID, formattedText.Text, formattedText.Entities)
@@ -51,7 +51,7 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 
 	}
 
-	log.Println("AGGIUNGO IL POST AL DB")
+	log.Debugln("AGGIUNGO IL POST AL DB")
 	avg, sum := entities.GetHistogramAverageAndSum(fingerprint.Histogram)
 	media := entities.Media{
 		Type:             mediatype,
