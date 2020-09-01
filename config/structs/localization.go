@@ -1,6 +1,6 @@
 package structs
 
-type Localization struct {
+type LocalizationConfiguration struct {
 	Path     string
 	Language string
 }

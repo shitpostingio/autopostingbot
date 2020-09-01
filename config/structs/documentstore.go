@@ -4,30 +4,42 @@ import "go.mongodb.org/mongo-driver/mongo/options"
 
 // DocumentStoreConfiguration represents a document store configuration
 type DocumentStoreConfiguration struct {
-	DatabaseName   string
-	Username       string
-	Password       string
-	AuthSource     string
-	CollectionName string
-	ReplicaSetName string
-	Hosts          []string `type:"optional"` //TODO: rimuovere
+	UseAuthentication bool `type:"optional"`
+	UseReplicaSet     bool `type:"optional"`
+	DatabaseName      string
+	AuthMechanism     string `type:"optional"`
+	Username          string `type:"optional"`
+	Password          string `type:"optional"`
+	AuthSource        string `type:"optional"`
+	CollectionName    string
+	ReplicaSetName    string   `type:"optional"`
+	Hosts             []string `type:"optional"`
 }
 
 // MongoDBConnectionOptions gets the connection options from the DocumentStoreConfiguration
 func (c *DocumentStoreConfiguration) MongoDBConnectionOptions() *options.ClientOptions {
 
-	//TODO: SISTEMARE
+	//TODO: CONTROLLARE
+	//
 	clientOptions := options.Client()
-	//clientOptions.SetAuth(options.Credential{
-	//	AuthMechanism: "SCRAM-SHA-1",
-	//	AuthSource:    c.AuthSource,
-	//	Username:      c.Username,
-	//	Password:      c.Password,
-	//	PasswordSet:   true,
-	//})
-
 	clientOptions.SetHosts(c.Hosts)
-	//clientOptions.SetReplicaSet(c.ReplicaSetName) //TODO: SISTEMARE
+
+	//
+	if c.UseAuthentication {
+		clientOptions.SetAuth(options.Credential{
+			AuthMechanism: c.AuthMechanism,
+			AuthSource:    c.AuthSource,
+			Username:      c.Username,
+			Password:      c.Password,
+			PasswordSet:   true,
+		})
+	}
+
+	//
+	if c.UseReplicaSet {
+		clientOptions.SetReplicaSet(c.ReplicaSetName)
+	}
+
 	return clientOptions
 
 }

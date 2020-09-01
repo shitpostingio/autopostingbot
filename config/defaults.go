@@ -4,8 +4,15 @@ import "github.com/spf13/viper"
 
 const (
 
+	// Autoposting
+	defaultAutopostingFileSizeThreshold = 20 << 10
+	defaultAutopostingPostAlertThreshold = 10
+
 	// DocumentStore
 	defaultDocumentStoreHosts = "localhost:27017"
+	defaultDocumentStoreAuthMechanism = "SCRAM-SHA-1"
+	defaultDocumentStoreUseAuthentication = false
+	defaultDocumentStoreUseReplicaSet = false
 
 	// Tdlib
 	defaultTdlibUseTestDc = false
@@ -24,8 +31,15 @@ const (
 
 func setDefaultValuesForOptionalFields() {
 
+	// Autoposting
+	viper.SetDefault("autoposting.filesizethreshold", defaultAutopostingFileSizeThreshold)
+	viper.SetDefault("autoposting.postalertthreshold", defaultAutopostingPostAlertThreshold)
+
 	// DocumentStore
 	viper.SetDefault("documentstore.hosts", []string{defaultDocumentStoreHosts})
+	viper.SetDefault("documentstore.useauthentication", defaultDocumentStoreUseAuthentication)
+	viper.SetDefault("documentstore.usereplicaset", defaultDocumentStoreUseReplicaSet)
+	viper.SetDefault("documentstore.authmechanism", defaultDocumentStoreAuthMechanism)
 
 	// Tdlib
 	viper.SetDefault("tdlib.usetestdc", defaultTdlibUseTestDc)

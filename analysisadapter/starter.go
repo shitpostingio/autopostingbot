@@ -5,9 +5,9 @@ import (
 )
 
 var (
-	config structs.AnalysisAPIConfig
+	config structs.AnalysisAPIConfiguration
 )
 
-func Start(analysisConfig structs.AnalysisAPIConfig) {
+func Start(analysisConfig structs.AnalysisAPIConfiguration) {
 	config = analysisConfig
 }
