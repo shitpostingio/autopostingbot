@@ -11,7 +11,8 @@ func AddPost(addedBy int32, media entities.Media, caption string) error {
 }
 
 func FindPostByFeatures(histogram []float64, pHash string) (post entities.Post, err error) {
-	return documentstore.FindPostByFeatures(histogram, pHash, mediaApproximation, documentstore.PostCollection)
+	return documentstore.FindPostByFeatures(histogram, pHash,
+		documentstore.MediaApproximation, documentstore.SimilarityThreshold, documentstore.PostCollection)
 }
 
 // FindPostByFileID retrieves a post via its fileID

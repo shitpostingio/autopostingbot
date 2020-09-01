@@ -7,6 +7,8 @@ const (
 	// Autoposting
 	defaultAutopostingFileSizeThreshold = 20 << 10
 	defaultAutopostingPostAlertThreshold = 10
+	defaultAutopostingMediaApproximation = 0.08
+	defaultAutopostingSimilarityThreshold = 6
 
 	// DocumentStore
 	defaultDocumentStoreHosts = "localhost:27017"
@@ -34,6 +36,8 @@ func setDefaultValuesForOptionalFields() {
 	// Autoposting
 	viper.SetDefault("autoposting.filesizethreshold", defaultAutopostingFileSizeThreshold)
 	viper.SetDefault("autoposting.postalertthreshold", defaultAutopostingPostAlertThreshold)
+	viper.SetDefault("autoposting.mediaapproximation", defaultAutopostingMediaApproximation)
+	viper.SetDefault("autoposting.similaritythreshold", defaultAutopostingSimilarityThreshold)
 
 	// DocumentStore
 	viper.SetDefault("documentstore.hosts", []string{defaultDocumentStoreHosts})

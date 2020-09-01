@@ -106,7 +106,7 @@ func main() {
 	//	return
 	//}
 
-	documentstore.Connect(&cfg.DocumentStore)
+	documentstore.Connect(&cfg.DocumentStore, cfg.Autoposting.MediaApproximation, cfg.Autoposting.SimilarityThreshold)
 
 	/* CREATE Repository */
 	repository.SetVariables(nil, nil, &cfg)

@@ -241,6 +241,8 @@ gitlab.com/shitposting/fingerprint-microservice v0.0.0-20200215135451-39bc41bef4
 gitlab.com/shitposting/fingerprint-microservice v0.0.0-20200218084026-efce1e6d776a/go.mod h1:aI3wOkeWSe+xSvQBSsX6gkCJA0GMycIS4Upo2jaglic=
 gitlab.com/shitposting/fingerprinting v0.0.0-20200123172145-203d9eea207d h1:QbO64sMRXExssqI/FdsYtNF/LYfBlbxX4qk6g6q9HAI=
 gitlab.com/shitposting/fingerprinting v0.0.0-20200123172145-203d9eea207d/go.mod h1:Baq/pBAI2V/WGlZtww3FGi1i/FOrHaiqL4i+gWCteWQ=
+gitlab.com/shitposting/fingerprinting v0.0.0-20200901131028-85eb641b1d4d h1:/xbtI4yTvqZjWSWBPajSQ2ijy8SYB/OK9Na2vE1s5BQ=
+gitlab.com/shitposting/fingerprinting v0.0.0-20200901131028-85eb641b1d4d/go.mod h1:Baq/pBAI2V/WGlZtww3FGi1i/FOrHaiqL4i+gWCteWQ=
 gitlab.com/shitposting/gibberish-microservice v0.0.0-20200215135504-4c584e676794/go.mod h1:qmsrr/vdOCFQOnIZF+8/IA/38qztq2ZfYTIb0VO5wAw=
 gitlab.com/shitposting/gibberish-microservice v0.0.0-20200218083512-2dc2ad3ad51f/go.mod h1:+pSZY8QGJHgQtRZ0wH1H7SvsXuiW3cWnLqi5e1T/sfI=
 gitlab.com/shitposting/loglog-ng v0.0.0-20191114143616-1a7a17ceee83 h1:IyY1TO/+FyatG1heWGkgFZBfsD0LRt2vKsNvqXkS5K8=

@@ -64,7 +64,7 @@ func UpdatePostCaptionByUniqueID(uniqueID, caption string, collection *mongo.Col
 }
 
 // FindPostByFeatures finds a post by its features
-func FindPostByFeatures(histogram []float64, pHash string, approximation float64, collection *mongo.Collection) (post entities.Post, err error) {
+func FindPostByFeatures(histogram []float64, pHash string, approximation float64, similarityThreshold int, collection *mongo.Collection) (post entities.Post, err error) {
 
 	//
 	if histogram == nil {
@@ -117,7 +117,7 @@ func FindPostByFeatures(histogram []float64, pHash string, approximation float64
 	}
 
 	//
-	post, err = findBestMatch(pHash, cursor)
+	post, err = findBestMatch(pHash, similarityThreshold, cursor)
 	if err != nil {
 		err = xerrors.Errorf("FindMediaByFeatures: %s", err)
 		return
@@ -337,7 +337,7 @@ func MarkPostAsDeletedByMessageID(messageID int64, collection *mongo.Collection)
 
 // ============================================================================
 
-func findBestMatch(referencePHash string, cursor *mongo.Cursor) (post entities.Post, err error) {
+func findBestMatch(referencePHash string, similarityThreshold int, cursor *mongo.Cursor) (post entities.Post, err error) {
 
 	defer func() {
 		_ = cursor.Close(dsCtx)
@@ -354,8 +354,7 @@ func findBestMatch(referencePHash string, cursor *mongo.Cursor) (post entities.P
 		// it will always keep being true.
 		var res entities.Post
 		err = cursor.Decode(&res)
-		//TODO: pensare di cambiare photosaresimilarenough in un qualcosa che dia un valore numerico
-		if err == nil && fpcompare.PhotosAreSimilarEnough(referencePHash, res.Media.PHash) {
+		if err == nil && fpcompare.PhotoSimilarity(referencePHash, res.Media.PHash) < similarityThreshold{
 			post = res
 			log.Debugln("match in ", i, "iterations. FileID", post.Media.FileUniqueID)
 			return

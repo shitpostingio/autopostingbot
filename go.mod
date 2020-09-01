@@ -26,7 +26,7 @@ require (
 	github.com/zelenin/go-tdlib v0.2.0
 	gitlab.com/shitposting/analysis-api v0.0.0-20200719085455-79559cd20f0b
 	gitlab.com/shitposting/datalibrary v0.0.0-20190908133448-106005cb355f
-	gitlab.com/shitposting/fingerprinting v0.0.0-20200123172145-203d9eea207d
+	gitlab.com/shitposting/fingerprinting v0.0.0-20200901131028-85eb641b1d4d
 	gitlab.com/shitposting/loglog-ng v0.0.0-20191114143616-1a7a17ceee83
 	gitlab.com/shitposting/telegram-markdown-processor v0.0.0-20200514090203-724e5e8b9322 // indirect
 	go.mongodb.org/mongo-driver v1.3.5
