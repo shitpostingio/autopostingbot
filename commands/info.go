@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-type InfoCommandHandler struct {}
+type InfoCommandHandler struct{}
 
 func (InfoCommandHandler) Handle(_ string, message, replyToMessage *client.Message) error {
 
@@ -42,7 +42,7 @@ func (InfoCommandHandler) Handle(_ string, message, replyToMessage *client.Messa
 
 	//
 	log.Debugln("Found post: ", post)
-	
+
 	//
 	var name string
 	user, err := api.GetUserByID(post.AddedBy)
@@ -55,7 +55,7 @@ func (InfoCommandHandler) Handle(_ string, message, replyToMessage *client.Messa
 	//
 	var reply string
 	if post.PostedAt != nil {
-		
+
 		//
 		reply = fmt.Sprintf(l.GetString(l.COMMANDS_INFO_ALREADY_POSTED),
 			post.AddedBy, name, utility.FormatDate(post.AddedAt), utility.FormatDate(*post.PostedAt), posting.GetPostingManager().GetEditionName(), post.MessageID)
@@ -95,4 +95,3 @@ func (InfoCommandHandler) Handle(_ string, message, replyToMessage *client.Messa
 	return err
 
 }
-

@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-type StatusCommandHandler struct {}
+type StatusCommandHandler struct{}
 
 func (StatusCommandHandler) Handle(_ string, message, _ *client.Message) error {
 

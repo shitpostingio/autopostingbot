@@ -7,12 +7,12 @@ import (
 )
 
 type RequestPostStruct struct {
-	Post *entities.Post
+	Post      *entities.Post
 	ErrorChan chan error
 }
 
 type RequestPauseStruct struct {
-	Duration time.Duration
+	Duration  time.Duration
 	ErrorChan chan error
 }
 
@@ -24,19 +24,19 @@ func RequestPost(post *entities.Post) error {
 	}
 
 	m.requestPostChannel <- rps
-	return <- rps.ErrorChan
+	return <-rps.ErrorChan
 
 }
 
 func RequestPause(duration time.Duration) error {
 
 	rps := RequestPauseStruct{
-		Duration:      duration,
+		Duration:  duration,
 		ErrorChan: make(chan error, 1),
 	}
 
 	m.requestPauseChannel <- rps
-	return <- rps.ErrorChan
+	return <-rps.ErrorChan
 
 }
 

@@ -8,7 +8,7 @@ import (
 	l "gitlab.com/shitposting/autoposting-bot/localization"
 )
 
-type PreviewCommandHandler struct {}
+type PreviewCommandHandler struct{}
 
 func (PreviewCommandHandler) Handle(_ string, message, replyToMessage *client.Message) error {
 

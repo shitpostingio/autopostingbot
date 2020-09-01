@@ -33,8 +33,8 @@ type Manager struct {
 var (
 	m        Manager
 	editions = map[string]edition.Edition{
-		"shitpost": edition.ShitpostEdition{},
-		"sushiporn":   edition.SushiPornEdition{},
+		"shitpost":  edition.ShitpostEdition{},
+		"sushiporn": edition.SushiPornEdition{},
 	}
 )
 

@@ -12,7 +12,7 @@ import (
 	"strconv"
 )
 
-const(
+const (
 	telegramMessageIDConversionFactor = 1048576
 )
 
@@ -41,7 +41,7 @@ func getDuplicateCaption(duplicatePost *entities.Post) (*client.FormattedText, e
 		// Since bots cannot call the getLink method, we need to divide
 		// our message id by the magic number and add 1
 		chatIDStr := strconv.FormatInt(repository.Config.Autoposting.ChannelID, 10)
-		link := fmt.Sprintf("t.me/c/%s/%d", chatIDStr[4:], duplicatePost.MessageID/telegramMessageIDConversionFactor + 1)
+		link := fmt.Sprintf("t.me/c/%s/%d", chatIDStr[4:], duplicatePost.MessageID/telegramMessageIDConversionFactor+1)
 		captionEnd := fmt.Sprintf(l.GetString(l.UPDATES_DUPLICATE_DUPLICATE_ADDED_AT), utility.FormatDate(*duplicatePost.PostedAt), link)
 		caption = fmt.Sprintf("%s\n%s", caption, captionEnd)
 

@@ -9,7 +9,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/posting"
 )
 
-type PostNowCommandHandler struct {}
+type PostNowCommandHandler struct{}
 
 func (PostNowCommandHandler) Handle(_ string, message, replyToMessage *client.Message) error {
 

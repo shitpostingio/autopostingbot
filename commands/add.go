@@ -11,7 +11,7 @@ import (
 	l "gitlab.com/shitposting/autoposting-bot/localization"
 )
 
-type AddCommandHandler struct {}
+type AddCommandHandler struct{}
 
 func (AddCommandHandler) Handle(_ string, message, replyToMessage *client.Message) error {
 

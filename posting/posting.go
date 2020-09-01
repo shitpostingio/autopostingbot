@@ -46,10 +46,8 @@ func tryPosting(post *entities.Post) error {
 	// reschedule
 	schedulePosting(time.Now())
 
-
 	//
 	err = moveToDirectory(post)
-
 
 	return err
 
@@ -67,7 +65,7 @@ func tryPausing(duration time.Duration) error {
 
 	//
 	if !m.timer.Stop() {
-		select{
+		select {
 		case <-m.timer.C:
 		default:
 		}
@@ -82,7 +80,7 @@ func schedulePosting(postTime time.Time) {
 
 	// Stop the timer and drain the channel if need be
 	if !m.timer.Stop() {
-		select{
+		select {
 		case <-m.timer.C:
 		default:
 		}

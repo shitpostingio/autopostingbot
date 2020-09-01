@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-type ThanksCommandHandler struct {}
+type ThanksCommandHandler struct{}
 
 func (ThanksCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 

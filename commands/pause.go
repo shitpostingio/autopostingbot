@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-type PauseCommandHandler struct {}
+type PauseCommandHandler struct{}
 
 func (PauseCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
@@ -47,7 +47,7 @@ func (PauseCommandHandler) Handle(arguments string, message, replyToMessage *cli
 	if err != nil {
 		whoPaused = telegram.GetNameFromUser(user)
 	} else {
-		whoPaused =  strconv.Itoa(int(message.SenderUserId))
+		whoPaused = strconv.Itoa(int(message.SenderUserId))
 	}
 	//
 

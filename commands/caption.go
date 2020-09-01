@@ -10,7 +10,7 @@ import (
 	l "gitlab.com/shitposting/autoposting-bot/localization"
 )
 
-type CaptionCommandHandler struct {}
+type CaptionCommandHandler struct{}
 
 func (CaptionCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 

@@ -354,7 +354,7 @@ func findBestMatch(referencePHash string, similarityThreshold int, cursor *mongo
 		// it will always keep being true.
 		var res entities.Post
 		err = cursor.Decode(&res)
-		if err == nil && fpcompare.PhotoSimilarity(referencePHash, res.Media.PHash) < similarityThreshold{
+		if err == nil && fpcompare.PhotoSimilarity(referencePHash, res.Media.PHash) < similarityThreshold {
 			post = res
 			log.Debugln("match in ", i, "iterations. FileID", post.Media.FileUniqueID)
 			return

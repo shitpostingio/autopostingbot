@@ -5,30 +5,29 @@ import "github.com/spf13/viper"
 const (
 
 	// Autoposting
-	defaultAutopostingFileSizeThreshold = 20 << 10
-	defaultAutopostingPostAlertThreshold = 10
-	defaultAutopostingMediaApproximation = 0.08
+	defaultAutopostingFileSizeThreshold   = 20 << 10
+	defaultAutopostingPostAlertThreshold  = 10
+	defaultAutopostingMediaApproximation  = 0.08
 	defaultAutopostingSimilarityThreshold = 6
 
 	// DocumentStore
-	defaultDocumentStoreHosts = "localhost:27017"
-	defaultDocumentStoreAuthMechanism = "SCRAM-SHA-1"
+	defaultDocumentStoreHosts             = "localhost:27017"
+	defaultDocumentStoreAuthMechanism     = "SCRAM-SHA-1"
 	defaultDocumentStoreUseAuthentication = false
-	defaultDocumentStoreUseReplicaSet = false
+	defaultDocumentStoreUseReplicaSet     = false
 
 	// Tdlib
-	defaultTdlibUseTestDc = false
-	defaultTdlibUseFileDatabase = true
-	defaultTdlibUseChatInfoDatabase = true
-	defaultTdlibUseMessageDatabase = true
-	defaultTdlibUseSecretChats = false
-	defaultTdlibSystemLanguageCode = "en"
-	defaultTdlibDeviceModel = "Other"
-	defaultTdlibSystemVersion = "1.0.0"
-	defaultTdlibApplicationVersion = "1.0.0"
+	defaultTdlibUseTestDc              = false
+	defaultTdlibUseFileDatabase        = true
+	defaultTdlibUseChatInfoDatabase    = true
+	defaultTdlibUseMessageDatabase     = true
+	defaultTdlibUseSecretChats         = false
+	defaultTdlibSystemLanguageCode     = "en"
+	defaultTdlibDeviceModel            = "Other"
+	defaultTdlibSystemVersion          = "1.0.0"
+	defaultTdlibApplicationVersion     = "1.0.0"
 	defaultTdlibEnableStorageOptimizer = true
-	defaultTdlibIgnoreFileNames = true
-
+	defaultTdlibIgnoreFileNames        = true
 )
 
 func setDefaultValuesForOptionalFields() {
@@ -59,4 +58,3 @@ func setDefaultValuesForOptionalFields() {
 	viper.SetDefault("tdlib.ignorefilenames", defaultTdlibIgnoreFileNames)
 
 }
-

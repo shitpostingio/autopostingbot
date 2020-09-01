@@ -7,7 +7,7 @@ import (
 	l "gitlab.com/shitposting/autoposting-bot/localization"
 )
 
-type PeekCommandHandler struct {}
+type PeekCommandHandler struct{}
 
 func (PeekCommandHandler) Handle(_ string, message, _ *client.Message) error {
 

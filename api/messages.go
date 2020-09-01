@@ -12,4 +12,3 @@ func GetMessage(chatID, messageID int64) (*client.Message, error) {
 	return message, err
 
 }
-

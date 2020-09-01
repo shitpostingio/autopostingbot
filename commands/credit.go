@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-type CreditCommandHandler struct {}
+type CreditCommandHandler struct{}
 
 func (CreditCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
@@ -130,4 +130,3 @@ func creditCaptionWithoutURL(arguments string, message, replyToMessage *client.M
 	return fmt.Sprintf("%s\n\n%s", newCaption, captionEnd), nil
 
 }
-
