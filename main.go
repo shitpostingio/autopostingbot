@@ -28,7 +28,6 @@ var (
 
 	//debug is used to turn on debugging features.
 	debug bool
-
 )
 
 func main() {

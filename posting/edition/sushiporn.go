@@ -6,7 +6,7 @@ import (
 )
 
 // SushiPornEdition represents the Shitpost posting algorithm.
-type SushiPornEdition struct {}
+type SushiPornEdition struct{}
 
 // GetEditionName returns the name of the edition.
 func (SushiPornEdition) GetEditionName() string {

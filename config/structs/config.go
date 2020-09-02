@@ -4,17 +4,17 @@ package structs
 type Config struct {
 
 	// Autoposting contains the bot configuration.
-	Autoposting   AutopostingConfiguration
+	Autoposting AutopostingConfiguration
 
 	// Tdlib contains tdlib-specific configuration values.
-	Tdlib         TdlibConfiguration
+	Tdlib TdlibConfiguration
 
 	// DocumentStore contains MongoDB configuration values.
 	DocumentStore DocumentStoreConfiguration
 
 	// AnalysisAPI contains Analysis API configuration values.
-	AnalysisAPI   AnalysisAPIConfiguration
+	AnalysisAPI AnalysisAPIConfiguration
 
 	// Localization contains localization configuration values.
-	Localization  LocalizationConfiguration
+	Localization LocalizationConfiguration
 }

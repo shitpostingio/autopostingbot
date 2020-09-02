@@ -33,7 +33,7 @@ var (
 	UserCollection *mongo.Collection
 
 	// MediaApproximation is the approximation factor for similarity search in the database.
-	MediaApproximation  float64
+	MediaApproximation float64
 
 	// SimilarityThreshold is the threshold for picture-to-picture similarity comparisons.
 	SimilarityThreshold int

@@ -5,7 +5,7 @@ import (
 )
 
 // ShitpostEdition represents the Shitpost posting algorithm.
-type ShitpostEdition struct {}
+type ShitpostEdition struct{}
 
 // GetEditionName returns the name of the edition.
 func (ShitpostEdition) GetEditionName() string {

@@ -14,7 +14,6 @@ var (
 
 	//
 	userID int
-
 )
 
 func main() {

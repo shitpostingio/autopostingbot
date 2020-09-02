@@ -7,5 +7,4 @@ type Handler interface {
 
 	// Handle is the method that command handlers implement.
 	Handle(arguments string, message, replyToMessage *client.Message) error
-
 }

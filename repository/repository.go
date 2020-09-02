@@ -10,8 +10,8 @@ var (
 	Config *structs.Config
 
 	// Tdlib is the Telegram client instance.
-	Tdlib  *client.Client
+	Tdlib *client.Client
 
 	// Me represents the current bot as a Telegram client.User.
-	Me     *client.User
+	Me *client.User
 )

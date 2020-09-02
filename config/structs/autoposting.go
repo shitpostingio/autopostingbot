@@ -4,30 +4,30 @@ package structs
 type AutopostingConfiguration struct {
 
 	// BotToken is the Telegram bot token we will need to log in to.
-	BotToken            string
+	BotToken string
 
 	// ChannelID is the id of the channel on which we will send posts.
-	ChannelID           int64
+	ChannelID int64
 
 	// FileSizeThreshold represents the maximum file size we can perform
 	// fingerprint requests on.
-	FileSizeThreshold   int `type:"optional"`
+	FileSizeThreshold int `type:"optional"`
 
 	// MediaPath is the path where we will save posted medias.
-	MediaPath           string
+	MediaPath string
 
 	// PostAlertThreshold represents the threshold below which the admins
 	// will be notified of low posts enqueued.
-	PostAlertThreshold  int     `type:"optional"`
+	PostAlertThreshold int `type:"optional"`
 
 	// MediaApproximation represents the approximation the similarity search
 	// in the database will use.
-	MediaApproximation  float64 `type:"optional"`
+	MediaApproximation float64 `type:"optional"`
 
 	// SimilarityThreshold represents the similarity threshold that tells us
 	// whether two pictures are similar enough or not.
-	SimilarityThreshold int     `type:"optional"`
+	SimilarityThreshold int `type:"optional"`
 
 	// Edition represents the edition that will be run.
-	Edition             string
+	Edition string
 }

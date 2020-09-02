@@ -11,7 +11,7 @@ import (
 type RequestPostStruct struct {
 
 	// Post is the media to be posted.
-	Post      *entities.Post
+	Post *entities.Post
 
 	// ErrorChan is a channel to retrieve post results.
 	ErrorChan chan error
@@ -22,7 +22,7 @@ type RequestPostStruct struct {
 type RequestPauseStruct struct {
 
 	// Duration is the amount of time to pause posting for.
-	Duration  time.Duration
+	Duration time.Duration
 
 	// ErrorChan is a channel to the operation results.
 	ErrorChan chan error
