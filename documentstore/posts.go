@@ -15,6 +15,7 @@ import (
 	"time"
 )
 
+// AddPost adds a post to the database.
 func AddPost(addedBy int32, media entities.Media, caption string, collection *mongo.Collection) error {
 
 	//
@@ -39,7 +40,7 @@ func AddPost(addedBy int32, media entities.Media, caption string, collection *mo
 
 }
 
-// UpdatePostCaptionByFileID updates the caption of a post given its fileID
+// UpdatePostCaptionByUniqueID updates the caption of a post given its uniqueID.
 func UpdatePostCaptionByUniqueID(uniqueID, caption string, collection *mongo.Collection) error {
 
 	//
@@ -63,7 +64,7 @@ func UpdatePostCaptionByUniqueID(uniqueID, caption string, collection *mongo.Col
 
 }
 
-// FindPostByFeatures finds a post by its features
+// FindPostByFeatures finds a post by its features.
 func FindPostByFeatures(histogram []float64, pHash string, approximation float64, similarityThreshold int, collection *mongo.Collection) (post entities.Post, err error) {
 
 	//
@@ -125,7 +126,7 @@ func FindPostByFeatures(histogram []float64, pHash string, approximation float64
 
 }
 
-// FindPostByFileID retrieves a post via its fileID
+// FindPostByUniqueID retrieves a post via its uniqueID.
 func FindPostByUniqueID(uniqueID string, collection *mongo.Collection) (post entities.Post, err error) {
 
 	//
@@ -152,7 +153,7 @@ func FindPostByUniqueID(uniqueID string, collection *mongo.Collection) (post ent
 
 }
 
-// DeletePostByFileID deletes a post entity via its fileID
+// DeletePostByUniqueID deletes a post entity via its uniqueID.
 func DeletePostByUniqueID(uniqueID string, collection *mongo.Collection) error {
 
 	//
@@ -173,7 +174,7 @@ func DeletePostByUniqueID(uniqueID string, collection *mongo.Collection) error {
 
 }
 
-// GetNextPost retrieves the oldest media in the queue
+// GetNextPost retrieves the oldest post in the queue (not yet posted).
 func GetNextPost(collection *mongo.Collection) (post entities.Post, err error) {
 
 	//
@@ -205,7 +206,7 @@ func GetNextPost(collection *mongo.Collection) (post entities.Post, err error) {
 
 }
 
-// GetQueueLength returns the number of the enqueued posts
+// GetQueueLength returns the number of the enqueued posts.
 func GetQueueLength(collection *mongo.Collection) (length int64) {
 
 	//
@@ -234,7 +235,7 @@ func GetQueueLength(collection *mongo.Collection) (length int64) {
 
 }
 
-// GetQueuePositionByDatabaseID returns the position of the selected post in the queue
+// GetQueuePositionByAddTime returns the position of the first post added before the input time.
 func GetQueuePositionByAddTime(addedAt time.Time, collection *mongo.Collection) (position int) {
 
 	//
@@ -267,7 +268,7 @@ func GetQueuePositionByAddTime(addedAt time.Time, collection *mongo.Collection) 
 
 }
 
-// MarkPostAsPosted marks a post as posted
+// MarkPostAsPosted marks a post as posted.
 func MarkPostAsPosted(post *entities.Post, messageID int, collection *mongo.Collection) error {
 
 	//
@@ -292,7 +293,7 @@ func MarkPostAsPosted(post *entities.Post, messageID int, collection *mongo.Coll
 
 }
 
-// MarkPostAsFailed marks a post as failed
+// MarkPostAsFailed marks a post as failed.
 func MarkPostAsFailed(post *entities.Post, collection *mongo.Collection) error {
 
 	//
@@ -313,6 +314,7 @@ func MarkPostAsFailed(post *entities.Post, collection *mongo.Collection) error {
 
 }
 
+// MarkPostAsDeletedByMessageID marks a post as deleted.
 func MarkPostAsDeletedByMessageID(messageID int64, collection *mongo.Collection) error {
 
 	//
@@ -335,6 +337,7 @@ func MarkPostAsDeletedByMessageID(messageID int64, collection *mongo.Collection)
 
 // ============================================================================
 
+// findBestMatch finds the best match given the input referencePHash.
 func findBestMatch(referencePHash string, similarityThreshold int, cursor *mongo.Cursor) (post entities.Post, err error) {
 
 	defer func() {

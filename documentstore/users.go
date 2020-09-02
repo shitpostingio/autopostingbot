@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// AddUser adds a user to the authorized admins.
 func AddUser(userID int32, collection *mongo.Collection) error {
 
 	//
@@ -37,6 +38,7 @@ func AddUser(userID int32, collection *mongo.Collection) error {
 
 }
 
+// UserIsAuthorized returns true if the user can interact with the bot.
 func UserIsAuthorized(userID int32, collection *mongo.Collection) bool {
 
 	//
@@ -54,6 +56,7 @@ func UserIsAuthorized(userID int32, collection *mongo.Collection) bool {
 
 }
 
+// GetUsers retrieves all the authorized users from the database.
 func GetUsers(collection *mongo.Collection) (*mongo.Cursor, error) {
 
 	//
@@ -65,6 +68,7 @@ func GetUsers(collection *mongo.Collection) (*mongo.Cursor, error) {
 
 }
 
+// DeleteUser deletes a user from the database.
 func DeleteUser(userID int32, collection *mongo.Collection) error {
 
 	//

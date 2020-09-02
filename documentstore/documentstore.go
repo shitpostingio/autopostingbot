@@ -26,16 +26,20 @@ var (
 	dsCtx    context.Context
 	database *mongo.Database
 
-	//
+	// PostCollection is the MongoDB post collection.
 	PostCollection *mongo.Collection
+
+	// UserCollection is the MongoDB user collection.
 	UserCollection *mongo.Collection
 
-	//
+	// MediaApproximation is the approximation factor for similarity search in the database.
 	MediaApproximation  float64
+
+	// SimilarityThreshold is the threshold for picture-to-picture similarity comparisons.
 	SimilarityThreshold int
 )
 
-// Connect connects to the document store
+// Connect connects to the document store.
 func Connect(cfg *structs.DocumentStoreConfiguration, mediaApproximation float64, similarityThreshold int) {
 
 	//
