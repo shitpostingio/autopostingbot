@@ -5,6 +5,8 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/repository"
 )
 
+// GetFormattedText returns the client.FormattedText structure of the
+// input text, parsing it as HTML markup.
 func GetFormattedText(text string) (*client.FormattedText, error) {
 
 	formattedText, err := repository.Tdlib.ParseTextEntities(&client.ParseTextEntitiesRequest{

@@ -4,6 +4,9 @@ import (
 	"github.com/zelenin/go-tdlib/client"
 )
 
+// SendPhoto shares a photo to a certain chat.
+// If replyToMessageID is not 0, the photo will be in reply to that message id.
+// caption and entities can be used to attach a message with markdown.
 func SendPhoto(chatID, replyToMessageID int64, remoteFileID, caption string, entities []*client.TextEntity) (*client.Message, error) {
 
 	request := client.SendMessageRequest{
@@ -24,6 +27,8 @@ func SendPhoto(chatID, replyToMessageID int64, remoteFileID, caption string, ent
 
 }
 
+// GetPhotoFileInfoFromMessage returns the Photo structure
+// of a given client.Message.
 func GetPhotoFileInfoFromMessage(message *client.Message) *client.File {
 
 	//

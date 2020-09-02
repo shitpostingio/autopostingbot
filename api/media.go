@@ -19,6 +19,9 @@ var (
 	}
 )
 
+// SendMedia shares a media file to a certain chat.
+// If replyToMessageID is not 0, the media will be in reply to that message id.
+// caption and entities can be used to attach a message with markdown.
 func SendMedia(mediaType string, chatID, replyToMessageID int64, remoteFileID, caption string, entities []*client.TextEntity) (*client.Message, error) {
 
 	send, found := sendFunctions[mediaType]
@@ -30,6 +33,8 @@ func SendMedia(mediaType string, chatID, replyToMessageID int64, remoteFileID, c
 
 }
 
+// GetMediaFileInfo returns the client.File structure for supported
+// media types.
 func GetMediaFileInfo(message *client.Message) (*client.File, error) {
 
 	//
@@ -45,6 +50,8 @@ func GetMediaFileInfo(message *client.Message) (*client.File, error) {
 
 }
 
+// GetMediaFormattedText returns the client.FormattedText structure for
+// supported media types, nil otherwise.
 func GetMediaFormattedText(message *client.Message) *client.FormattedText {
 
 	switch message.Content.MessageContentType() {
