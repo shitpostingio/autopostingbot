@@ -15,6 +15,7 @@ const (
 	minIntervalBetweenPauses = 5 * time.Minute
 )
 
+// tryPosting tries to post on the channel.
 func tryPosting(post *entities.Post) error {
 
 	// Check post time
@@ -51,6 +52,7 @@ func tryPosting(post *entities.Post) error {
 
 }
 
+// tryPausing tries pausing the posting.
 func tryPausing(duration time.Duration) error {
 
 	if time.Since(m.previousPauseTime) <= minIntervalBetweenPauses {
@@ -74,6 +76,7 @@ func tryPausing(duration time.Duration) error {
 
 }
 
+// schedulePosting schedules a new post.
 func schedulePosting(postTime time.Time) {
 
 	// Stop the timer and drain the channel if need be
@@ -101,6 +104,7 @@ func schedulePosting(postTime time.Time) {
 
 }
 
+// postScheduled posts a scheduled media.
 func postScheduled() error {
 
 	post, err := dbwrapper.GetNextPost()

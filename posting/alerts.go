@@ -10,6 +10,8 @@ import (
 	l "gitlab.com/shitposting/autoposting-bot/localization"
 )
 
+// sendLowPostAlerts sends a message to all the authorized users,
+// notifying them of a low number of posts enqueued.
 func sendLowPostAlerts(postsEnqueued int) {
 
 	//

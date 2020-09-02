@@ -9,6 +9,8 @@ import (
 	"strings"
 )
 
+// moveToDirectory moves a file from the Tdlib directory to the
+// persistent directory specified in the configuration file.
 func moveToDirectory(post *entities.Post) error {
 
 	//

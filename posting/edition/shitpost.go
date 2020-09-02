@@ -4,19 +4,22 @@ import (
 	"time"
 )
 
-type ShitpostEdition struct {
-}
+// ShitpostEdition represents the Shitpost posting algorithm.
+type ShitpostEdition struct {}
 
+// GetEditionName returns the name of the edition.
 func (ShitpostEdition) GetEditionName() string {
 	return "shitpost"
 }
 
-// GetNewPostingRate updates the posting rate to a new value based
-// on the edition of the active edition
+// GetNewPostingRate returns the new posting rate according to the algorithm
+// and the queue length.
 func (e ShitpostEdition) GetNewPostingRate(queueLength int) time.Duration {
 	return e.timeToNextPost(queueLength)
 }
 
+// timeToNextPost returns the estimate time until the next post, given
+// the queue length.
 func (e ShitpostEdition) timeToNextPost(queueLength int) time.Duration {
 
 	//
@@ -32,8 +35,8 @@ func (e ShitpostEdition) timeToNextPost(queueLength int) time.Duration {
 
 }
 
-// postsPerHour will distribute the amount of posts in the queue
-// over a 24 hour period
+// postsPerHour returns how many posts per hour there will be
+// in the next 24 hours period, based on the queue length.
 func (ShitpostEdition) postsPerHour(queueLength int) int {
 
 	if queueLength == 0 {
@@ -50,8 +53,8 @@ func (ShitpostEdition) postsPerHour(queueLength int) int {
 
 }
 
-// EstimatePostTime estimates the time until the posting of a
-// certain item in the queue
+// EstimatePostTime estimates the amount of time that will pass before
+// being able to post a certain media.
 func (e ShitpostEdition) EstimatePostTime(queueLength int) (totalDuration time.Duration) {
 
 	for i := queueLength; i > 0; i-- {

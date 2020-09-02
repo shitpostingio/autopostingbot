@@ -6,16 +6,29 @@ import (
 	"time"
 )
 
+// RequestPostStruct represents a request to post a entities.Post.
+// It includes a channel to retrieve the posting result.
 type RequestPostStruct struct {
+
+	// Post is the media to be posted.
 	Post      *entities.Post
+
+	// ErrorChan is a channel to retrieve post results.
 	ErrorChan chan error
 }
 
+// RequestPauseStruct represents a request to pause posting.
+// It includes a channel to retrieve the operation result.
 type RequestPauseStruct struct {
+
+	// Duration is the amount of time to pause posting for.
 	Duration  time.Duration
+
+	// ErrorChan is a channel to the operation results.
 	ErrorChan chan error
 }
 
+// RequestPost requests the posting of a media.
 func RequestPost(post *entities.Post) error {
 
 	rps := RequestPostStruct{
@@ -28,6 +41,7 @@ func RequestPost(post *entities.Post) error {
 
 }
 
+// RequestPause requests a pause in the posting.
 func RequestPause(duration time.Duration) error {
 
 	rps := RequestPauseStruct{
@@ -40,20 +54,22 @@ func RequestPause(duration time.Duration) error {
 
 }
 
-// GetPostingRate returns the current posting rate
+// GetPostingRate returns the current posting rate.
 func GetPostingRate() time.Duration {
 	return m.postingRate
 }
 
-// GetNextPostTime returns the time at which the next post is scheduled
+// GetNextPostTime returns the time at which the next post is scheduled.
 func GetNextPostTime() time.Time {
 	return m.nextPostScheduled
 }
 
+// GetPostingManager returns the current posting manager edition.
 func GetPostingManager() edition.Edition {
 	return m.e
 }
 
+// ForcePostScheduling forces a new post scheduling.
 func ForcePostScheduling() {
 	schedulePosting(time.Unix(0, 0))
 }

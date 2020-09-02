@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+// Manager is the posting manager.
+// It contains information on posting rates, scheduling and the running edition.
 type Manager struct {
 	config      *structs.Config
 	isDebugging bool
@@ -37,6 +39,7 @@ var (
 	}
 )
 
+// Start sets the Manager up and starts the post scheduling.
 func Start(config *structs.Config, debug, testing bool) {
 
 	//
@@ -56,10 +59,12 @@ func Start(config *structs.Config, debug, testing bool) {
 	m.requestPauseChannel = make(chan RequestPauseStruct)
 	m.timer = time.NewTimer(time.Minute)
 
-	schedulePosting(time.Unix(0, 0))
+	//
+	ForcePostScheduling()
 
 }
 
+// Listen makes the Manager listen for posting and pause requests.
 func Listen() {
 
 	var err error
