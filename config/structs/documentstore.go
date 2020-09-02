@@ -2,7 +2,7 @@ package structs
 
 import "go.mongodb.org/mongo-driver/mongo/options"
 
-// DocumentStoreConfiguration represents a document store configuration
+// DocumentStoreConfiguration represents MongoDB configuration values.
 type DocumentStoreConfiguration struct {
 	UseAuthentication bool `type:"optional"`
 	UseReplicaSet     bool `type:"optional"`
@@ -15,7 +15,7 @@ type DocumentStoreConfiguration struct {
 	Hosts             []string `type:"optional"`
 }
 
-// MongoDBConnectionOptions gets the connection options from the DocumentStoreConfiguration
+// MongoDBConnectionOptions gets the connection options from the DocumentStoreConfiguration.
 func (c *DocumentStoreConfiguration) MongoDBConnectionOptions() *options.ClientOptions {
 
 	//TODO: CHECK

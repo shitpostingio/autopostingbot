@@ -30,6 +30,8 @@ const (
 	defaultTdlibIgnoreFileNames        = true
 )
 
+// setDefaultValuesForOptionalFields sets default values for configuration files.
+// These values will be persisted in the configuration file after validation.
 func setDefaultValuesForOptionalFields() {
 
 	// Autoposting

@@ -7,13 +7,13 @@ import (
 )
 
 // checkMandatoryFields uses reflection to see if there are
-// mandatory fields with zero value
+// mandatory fields with zero value.
 func checkMandatoryFields(isReload bool, config structs.Config) error {
 	return checkStruct(isReload, reflect.TypeOf(config), reflect.ValueOf(config))
 }
 
 // checkStruct explores structures recursively and checks if
-// struct fields have a zero value
+// struct fields have a zero value.
 func checkStruct(isReload bool, typeToCheck reflect.Type, valueToCheck reflect.Value) (err error) {
 
 	for i := 0; i < typeToCheck.NumField(); i++ {
@@ -38,6 +38,7 @@ func checkStruct(isReload bool, typeToCheck reflect.Type, valueToCheck reflect.V
 	return nil
 }
 
+// checkStruct explores slices recursively and checks they have a zero value.
 func checkSlice(isReload bool, typeToCheck reflect.StructField, sliceToCheck reflect.Value) error {
 
 	//only check reloadable fields if isReload is true
@@ -85,7 +86,7 @@ func checkSlice(isReload bool, typeToCheck reflect.StructField, sliceToCheck ref
 }
 
 // checkField checks if a field is optional or a webhook field
-// if it isn't, it checks if the field has a zero value
+// if it isn't, it checks if the field has a zero value.
 func checkField(isReload bool, typeToCheck reflect.StructField, valueToCheck reflect.Value) error {
 
 	//only check reloadable fields if isReload is true

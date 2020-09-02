@@ -5,7 +5,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/config/structs"
 )
 
-// Load reads a configuration file and returns its config instance
+// Load reads a configuration file and returns its config instance.
 func Load(path string) (cfg structs.Config, err error) {
 
 	//
