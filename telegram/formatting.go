@@ -5,6 +5,7 @@ import (
 	"github.com/zelenin/go-tdlib/client"
 )
 
+// GetNameFromUser returns the user's first and last name, if available.
 func GetNameFromUser(user *client.User) string {
 
 	if user.LastName == "" {
