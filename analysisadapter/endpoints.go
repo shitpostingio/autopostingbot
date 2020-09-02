@@ -5,6 +5,8 @@ import (
 	"github.com/zelenin/go-tdlib/client"
 )
 
+// getEndpoint returns the correct Analysis API endpoint
+// for the supported media types.
 func getEndpoint(mediaType, fileUniqueID string) string {
 
 	switch mediaType {

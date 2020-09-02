@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// Request performs the fingerprinting request to the Analysis API endpoint.
 func Request(path, mediaType, fileUniqueID string) (fingerprint *structs.FingerprintResponse, err error) {
 
 	//
