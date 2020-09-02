@@ -29,6 +29,9 @@ var (
 	}
 )
 
+// ToHTMLCaptionWithCustomStart converts a client.FormattedText to a plaintext
+// string with HTML markup.
+// By setting index, one can specify where the parsing should start.
 func ToHTMLCaptionWithCustomStart(ft *client.FormattedText, index int) string {
 
 	//
@@ -119,6 +122,8 @@ func ToHTMLCaptionWithCustomStart(ft *client.FormattedText, index int) string {
 
 }
 
+// ToHTMLCaption converts a client.FormattedText to a plaintext
+// string with HTML markup.
 func ToHTMLCaption(ft *client.FormattedText) string {
 	return ToHTMLCaptionWithCustomStart(ft, 0)
 }
