@@ -16,8 +16,13 @@ import (
 	"time"
 )
 
+// InfoCommandHandler represents the handler of the /info command.
 type InfoCommandHandler struct{}
 
+// Handle handles the /info command.
+// /info returns various pieces of information about a post.
+// It will return the user who added it, info about the post if it has already been posted
+// or an estimate of the post time.
 func (InfoCommandHandler) Handle(_ string, message, replyToMessage *client.Message) error {
 
 	//

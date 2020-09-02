@@ -8,8 +8,11 @@ import (
 	l "gitlab.com/shitposting/autoposting-bot/localization"
 )
 
+// PreviewCommandHandler represents the handler of the /preview command.
 type PreviewCommandHandler struct{}
 
+// Handle handles the /preview command.
+// /preview returns the post how it will appear if it was to be posted.
 func (PreviewCommandHandler) Handle(_ string, message, replyToMessage *client.Message) error {
 
 	//

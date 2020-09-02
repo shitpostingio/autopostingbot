@@ -11,8 +11,11 @@ import (
 	l "gitlab.com/shitposting/autoposting-bot/localization"
 )
 
+// AddCommandHandler represents the handler of the /add command.
 type AddCommandHandler struct{}
 
+// Handle handles the /add command.
+// /add forces the addition of a post to the database, skipping fingerprinting checks.
 func (AddCommandHandler) Handle(_ string, message, replyToMessage *client.Message) error {
 
 	//

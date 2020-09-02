@@ -13,8 +13,13 @@ import (
 	"time"
 )
 
+// PauseCommandHandler represents the handler of the /pause command.
 type PauseCommandHandler struct{}
 
+// Handle handles the /pause command.
+// /pause pauses the posting for a certain amount of hours, 1 by default.
+// The posting manager will not allow pauses too close between each other,
+// as to prevent accidental pauses.
 func (PauseCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
 	//

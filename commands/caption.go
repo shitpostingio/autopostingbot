@@ -10,8 +10,12 @@ import (
 	l "gitlab.com/shitposting/autoposting-bot/localization"
 )
 
+// CaptionCommandHandler represents the handler of the /caption command.
 type CaptionCommandHandler struct{}
 
+// Handle handles the /caption command.
+// /caption allows to set a caption to a forwarded message.
+// By using /caption without any additional argument, one can delete the previous caption.
 func (CaptionCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
 	//

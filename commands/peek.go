@@ -7,8 +7,11 @@ import (
 	l "gitlab.com/shitposting/autoposting-bot/localization"
 )
 
+// PeekCommandHandler represents the handler of the /peek command.
 type PeekCommandHandler struct{}
 
+// Handle handles the /peek command.
+// /peek returns the first post in the queue, along with its caption.
 func (PeekCommandHandler) Handle(_ string, message, _ *client.Message) error {
 
 	//

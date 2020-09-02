@@ -9,8 +9,11 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/posting"
 )
 
+// PostNowCommandHandler represents the handler of the /postnow command.
 type PostNowCommandHandler struct{}
 
+// Handle handles the /postnow command.
+// /postnow forces the posting of a media and resets the posting timers.
 func (PostNowCommandHandler) Handle(_ string, message, replyToMessage *client.Message) error {
 
 	//

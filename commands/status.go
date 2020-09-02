@@ -10,8 +10,12 @@ import (
 	"time"
 )
 
+// StatusCommandHandler represents the handler of the /status command.
 type StatusCommandHandler struct{}
 
+// Handle handles the /status command.
+// /status returns information about the posts enqueued, the posting rate
+// and the time until the next post.
 func (StatusCommandHandler) Handle(_ string, message, _ *client.Message) error {
 
 	//

@@ -11,8 +11,13 @@ import (
 	"strings"
 )
 
+// CreditCommandHandler represents the handler of the /credit command.
 type CreditCommandHandler struct{}
 
+// Handle handles the /credit command.
+// /credit allows to credit the original creator of a post. It supports hyperlinking of the source.
+// By using /credit without any additional argument on a forwarded, the original sender of the message will be credited.
+// By using /credit with a name and a link, the source will be credited and put as a hyperlink.
 func (CreditCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
 	//
@@ -44,6 +49,7 @@ func (CreditCommandHandler) Handle(arguments string, message, replyToMessage *cl
 
 }
 
+// getCreditCaption returns the correct credit caption, checking whether a URL is present or not.
 func getCreditCaption(arguments string, message, replyToMessage *client.Message) (string, error) {
 
 	// Different behavior whether we have a URL or not
@@ -58,6 +64,7 @@ func getCreditCaption(arguments string, message, replyToMessage *client.Message)
 
 }
 
+// creditCaptionForURL returns a credit caption with a hyperlinked source.
 func creditCaptionForURL(urlStart int, arguments string, message *client.Message) (string, error) {
 
 	/*
@@ -91,6 +98,8 @@ func creditCaptionForURL(urlStart int, arguments string, message *client.Message
 
 }
 
+// creditCaptionWithoutURL returns the credit caption thanking the user who originally sent the message.
+// It will not thank bots or channels.
 func creditCaptionWithoutURL(arguments string, message, replyToMessage *client.Message) (string, error) {
 
 	//

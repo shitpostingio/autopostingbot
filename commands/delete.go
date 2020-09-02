@@ -8,8 +8,11 @@ import (
 	l "gitlab.com/shitposting/autoposting-bot/localization"
 )
 
+// DeleteCommandHandler represents the handler of the /delete command.
 type DeleteCommandHandler struct{}
 
+// Handle handles the /delete command.
+// /delete deletes a post (that has yet to be posted) from the database.
 func (DeleteCommandHandler) Handle(_ string, message, replyToMessage *client.Message) error {
 
 	//

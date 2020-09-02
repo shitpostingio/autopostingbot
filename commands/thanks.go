@@ -11,8 +11,11 @@ import (
 	"strings"
 )
 
+// ThanksCommandHandler represents the handler of the /thanks command.
 type ThanksCommandHandler struct{}
 
+// Handle handles the /thanks command.
+// /thanks thanks the user that originally sent the media.
 func (ThanksCommandHandler) Handle(arguments string, message, replyToMessage *client.Message) error {
 
 	//
@@ -42,6 +45,7 @@ func (ThanksCommandHandler) Handle(arguments string, message, replyToMessage *cl
 
 }
 
+// getThanksCaption returns the thank user caption.
 func getThanksCaption(arguments string, message, replyToMessage *client.Message) (string, error) {
 
 	// In case there's an error in the thanks part, fall back to
@@ -67,12 +71,15 @@ func getThanksCaption(arguments string, message, replyToMessage *client.Message)
 
 }
 
+// getComment returns any additional comment that the user wants to add to the thank.
 func getComment(arguments string, message *client.Message) string {
 	text := message.Content.(*client.MessageText).Text
 	msgLengthDifference := len(text.Text) - len(arguments)
 	return caption.ToHTMLCaption(text)[msgLengthDifference:]
 }
 
+// getThanks thanks the user that originally sent the media.
+// It will not thank bots or channels.
 func getThanks(message *client.Message) (string, error) {
 
 	if message.ForwardInfo.Origin.MessageForwardOriginType() == client.TypeMessageForwardOriginChannel {
