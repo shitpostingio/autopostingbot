@@ -8,12 +8,12 @@ var (
 	language string
 )
 
-// SetLanguage sets the language for the bot
+// SetLanguage sets the language for the bot.
 func SetLanguage(toSet string) {
 	language = toSet
 }
 
-// GetString gets the translation given a key
+// GetString gets the translation given a key.
 func GetString(key string) string {
 	return gotrans.Tr(language, key)
 }
