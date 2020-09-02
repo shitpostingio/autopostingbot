@@ -12,10 +12,10 @@ import (
 
 const (
 
-	/* TIMEOUT */
+	//
 	opDeadline = 10 * time.Second
 
-	/* COLLECTION NAMES */
+	//
 	postCollectionName = "posts"
 	userCollectionName = "users"
 )

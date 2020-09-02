@@ -55,9 +55,9 @@ func getThanksCaption(arguments string, message, replyToMessage *client.Message)
 
 		if arguments == "" {
 			return "", err
-		} else {
-			thanks = ""
 		}
+
+		thanks = ""
 
 	}
 

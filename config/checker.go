@@ -21,11 +21,12 @@ func checkStruct(isReload bool, typeToCheck reflect.Type, valueToCheck reflect.V
 		currentField := typeToCheck.Field(i)
 		currentValue := valueToCheck.Field(i)
 
-		if currentField.Type.Kind() == reflect.Struct {
+		switch currentField.Type.Kind() {
+		case reflect.Struct:
 			err = checkStruct(isReload, currentField.Type, currentValue)
-		} else if currentField.Type.Kind() == reflect.Slice {
+		case reflect.Slice:
 			err = checkSlice(isReload, currentField, currentValue)
-		} else {
+		default:
 			err = checkField(isReload, currentField, currentValue)
 		}
 
