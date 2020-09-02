@@ -5,6 +5,8 @@ import (
 	"github.com/zelenin/go-tdlib/client"
 )
 
+// HandleUpdates handles incoming updates, dispatching them
+// to the appropriate sub-handlers.
 func HandleUpdates(listener *client.Listener) {
 
 	for update := range listener.Updates {

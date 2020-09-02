@@ -7,6 +7,7 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/repository"
 )
 
+// handleNewMessage handles incoming messages.
 func handleNewMessage(message *client.Message) {
 
 	// Tdlib delivers updates from self

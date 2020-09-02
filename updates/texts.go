@@ -26,6 +26,7 @@ var (
 	}
 )
 
+// handleText handles incoming text messages.
 func handleText(message *client.Message) {
 
 	//

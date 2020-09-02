@@ -12,6 +12,8 @@ import (
 	"gitlab.com/shitposting/autoposting-bot/posting"
 )
 
+// handleMedia handles incoming media messages.
+// It checks for duplicates and adds them to the database if they are unique.
 func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks bool) {
 
 	//

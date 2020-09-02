@@ -16,6 +16,7 @@ const (
 	telegramMessageIDConversionFactor = 1048576
 )
 
+// getDuplicateCaption returns the caption to be sent in a duplicate notification message.
 func getDuplicateCaption(duplicatePost *entities.Post) (*client.FormattedText, error) {
 
 	var userName string
