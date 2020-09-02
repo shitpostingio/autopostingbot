@@ -12,7 +12,6 @@ import (
 type Manager struct {
 	config      *structs.Config
 	isDebugging bool
-	isTesting   bool
 
 	/* POSTING */
 	nextPostScheduled time.Time
@@ -40,12 +39,11 @@ var (
 )
 
 // Start sets the Manager up and starts the post scheduling.
-func Start(config *structs.Config, debug, testing bool) {
+func Start(config *structs.Config, debug bool) {
 
 	//
 	m.config = config
 	m.isDebugging = debug
-	m.isTesting = testing
 
 	//
 	var found bool

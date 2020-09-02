@@ -17,23 +17,18 @@ import (
 )
 
 var (
-	// config file path, if not specified it will read ./config.toml
+	// configFilePath is the path where the configuration file will be read.
 	configFilePath string
 
-	// Version is the autoposting-bot version, a compile-time value
+	// Version is the autoposting-bot version, a compile-time value.
 	Version string
 
-	// Build is the git tag for the current version
+	// Build is the git tag for the current version.
 	Build string
 
-	// testing is a bool value to enable polling instead of webhook
-	testing bool
-
-	//debug --
+	//debug is used to turn on debugging features.
 	debug bool
 
-	//polling
-	polling bool
 )
 
 func main() {
@@ -88,7 +83,7 @@ func main() {
 	go updates.HandleUpdates(listener)
 
 	// Start the posting manager
-	posting.Start(&cfg, debug, testing)
+	posting.Start(&cfg, debug)
 	log.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, edition %s", Version, Build, posting.GetPostingManager().GetEditionName()))
 	posting.Listen()
 
@@ -96,8 +91,6 @@ func main() {
 
 func loadCLIParams() {
 	flag.StringVar(&configFilePath, "config", "./config.toml", "configuration file path")
-	flag.BoolVar(&testing, "testing", false, "activate testing features")
-	flag.BoolVar(&debug, "debug", false, "activate all the debug features")
-	flag.BoolVar(&polling, "polling", false, "use polling instead of webhoooks")
+	flag.BoolVar(&debug, "debug", false, "activate debug features")
 	flag.Parse()
 }
