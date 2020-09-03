@@ -45,12 +45,8 @@ go-fmt:
       
 lint_code:
   stage: format
-  before_script:
-    - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
-    - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
-    - cd $GOPATH/src/$REPO_NAME
-    - go get -u golang.org/x/lint/golint
   script:
+    - go get -u golang.org/x/lint/golint
     - golint -set_exit_status $(go list ./... | grep -v /vendor/)
   <<: *exclude
 
