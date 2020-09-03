@@ -7,6 +7,18 @@ before_script:
   - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
   - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
   - cd $GOPATH/src/$REPO_NAME
+  - eval $(ssh-agent -s)
+  - mkdir -p ~/.ssh
+  - echo "$SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa
+  - printf "$SSH_PUBLIC_KEY" >> ~/.ssh/id_rsa.pub
+  - chmod 700 ~/.ssh
+  - chmod 600 ~/.ssh/id_rsa
+  - chmod 644 ~/.ssh/id_rsa.pub
+  - git config --global url.git@gitlab.com:.insteadOf https://gitlab.com/
+  - ssh-add ~/.ssh/id_rsa
+  - ssh-add -l
+  - ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
+
 
 stages:
   - format
