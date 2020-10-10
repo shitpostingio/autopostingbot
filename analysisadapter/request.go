@@ -2,9 +2,9 @@ package analysisadapter
 
 import (
 	"errors"
+	analysis "github.com/shitpostingio/analysis-api/api/client"
+	"github.com/shitpostingio/analysis-api/services/structs"
 	log "github.com/sirupsen/logrus"
-	analysis "gitlab.com/shitposting/analysis-api/api/client"
-	"gitlab.com/shitposting/analysis-api/services/structs"
 	"os"
 	"strings"
 )

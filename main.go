@@ -4,16 +4,16 @@ import (
 	"flag"
 	"fmt"
 	"github.com/bykovme/gotrans"
+	"github.com/shitpostingio/autopostingbot/analysisadapter"
+	"github.com/shitpostingio/autopostingbot/api"
+	"github.com/shitpostingio/autopostingbot/config"
+	"github.com/shitpostingio/autopostingbot/documentstore"
+	"github.com/shitpostingio/autopostingbot/localization"
+	"github.com/shitpostingio/autopostingbot/posting"
+	"github.com/shitpostingio/autopostingbot/updates"
 	log "github.com/sirupsen/logrus"
-	"gitlab.com/shitposting/autoposting-bot/analysisadapter"
-	"gitlab.com/shitposting/autoposting-bot/api"
-	"gitlab.com/shitposting/autoposting-bot/config"
-	"gitlab.com/shitposting/autoposting-bot/documentstore"
-	"gitlab.com/shitposting/autoposting-bot/localization"
-	"gitlab.com/shitposting/autoposting-bot/posting"
-	"gitlab.com/shitposting/autoposting-bot/updates"
 
-	"gitlab.com/shitposting/autoposting-bot/repository"
+	"github.com/shitpostingio/autopostingbot/repository"
 )
 
 var (
