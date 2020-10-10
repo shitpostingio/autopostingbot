@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/zelenin/go-tdlib/client"
-	"gitlab.com/shitposting/autoposting-bot/config/structs"
+	"github.com/shitpostingio/autopostingbot/config/structs"
 )
 
 var (

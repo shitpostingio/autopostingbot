@@ -1,7 +1,7 @@
 package analysisadapter
 
 import (
-	"gitlab.com/shitposting/autoposting-bot/config/structs"
+	"github.com/shitpostingio/autopostingbot/config/structs"
 )
 
 var (

@@ -3,10 +3,10 @@ package updates
 import (
 	log "github.com/sirupsen/logrus"
 	"github.com/zelenin/go-tdlib/client"
-	"gitlab.com/shitposting/autoposting-bot/api"
-	"gitlab.com/shitposting/autoposting-bot/commands"
-	l "gitlab.com/shitposting/autoposting-bot/localization"
-	"gitlab.com/shitposting/autoposting-bot/telegram"
+	"github.com/shitpostingio/autopostingbot/api"
+	"github.com/shitpostingio/autopostingbot/commands"
+	l "github.com/shitpostingio/autopostingbot/localization"
+	"github.com/shitpostingio/autopostingbot/telegram"
 	"unicode/utf16"
 )
 

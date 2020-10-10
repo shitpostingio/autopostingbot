@@ -3,8 +3,8 @@ package posting
 import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	"gitlab.com/shitposting/autoposting-bot/api"
-	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
+	"github.com/shitpostingio/autopostingbot/api"
+	"github.com/shitpostingio/autopostingbot/documentstore/entities"
 	"os"
 	"strings"
 )

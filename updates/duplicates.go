@@ -2,13 +2,13 @@ package updates
 
 import (
 	"fmt"
+	"github.com/shitpostingio/autopostingbot/api"
+	"github.com/shitpostingio/autopostingbot/documentstore/entities"
+	l "github.com/shitpostingio/autopostingbot/localization"
+	"github.com/shitpostingio/autopostingbot/repository"
+	"github.com/shitpostingio/autopostingbot/telegram"
+	"github.com/shitpostingio/autopostingbot/utility"
 	"github.com/zelenin/go-tdlib/client"
-	"gitlab.com/shitposting/autoposting-bot/api"
-	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
-	l "gitlab.com/shitposting/autoposting-bot/localization"
-	"gitlab.com/shitposting/autoposting-bot/repository"
-	"gitlab.com/shitposting/autoposting-bot/telegram"
-	"gitlab.com/shitposting/autoposting-bot/utility"
 	"strconv"
 )
 

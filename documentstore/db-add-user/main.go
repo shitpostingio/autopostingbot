@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	log "github.com/sirupsen/logrus"
-	"gitlab.com/shitposting/autoposting-bot/config"
-	"gitlab.com/shitposting/autoposting-bot/documentstore"
-	"gitlab.com/shitposting/autoposting-bot/repository"
+	"github.com/shitpostingio/autopostingbot/config"
+	"github.com/shitpostingio/autopostingbot/documentstore"
+	"github.com/shitpostingio/autopostingbot/repository"
 )
 
 var (

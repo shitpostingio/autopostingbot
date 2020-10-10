@@ -4,7 +4,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"gitlab.com/shitposting/autoposting-bot/config/structs"
+	"github.com/shitpostingio/autopostingbot/config/structs"
 )
 
 // WatchConfig monitors the configuration for changes.

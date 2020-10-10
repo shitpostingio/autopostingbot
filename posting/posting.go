@@ -3,10 +3,10 @@ package posting
 import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	"gitlab.com/shitposting/autoposting-bot/api"
-	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
-	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
-	l "gitlab.com/shitposting/autoposting-bot/localization"
+	"github.com/shitpostingio/autopostingbot/api"
+	"github.com/shitpostingio/autopostingbot/documentstore/dbwrapper"
+	"github.com/shitpostingio/autopostingbot/documentstore/entities"
+	l "github.com/shitpostingio/autopostingbot/localization"
 	"time"
 )
 

@@ -1,8 +1,8 @@
 package posting
 
 import (
-	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
-	"gitlab.com/shitposting/autoposting-bot/posting/edition"
+	"github.com/shitpostingio/autopostingbot/documentstore/entities"
+	"github.com/shitpostingio/autopostingbot/posting/edition"
 	"time"
 )
 

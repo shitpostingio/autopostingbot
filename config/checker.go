@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"gitlab.com/shitposting/autoposting-bot/config/structs"
+	"github.com/shitpostingio/autopostingbot/config/structs"
 	"reflect"
 )
 

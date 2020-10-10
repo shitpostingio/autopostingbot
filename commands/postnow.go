@@ -3,10 +3,10 @@ package commands
 import (
 	"errors"
 	"github.com/zelenin/go-tdlib/client"
-	"gitlab.com/shitposting/autoposting-bot/api"
-	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
-	l "gitlab.com/shitposting/autoposting-bot/localization"
-	"gitlab.com/shitposting/autoposting-bot/posting"
+	"github.com/shitpostingio/autopostingbot/api"
+	"github.com/shitpostingio/autopostingbot/documentstore/dbwrapper"
+	l "github.com/shitpostingio/autopostingbot/localization"
+	"github.com/shitpostingio/autopostingbot/posting"
 )
 
 // PostNowCommandHandler represents the handler of the /postnow command.

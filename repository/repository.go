@@ -1,8 +1,8 @@
 package repository
 
 import (
+	"github.com/shitpostingio/autopostingbot/config/structs"
 	"github.com/zelenin/go-tdlib/client"
-	"gitlab.com/shitposting/autoposting-bot/config/structs"
 )
 
 var (

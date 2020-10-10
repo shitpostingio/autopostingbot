@@ -3,12 +3,12 @@ package commands
 import (
 	"errors"
 	"github.com/zelenin/go-tdlib/client"
-	"gitlab.com/shitposting/autoposting-bot/analysisadapter"
-	"gitlab.com/shitposting/autoposting-bot/api"
-	"gitlab.com/shitposting/autoposting-bot/caption"
-	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
-	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
-	l "gitlab.com/shitposting/autoposting-bot/localization"
+	"github.com/shitpostingio/autopostingbot/analysisadapter"
+	"github.com/shitpostingio/autopostingbot/api"
+	"github.com/shitpostingio/autopostingbot/caption"
+	"github.com/shitpostingio/autopostingbot/documentstore/dbwrapper"
+	"github.com/shitpostingio/autopostingbot/documentstore/entities"
+	l "github.com/shitpostingio/autopostingbot/localization"
 )
 
 // AddCommandHandler represents the handler of the /add command.

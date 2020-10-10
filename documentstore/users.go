@@ -3,7 +3,7 @@ package documentstore
 import (
 	"context"
 	"fmt"
-	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
+	"github.com/shitpostingio/autopostingbot/documentstore/entities"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

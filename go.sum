@@ -155,6 +155,8 @@ github.com/rogpeppe/go-internal v1.1.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFR
 github.com/rogpeppe/go-internal v1.2.2/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/rs/xid v1.2.1/go.mod h1:+uKXf+4Djp6Md1KODXJxgGQPKngRmWyn10oCKFzNHOQ=
+github.com/shitpostingio/image-fingerprinting v0.0.0-20201010152210-bf01bf1648ef h1:/m0SNfoi3Srg62lIJ7+AsG7Oi5pH/PEnIt016krekJw=
+github.com/shitpostingio/image-fingerprinting v0.0.0-20201010152210-bf01bf1648ef/go.mod h1:7pDZF7VW4T8KwyPhWaSlX5R4gDMb313uVOyT92AMX4M=
 github.com/sirupsen/logrus v1.2.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=
 github.com/sirupsen/logrus v1.4.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=
 github.com/sirupsen/logrus v1.4.1/go.mod h1:ni0Sbl8bgC9z8RoU9G6nDWqqs/fq4eDPysMBDgk/93Q=
@@ -212,8 +214,6 @@ gitlab.com/shitposting/analysis-api v0.0.0-20200719085455-79559cd20f0b h1:aQV4ko
 gitlab.com/shitposting/analysis-api v0.0.0-20200719085455-79559cd20f0b/go.mod h1:iZocpPvlPu8V61nKNoERNc5gJQ/0JRBXMDW4IN3Kvxk=
 gitlab.com/shitposting/fingerprint-microservice v0.0.0-20200215135451-39bc41bef498/go.mod h1:E5veXVYQDN3JcjDglXWDyKOew2oVnaBPJ2JEy9wzA64=
 gitlab.com/shitposting/fingerprint-microservice v0.0.0-20200218084026-efce1e6d776a/go.mod h1:aI3wOkeWSe+xSvQBSsX6gkCJA0GMycIS4Upo2jaglic=
-gitlab.com/shitposting/fingerprinting v0.0.0-20200901131028-85eb641b1d4d h1:/xbtI4yTvqZjWSWBPajSQ2ijy8SYB/OK9Na2vE1s5BQ=
-gitlab.com/shitposting/fingerprinting v0.0.0-20200901131028-85eb641b1d4d/go.mod h1:Baq/pBAI2V/WGlZtww3FGi1i/FOrHaiqL4i+gWCteWQ=
 gitlab.com/shitposting/gibberish-microservice v0.0.0-20200215135504-4c584e676794/go.mod h1:qmsrr/vdOCFQOnIZF+8/IA/38qztq2ZfYTIb0VO5wAw=
 gitlab.com/shitposting/gibberish-microservice v0.0.0-20200218083512-2dc2ad3ad51f/go.mod h1:+pSZY8QGJHgQtRZ0wH1H7SvsXuiW3cWnLqi5e1T/sfI=
 gitlab.com/shitposting/nsfw-microservice v0.0.0-20200215135432-cf0874e9e6c0/go.mod h1:Scxe3DojFQbLzRYsjKzBVR0sK9GylQ/HLFS6mIcbxP8=

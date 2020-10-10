@@ -2,7 +2,7 @@ package documentstore
 
 import (
 	"context"
-	"gitlab.com/shitposting/autoposting-bot/config/structs"
+	"github.com/shitpostingio/autopostingbot/config/structs"
 	"log"
 	"time"
 

@@ -1,10 +1,10 @@
 package updates
 
 import (
+	"github.com/shitpostingio/autopostingbot/documentstore/dbwrapper"
+	"github.com/shitpostingio/autopostingbot/repository"
 	log "github.com/sirupsen/logrus"
 	"github.com/zelenin/go-tdlib/client"
-	"gitlab.com/shitposting/autoposting-bot/documentstore/dbwrapper"
-	"gitlab.com/shitposting/autoposting-bot/repository"
 )
 
 const (

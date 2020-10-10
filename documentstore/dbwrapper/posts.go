@@ -1,8 +1,8 @@
 package dbwrapper
 
 import (
-	"gitlab.com/shitposting/autoposting-bot/documentstore"
-	"gitlab.com/shitposting/autoposting-bot/documentstore/entities"
+	"github.com/shitpostingio/autopostingbot/documentstore"
+	"github.com/shitpostingio/autopostingbot/documentstore/entities"
 	"time"
 )
 

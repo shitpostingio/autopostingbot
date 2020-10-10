@@ -2,8 +2,8 @@ package posting
 
 import (
 	log "github.com/sirupsen/logrus"
-	"gitlab.com/shitposting/autoposting-bot/config/structs"
-	"gitlab.com/shitposting/autoposting-bot/posting/edition"
+	"github.com/shitpostingio/autopostingbot/config/structs"
+	"github.com/shitpostingio/autopostingbot/posting/edition"
 	"time"
 )
 

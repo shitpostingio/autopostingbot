@@ -1,7 +1,7 @@
 package dbwrapper
 
 import (
-	"gitlab.com/shitposting/autoposting-bot/documentstore"
+	"github.com/shitpostingio/autopostingbot/documentstore"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 

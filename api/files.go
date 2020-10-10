@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/zelenin/go-tdlib/client"
-	"gitlab.com/shitposting/autoposting-bot/repository"
+	"github.com/shitpostingio/autopostingbot/repository"
 )
 
 // DownloadFile downloads synchronously a file with maximum priority.
