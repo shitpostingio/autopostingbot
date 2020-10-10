@@ -51,3 +51,4 @@ config.toml
 memes/
 .tdlib/
 documentstore/db-add-user/db-add-user
+autopostingbot
