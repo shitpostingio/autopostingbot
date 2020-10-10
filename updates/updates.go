@@ -16,6 +16,10 @@ func HandleUpdates(listener *client.Listener) {
 			switch update.GetType() {
 			case client.TypeUpdateNewMessage:
 				handleNewMessage(update.(*client.UpdateNewMessage).Message)
+			case client.TypeUpdateMessageContent:
+				log.Debugln(update.(*client.UpdateMessageContent).NewContent.MessageContentType())
+				handleUpdatedMessage(update.(*client.UpdateMessageContent))
+				//handleUpdatedMessage(update.(*client.UpdateMessageContent).NewContent)
 			case client.TypeUpdateDeleteMessages:
 				handleNewDeletion(update.(*client.UpdateDeleteMessages))
 			default:

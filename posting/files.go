@@ -2,9 +2,9 @@ package posting
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"github.com/shitpostingio/autopostingbot/api"
 	"github.com/shitpostingio/autopostingbot/documentstore/entities"
+	log "github.com/sirupsen/logrus"
 	"os"
 	"strings"
 )

@@ -1,10 +1,10 @@
 package commands
 
 import (
-	"github.com/zelenin/go-tdlib/client"
 	"github.com/shitpostingio/autopostingbot/api"
 	"github.com/shitpostingio/autopostingbot/documentstore/dbwrapper"
 	l "github.com/shitpostingio/autopostingbot/localization"
+	"github.com/zelenin/go-tdlib/client"
 )
 
 // PeekCommandHandler represents the handler of the /peek command.

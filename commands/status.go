@@ -2,11 +2,11 @@ package commands
 
 import (
 	"fmt"
-	"github.com/zelenin/go-tdlib/client"
 	"github.com/shitpostingio/autopostingbot/api"
 	"github.com/shitpostingio/autopostingbot/documentstore/dbwrapper"
 	l "github.com/shitpostingio/autopostingbot/localization"
 	"github.com/shitpostingio/autopostingbot/posting"
+	"github.com/zelenin/go-tdlib/client"
 	"time"
 )
 

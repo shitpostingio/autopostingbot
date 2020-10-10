@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/spf13/viper"
 	"github.com/shitpostingio/autopostingbot/config/structs"
+	"github.com/spf13/viper"
 )
 
 // Load reads a configuration file and returns its config instance.

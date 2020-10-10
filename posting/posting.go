@@ -2,11 +2,12 @@ package posting
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"github.com/shitpostingio/autopostingbot/api"
 	"github.com/shitpostingio/autopostingbot/documentstore/dbwrapper"
 	"github.com/shitpostingio/autopostingbot/documentstore/entities"
 	l "github.com/shitpostingio/autopostingbot/localization"
+	log "github.com/sirupsen/logrus"
+	"strings"
 	"time"
 )
 
@@ -24,7 +25,11 @@ func tryPosting(post *entities.Post) error {
 	}
 
 	// Prepare caption
-	caption := fmt.Sprintf("%s\n\n@%s", post.Caption, m.e.GetEditionName())
+	caption := post.Caption
+	if !strings.Contains(post.Caption, "@"+m.e.GetEditionName()) {
+		caption = fmt.Sprintf("%s\n\n@%s", caption, m.e.GetEditionName())
+	}
+
 	ft, err := api.GetFormattedText(caption)
 	if err != nil {
 		return fmt.Errorf(l.GetString(l.POSTING_POSTING_UNABLE_TO_PARSE_CAPTION), err)

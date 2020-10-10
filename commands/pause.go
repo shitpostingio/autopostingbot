@@ -2,12 +2,12 @@ package commands
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"github.com/zelenin/go-tdlib/client"
 	"github.com/shitpostingio/autopostingbot/api"
 	l "github.com/shitpostingio/autopostingbot/localization"
 	"github.com/shitpostingio/autopostingbot/posting"
 	"github.com/shitpostingio/autopostingbot/telegram"
+	log "github.com/sirupsen/logrus"
+	"github.com/zelenin/go-tdlib/client"
 	"strconv"
 	"strings"
 	"time"

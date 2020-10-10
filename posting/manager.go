@@ -1,9 +1,9 @@
 package posting
 
 import (
-	log "github.com/sirupsen/logrus"
 	"github.com/shitpostingio/autopostingbot/config/structs"
 	"github.com/shitpostingio/autopostingbot/posting/edition"
+	log "github.com/sirupsen/logrus"
 	"time"
 )
 

@@ -55,8 +55,4 @@ type TdlibConfiguration struct {
 
 	// IgnoreFileNames, if set to true will ignore original file names.
 	IgnoreFileNames bool `type:"optional"`
-
-
-
-
 }

@@ -3,11 +3,11 @@ package posting
 import (
 	"context"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"github.com/shitpostingio/autopostingbot/api"
 	"github.com/shitpostingio/autopostingbot/documentstore/dbwrapper"
 	"github.com/shitpostingio/autopostingbot/documentstore/entities"
 	l "github.com/shitpostingio/autopostingbot/localization"
+	log "github.com/sirupsen/logrus"
 )
 
 // sendLowPostAlerts sends a message to all the authorized users,

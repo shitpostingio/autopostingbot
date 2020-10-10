@@ -2,9 +2,9 @@ package config
 
 import (
 	"github.com/fsnotify/fsnotify"
+	"github.com/shitpostingio/autopostingbot/config/structs"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"github.com/shitpostingio/autopostingbot/config/structs"
 )
 
 // WatchConfig monitors the configuration for changes.

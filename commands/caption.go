@@ -2,12 +2,12 @@ package commands
 
 import (
 	"errors"
-	log "github.com/sirupsen/logrus"
-	"github.com/zelenin/go-tdlib/client"
 	"github.com/shitpostingio/autopostingbot/api"
 	"github.com/shitpostingio/autopostingbot/caption"
 	"github.com/shitpostingio/autopostingbot/documentstore/dbwrapper"
 	l "github.com/shitpostingio/autopostingbot/localization"
+	log "github.com/sirupsen/logrus"
+	"github.com/zelenin/go-tdlib/client"
 )
 
 // CaptionCommandHandler represents the handler of the /caption command.

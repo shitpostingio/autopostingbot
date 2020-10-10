@@ -2,10 +2,10 @@ package main
 
 import (
 	"flag"
-	log "github.com/sirupsen/logrus"
 	"github.com/shitpostingio/autopostingbot/config"
 	"github.com/shitpostingio/autopostingbot/documentstore"
 	"github.com/shitpostingio/autopostingbot/repository"
+	log "github.com/sirupsen/logrus"
 )
 
 var (

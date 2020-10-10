@@ -1,12 +1,12 @@
 package updates
 
 import (
-	log "github.com/sirupsen/logrus"
-	"github.com/zelenin/go-tdlib/client"
 	"github.com/shitpostingio/autopostingbot/api"
 	"github.com/shitpostingio/autopostingbot/commands"
 	l "github.com/shitpostingio/autopostingbot/localization"
 	"github.com/shitpostingio/autopostingbot/telegram"
+	log "github.com/sirupsen/logrus"
+	"github.com/zelenin/go-tdlib/client"
 	"unicode/utf16"
 )
 

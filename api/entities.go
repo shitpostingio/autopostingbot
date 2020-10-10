@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/zelenin/go-tdlib/client"
 	"github.com/shitpostingio/autopostingbot/repository"
+	"github.com/zelenin/go-tdlib/client"
 )
 
 // GetFormattedText returns the client.FormattedText structure of the
