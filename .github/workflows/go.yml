@@ -2,12 +2,14 @@ name: Go
 
 on:
   push:
+  pull_request:
+    branches: [ v3.0 ]
 
 jobs:
 
   format:
     name: Format
-    container: docker.pkg.github.com/shitpostingio/golang/golang:latest
+    runs-on: docker.pkg.github.com/shitpostingio/golang/golang:latest
     steps:
 
     - name: Set up Go 1.x
@@ -31,7 +33,7 @@ jobs:
 
   test:
     name: Test
-    container: docker.pkg.github.com/shitpostingio/golang/golang:latest
+    runs-on: docker.pkg.github.com/shitpostingio/golang/golang:latest
     steps:
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
@@ -50,7 +52,7 @@ jobs:
 
   build:
     name: Build
-    container: docker.pkg.github.com/shitpostingio/golang/golang:latest
+    runs-on: docker.pkg.github.com/shitpostingio/golang/golang:latest
     steps:
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
