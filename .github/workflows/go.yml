@@ -6,12 +6,11 @@ on:
     branches: [ v3.0 ]
 
 jobs:
-
   format:
     name: Format
-    runs-on: docker.pkg.github.com/shitpostingio/golang/golang:latest
+    runs-on: self-hosted
+    container: docker.pkg.github.com/shitpostingio/golang/golang:latest
     steps:
-
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
@@ -33,7 +32,8 @@ jobs:
 
   test:
     name: Test
-    runs-on: docker.pkg.github.com/shitpostingio/golang/golang:latest
+    runs-on: self-hosted
+    container: docker.pkg.github.com/shitpostingio/golang/golang:latest
     steps:
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
@@ -52,7 +52,8 @@ jobs:
 
   build:
     name: Build
-    runs-on: docker.pkg.github.com/shitpostingio/golang/golang:latest
+    runs-on: self-hosted
+    container: docker.pkg.github.com/shitpostingio/golang/golang:latest
     steps:
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
