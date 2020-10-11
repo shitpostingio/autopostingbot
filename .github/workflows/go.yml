@@ -8,10 +8,6 @@ jobs:
     runs-on: self-hosted
     container: ghcr.io/shitpostingio/golang:latest
     steps:
-
-    - name: Login to GitHub Package Registry
-      run: echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
-
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
@@ -30,9 +26,6 @@ jobs:
     runs-on: self-hosted
     container: ghcr.io/shitpostingio/golang:latest
     steps:
-    - name: Login to GitHub Package Registry
-      run: echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
-      
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
@@ -47,9 +40,6 @@ jobs:
     runs-on: self-hosted
     container: ghcr.io/shitpostingio/golang:latest
     steps:
-    - name: Login to GitHub Package Registry
-      run: echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
-
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
