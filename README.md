@@ -1,5 +1,9 @@
 # Autoposting bot
 
+<p align="center"> 
+   <img src="shitpost.png" width="60%">
+</p>
+
 Autoposting is a Telegram bot designed to post regularly on a Telegram channel. It is currently being employed on the [Shitpost - Shitposting.io](https://t.me/shitpost) channel.
 
 The bot is designed to support multiple users, assuming they're unaware of what others are sending.
