@@ -6,7 +6,7 @@ jobs:
   format:
     name: Format
     runs-on: self-hosted
-    container: ghcr.io/shitpostingio/golang/golang:latest
+    container: ghcr.io/shitpostingio/golang:latest
     steps:
 
     - name: Login to GitHub Package Registry
@@ -28,7 +28,7 @@ jobs:
   test:
     name: Test
     runs-on: self-hosted
-    container: ghcr.io/shitpostingio/golang/golang:latest
+    container: ghcr.io/shitpostingio/golang:latest
     steps:
     - name: Login to GitHub Package Registry
       run: echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
@@ -45,7 +45,7 @@ jobs:
   build:
     name: Build
     runs-on: self-hosted
-    container: ghcr.io/shitpostingio/golang/golang:latest
+    container: ghcr.io/shitpostingio/golang:latest
     steps:
     - name: Login to GitHub Package Registry
       run: echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
