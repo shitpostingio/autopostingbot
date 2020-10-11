@@ -1,6 +1,6 @@
+//nolint
 package localization
 
-//nolint
 //goland:noinspection GoSnakeCaseUsage
 const (
 
