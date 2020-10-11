@@ -1,0 +1,70 @@
+name: Go
+
+on:
+  push:
+  pull_request:
+    branches: [ v3.0 ]
+
+jobs:
+
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.14
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Get dependencies
+      run: |
+        go get -v -t -d ./...
+    - name: go fmt
+      run: |
+        go get -u golang.org/x/lint/golint
+        go fmt $(go list ./...)   
+    - name: golint
+      run: golint -set_exit_status $(go list ./...)
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.14
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Get dependencies
+      run: |
+        go get -v -t -d ./...
+    - name: go test
+      run: go test -v .
+
+  build:
+    name: Build
+    runs-on: self-hosted
+    steps:
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.14
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Get dependencies
+      run: |
+        go get -v -t -d ./...
+    - name: go build
+      run: go build -v .
