@@ -1,0 +1,38 @@
+{
+  "analysis_no_media_fingerprint": "Não foi possível obter o fingerprint do arquivo de mídia",
+
+  "commands_reply_to_media_file": "Este comando precisa ser usado em resposta a um arquivo de mídia",
+  "commands_add_error": "Um erro ocorreu ao tentar adicionar a postagem",
+  "commands_credit_unable_to_credit": "Não foi possível creditar corretamente",
+  "commands_credit_caption_with_url": "[Por <a href=\"%s\">%s</a>]",
+  "commands_credit_caption_without_url": "[Por %s]",
+  "commands_delete_deleted_correctly": "Postagem apagada com sucesso",
+  "commands_delete_unable_to_delete": "Não foi possível apagar a postagem",
+  "commands_info_post_already_posted": "Postagem adicionada por <a href=\"tg://user?id=%d\">%s</a> às %s\nPostado em %s\nLink: t.me/%s/%d",
+  "commands_info_post_not_yet_posted": "📋 Postagem Nº %d na fila\n👤 Adicionada por <a href=\"tg://user?id=%d\">%s</a> às %s\n\n🕜 Deve ser postado aproximadamente em %s\n📅 às %s",
+  "commands_peek_no_post_found":  "Não foi possível encontrar a próxima postagem. A fila está vazia?",
+  "commands_pause_unsuccessful": "Não foi possível pausar: %s",
+  "commands_postnow_successful": "Postado com sucesso!",
+  "commands_postnow_unsuccessful": "Não foi possível postar!",
+  "commands_status_posts_enqueued": "📋 Postagens na fila: %d\n🕜 Taxa de postagem: %s\n\n🔮 Próxima postagem em: %s (%s)",
+  "commands_thanks_unable_to_thank": "Não foi possível agradecer corretamente: %s",
+  "commands_thanks_cant_thank_channels": "não é possível agradecer canais",
+  "commands_thanks_cant_thank_bots": "não é possível agradecer bots",
+  "commands_thanks_unsupported_forward_type": "tipo de encaminhamento não suportado",
+  "commands_thanks_thank_caption": "[Graças a %s]",
+
+  "database_unable_to_find_post": "Não foi possível encontrar a postagem",
+
+  "media_added_correctly": "Mídia adicionada corretamente",
+
+  "posting_alerts_low_posts": "🚨 Estamos ficando sem postagens!\nNa fila: %d",
+  "posting_posting_previous_post_too_close": "apenas %s se passaram desde a última postagem",
+  "posting_posting_unable_to_parse_caption": "Não foi possível obter o subtítulo: %s",
+  "posting_posting_previous_pause_too_close": "apenas %s se passaram desde a última pausa",
+
+  "updates_duplicates_duplicate_added_by": "🚨 Duplicidade detectada! 🚨\n\nAdicionado pela primeira vez por <a href=\"tg://user?id=%d\">%s</a>\nem %s",
+  "updates_duplicates_duplicate_posted_at_link": "Postado em %s\nLink: %s",
+  "updates_texts_command_unimplemented": "Não implementado",
+  "updates_texts_unable_to_get_reply_message": "Não foi possível obter a mensagem alvo para o comando",
+  "updates_media_unable_to_get_duplicate_caption": "Não foi possível obter o subtítulo duplicado, mas aqui está a mídia duplicada"
+}
