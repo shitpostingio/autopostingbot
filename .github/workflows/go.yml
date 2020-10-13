@@ -48,8 +48,8 @@ jobs:
         go get -v -t -d ./...
     - name: go build
       run: go build -v .
-    - name: Archive code coverage results
+    - name: Upload build result
       uses: actions/upload-artifact@v2
       with:
-        name: autoposting-bot
-        path: autoposting-bot
+        name: autopostingbot
+        path: autopostingbot
