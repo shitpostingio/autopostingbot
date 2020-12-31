@@ -12,13 +12,24 @@ The bot is designed to support multiple users, assuming they're unaware of what 
 
 - Feature-based image and video duplicate detection thanks to our custom Analysis API (to be released soon).
 
-- Queue length aware posting algorithm in the _Shitpost_ edition.
+- Queue length aware posting algorithm.
 
 - Based on Telegram's TDlib and not on the Bot API for a richer feature set.
 
 - Easy addition of commands through the `command` package.
 
-- Ability to add custom scheduling algorithms via the `posting/edition` package.
+- Ability to add custom scheduling algorithms via the `posting/algorithm` package.
+
+- Multiple language support
+
+## Languages
+
+Currently supported languages are:
+
+- English
+- Italian
+- Russian (thanks to [Rutori](https://github.com/Rutori))
+- Brazilian Portuguese (thanks to [Hellstrike12](https://github.com/hellstrike12)) 
 
 ## How to build
 
@@ -29,6 +40,8 @@ Once you have all the prerequisites, you will only need to run
 ```bash
 make build
 ```
+
+Pre-built artifacts are available in the GitHub Actions of the project: [https://github.com/shitpostingio/autopostingbot/actions](https://github.com/shitpostingio/autopostingbot/actions)
 
 ## Contributions
 
