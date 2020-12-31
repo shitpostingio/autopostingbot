@@ -10,6 +10,7 @@ videoendpoint = ""
 [autoposting]
 bottoken = ""
 channelid = -10000000000000
+channelhandle = ""
 edition = ""
 filesizethreshold = 20971520
 mediaapproximation = 0.08
