@@ -33,8 +33,8 @@ type Manager struct {
 var (
 	m        Manager
 	editions = map[string]algorithm.Algorithm{
-		"queuelengthaware":  algorithm.QueueLengthAwareAlgorithm{},
-		"randomhourly": algorithm.RandomHourlyAlgorithm{},
+		"queuelengthaware": algorithm.QueueLengthAwareAlgorithm{},
+		"randomhourly":     algorithm.RandomHourlyAlgorithm{},
 	}
 )
 

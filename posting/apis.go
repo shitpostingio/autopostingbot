@@ -74,7 +74,6 @@ func GetChannelHandle() string {
 	return m.config.Autoposting.ChannelHandle
 }
 
-
 // ForcePostScheduling forces a new post scheduling.
 func ForcePostScheduling() {
 	schedulePosting(time.Unix(0, 0))

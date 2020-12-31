@@ -10,9 +10,9 @@ const (
 	// COMMANDS
 	COMMANDS_ADD_ERROR                      = "commands_add_error"
 	COMMANDS_REPLY_TO_MEDIA_FILE            = "commands_reply_to_media_file"
-	COMMANDS_CHANNEL_HANDLE_MISSING 		= "commands_channel_handle_missing"
-	COMMANDS_CHANNEL_HANDLE_TOO_SHORT 		= "commands_channel_handle_too_short"
-	COMMANDS_CHANNEL_HANDLE_UPDATED 		= "commands_channel_handle_updated"
+	COMMANDS_CHANNEL_HANDLE_MISSING         = "commands_channel_handle_missing"
+	COMMANDS_CHANNEL_HANDLE_TOO_SHORT       = "commands_channel_handle_too_short"
+	COMMANDS_CHANNEL_HANDLE_UPDATED         = "commands_channel_handle_updated"
 	COMMANDS_CREDIT_UNABLE_TO_CREDIT        = "commands_credit_unable_to_credit"
 	COMMANDS_CREDIT_CAPTION_WITH_URL        = "commands_credit_caption_with_url"
 	COMMANDS_CREDIT_CAPTION_WITHOUT_URL     = "commands_credit_caption_without_url"

@@ -26,7 +26,7 @@ func (PeekCommandHandler) Handle(_ string, message, _ *client.Message) error {
 
 	//
 	caption := nextPost.Caption
-	if !strings.Contains(nextPost.Caption, "@"+ posting.GetChannelHandle()) {
+	if posting.GetChannelHandle() != "" && !strings.Contains(nextPost.Caption, "@"+posting.GetChannelHandle()) {
 		caption = fmt.Sprintf("%s\n\n@%s", caption, posting.GetChannelHandle())
 	}
 

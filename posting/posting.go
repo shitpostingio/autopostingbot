@@ -26,7 +26,7 @@ func tryPosting(post *entities.Post) error {
 
 	// Prepare caption
 	caption := post.Caption
-	if !strings.Contains(post.Caption, "@"+ GetChannelHandle()) {
+	if GetChannelHandle() != "" && !strings.Contains(post.Caption, "@"+GetChannelHandle()) {
 		caption = fmt.Sprintf("%s\n\n@%s", caption, GetChannelHandle())
 	}
 

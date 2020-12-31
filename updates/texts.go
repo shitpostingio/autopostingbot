@@ -12,17 +12,17 @@ import (
 
 var (
 	handlers = map[string]commands.Handler{
-		"status":  commands.StatusCommandHandler{},
-		"peek":    commands.PeekCommandHandler{},
-		"pause":   commands.PauseCommandHandler{},
-		"delete":  commands.DeleteCommandHandler{},
-		"info":    commands.InfoCommandHandler{},
-		"postnow": commands.PostNowCommandHandler{},
-		"add":     commands.AddCommandHandler{},
-		"caption": commands.CaptionCommandHandler{},
-		"thanks":  commands.ThanksCommandHandler{},
-		"preview": commands.PreviewCommandHandler{},
-		"credit":  commands.CreditCommandHandler{},
+		"status":         commands.StatusCommandHandler{},
+		"peek":           commands.PeekCommandHandler{},
+		"pause":          commands.PauseCommandHandler{},
+		"delete":         commands.DeleteCommandHandler{},
+		"info":           commands.InfoCommandHandler{},
+		"postnow":        commands.PostNowCommandHandler{},
+		"add":            commands.AddCommandHandler{},
+		"caption":        commands.CaptionCommandHandler{},
+		"thanks":         commands.ThanksCommandHandler{},
+		"preview":        commands.PreviewCommandHandler{},
+		"credit":         commands.CreditCommandHandler{},
 		"setchannelname": commands.SetChannelNameCommandHandler{},
 	}
 )
