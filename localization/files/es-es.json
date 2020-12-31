@@ -1,0 +1,40 @@
+{
+  "analysis_no_media_fingerprint": "No se ha podido encontrar la huella digital",
+
+  "commands_reply_to_media_file": "Este comando tiene que ser usado como respuesta a un archivo multimedia",
+  "commands_add_error": "Error intentando añadir el post",
+  "commands_channel_handle_missing": "Tienes que especificar un link del canal.\nUso: /setchannelname link",
+  "commands_channel_handle_too_short": "Los links de canales tienen que tener un minimo de 4 caracteres",
+  "commands_channel_handle_updated": "Link del canal actualizado a @%s",
+  "commands_credit_unable_to_credit": "No se ha podido dar el reconocimiento correctamente",
+  "commands_credit_caption_with_url": "[De <a href=\"%s\">%s</a>]",
+  "commands_credit_caption_without_url": "[De %s]",
+  "commands_delete_deleted_correctly": "Post eliminado correctamente",
+  "commands_delete_unable_to_delete": "No se ha podido eliminar el post",
+  "commands_info_post_already_posted": "Post enviado por <a href=\"tg://user?id=%d\">%s</a> el %s\nPosted en %s\nLink: t.me/%s/%d",
+  "commands_info_post_not_yet_posted": "📋 El post es el número %d en la cola \n👤 Añadido por <a href=\"tg://user?id=%d\">%s</a> el %s\n\n🕜 Debería ser publicado el %s\n📅 En %s",
+  "commands_pause_unsuccessful": "No se ha podido pausar la publicación: %s",
+  "commands_peek_no_post_found":  "No se ha podido encontrar el próximo post. ¿Está la cola vacía?",
+  "commands_postnow_successful": "Publicado!",
+  "commands_postnow_unsuccessful": "No se ha podido publicar!",
+  "commands_status_posts_enqueued": "📋 Publicaciones en la cola: %d\n🕜 Frequencia de publicación: %s\n\n🔮 Próxima publicación en: %s (%s)",
+  "commands_thanks_unable_to_thank": "no se ha podido agradecer correctamente: %s",
+  "commands_thanks_cant_thank_channels": "no se puede agradecer a canales",
+  "commands_thanks_cant_thank_bots": "no se puede agradecer a bots",
+  "commands_thanks_unsupported_forward_type": "tipo de reenvio no admitido",
+  "commands_thanks_thank_caption": "[Gracias a %s]",
+  "database_unable_to_find_post": "no se ha podido encontrar el post",
+
+  "media_added_correctly": "Multimedia añadida correctamente",
+
+  "posting_alerts_low_posts": "🚨 Se están acabando los posts!\nEnqueued: %d",
+  "posting_posting_previous_post_too_close": "Solo han pasado %s desde el ultimo post",
+  "posting_posting_unable_to_parse_caption": "No se ha podido procesar el pie de la foto : %s",
+  "posting_posting_previous_pause_too_close": "Solo han pasado %s desde la ultima pausa",
+
+  "updates_duplicates_duplicate_added_by": "🚨 Duplicado detectado! 🚨\n\nAñadido por primera vez por <a href=\"tg://user?id=%d\">%s</a>\non %s",
+  "updates_duplicates_duplicate_posted_at_link": "Publicado en %s\nLink: %s",
+  "updates_texts_command_unimplemented": "Sin implementar",
+  "updates_texts_unable_to_get_reply_message": "No se ha podido obtener el mensaje al que aplicar el commando",
+  "updates_media_unable_to_get_duplicate_caption": "no se ha podido obtener el titulo duplicado, pero aqui esta el archivo duplicado"
+}

@@ -29,7 +29,8 @@ Currently supported languages are:
 - English
 - Italian
 - Russian (thanks to [Rutori](https://github.com/Rutori))
-- Brazilian Portuguese (thanks to [Hellstrike12](https://github.com/hellstrike12)) 
+- Brazilian Portuguese (thanks to [Hellstrike12](https://github.com/hellstrike12))
+- Spanish (thanks to [Alvaro P.](https://t.me/Tag_if_magic_stones_dont_drop))
 
 ## How to build
 
