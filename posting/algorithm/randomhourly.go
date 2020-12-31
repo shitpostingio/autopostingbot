@@ -58,6 +58,7 @@ func (a RandomHourlyAlgorithm) EstimatePostTime(queueLength int) (totalDuration 
 
 }
 
+// GetAlgorithmName returns the algorithm name
 func (RandomHourlyAlgorithm) GetAlgorithmName() string {
 	return "random hourly"
 }

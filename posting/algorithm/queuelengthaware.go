@@ -60,6 +60,7 @@ func (a QueueLengthAwareAlgorithm) EstimatePostTime(queueLength int) (totalDurat
 
 }
 
+// GetAlgorithmName returns the algorithm name
 func (QueueLengthAwareAlgorithm) GetAlgorithmName() string {
 	return "queue length aware"
 }
