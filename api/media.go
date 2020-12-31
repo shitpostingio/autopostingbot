@@ -6,10 +6,17 @@ import (
 )
 
 var (
-	sendFunctions = map[string]func(int64, int64, string, string, []*client.TextEntity) (*client.Message, error){
-		client.TypeAnimation: SendAnimation,
-		client.TypePhoto:     SendPhoto,
-		client.TypeVideo:     SendVideo,
+
+	uploadFunctions = map[string]func(int64, int64, string, string, []*client.TextEntity) (*client.Message, error){
+		client.TypeAnimation: UploadAnimation,
+		client.TypePhoto:     UploadPhoto,
+		client.TypeVideo:     UploadVideo,
+	}
+
+	shareFunctions = map[string]func(int64, int64, string, string, []*client.TextEntity) (*client.Message, error){
+		client.TypeAnimation: ShareAnimation,
+		client.TypePhoto:     SharePhoto,
+		client.TypeVideo:     ShareVideo,
 	}
 
 	fileInfoFunctions = map[string]func(*client.Message) *client.File{
@@ -19,17 +26,42 @@ var (
 	}
 )
 
-// SendMedia shares a media file to a certain chat.
+func SendMedia(mediaType string, chatID, replyToMessageID int64, remoteFileID, localFilePath, caption string, entities []*client.TextEntity) (*client.Message, error) {
+
+	msg, err := ShareMedia(mediaType, chatID, replyToMessageID, remoteFileID, caption, entities)
+	if err == nil {
+		return msg, err
+	}
+
+	return UploadMedia(mediaType, chatID, replyToMessageID, localFilePath, caption, entities)
+
+}
+
+// ShareMedia shares a media file to a certain chat.
 // If replyToMessageID is not 0, the media will be in reply to that message id.
 // caption and entities can be used to attach a message with markdown.
-func SendMedia(mediaType string, chatID, replyToMessageID int64, remoteFileID, caption string, entities []*client.TextEntity) (*client.Message, error) {
+func ShareMedia(mediaType string, chatID, replyToMessageID int64, remoteFileID, caption string, entities []*client.TextEntity) (*client.Message, error) {
 
-	send, found := sendFunctions[mediaType]
+	send, found := shareFunctions[mediaType]
 	if !found {
 		return nil, fmt.Errorf("send function not found for media type %s", mediaType)
 	}
 
 	return send(chatID, replyToMessageID, remoteFileID, caption, entities)
+
+}
+
+// UploadMedia shares a media file to a certain chat.
+// If replyToMessageID is not 0, the media will be in reply to that message id.
+// caption and entities can be used to attach a message with markdown.
+func UploadMedia(mediaType string, chatID, replyToMessageID int64, localFilePath, caption string, entities []*client.TextEntity) (*client.Message, error) {
+
+	send, found := uploadFunctions[mediaType]
+	if !found {
+		return nil, fmt.Errorf("send function not found for media type %s", mediaType)
+	}
+
+	return send(chatID, replyToMessageID, localFilePath, caption, entities)
 
 }
 

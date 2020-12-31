@@ -50,9 +50,9 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 			log.Debugln("Match found: ", post)
 			formattedText, err := getDuplicateCaption(&post)
 			if err != nil {
-				_, _ = api.SendMedia(mediatype, message.ChatId, message.Id, post.Media.FileID, l.GetString(l.UPDATES_MEDIA_UNABLE_TO_GET_DUPLICATE_CAPTION), nil)
+				_, _ = api.SendMedia(mediatype, message.ChatId, message.Id, post.Media.FileID, fileInfo.Local.Path, l.GetString(l.UPDATES_MEDIA_UNABLE_TO_GET_DUPLICATE_CAPTION), nil)
 			} else {
-				_, _ = api.SendMedia(mediatype, message.ChatId, message.Id, post.Media.FileID, formattedText.Text, formattedText.Entities)
+				_, _ = api.SendMedia(mediatype, message.ChatId, message.Id, post.Media.FileID, fileInfo.Local.Path, formattedText.Text, formattedText.Entities)
 			}
 
 			return

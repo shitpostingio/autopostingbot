@@ -45,7 +45,7 @@ func (PreviewCommandHandler) Handle(_ string, message, replyToMessage *client.Me
 	}
 
 	//
-	_, err = api.SendMedia(post.Media.Type, message.ChatId, message.Id, post.Media.FileID, ft.Text, ft.Entities)
+	_, err = api.ShareMedia(post.Media.Type, message.ChatId, message.Id, post.Media.FileID, ft.Text, ft.Entities)
 	return err
 
 }

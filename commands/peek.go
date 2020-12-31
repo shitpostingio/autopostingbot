@@ -39,7 +39,7 @@ func (PeekCommandHandler) Handle(_ string, message, _ *client.Message) error {
 	}
 
 	//
-	_, err = api.SendMedia(nextPost.Media.Type, message.ChatId, message.Id, nextPost.Media.FileID, ft.Text, ft.Entities)
+	_, err = api.ShareMedia(nextPost.Media.Type, message.ChatId, message.Id, nextPost.Media.FileID, ft.Text, ft.Entities)
 	return err
 
 }

@@ -36,7 +36,7 @@ func tryPosting(post *entities.Post) error {
 	}
 
 	//
-	message, err := api.SendMedia(post.Media.Type, m.config.Autoposting.ChannelID, api.NoReply, post.Media.FileID, ft.Text, ft.Entities)
+	message, err := api.ShareMedia(post.Media.Type, m.config.Autoposting.ChannelID, api.NoReply, post.Media.FileID, ft.Text, ft.Entities)
 	if err != nil {
 		_ = dbwrapper.MarkPostAsFailed(post)
 		return err
