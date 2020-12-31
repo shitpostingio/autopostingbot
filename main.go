@@ -46,7 +46,7 @@ func main() {
 		log.Fatal("Error while loading configuration: ", err)
 	}
 
-	repository.Config = &cfg
+	repository.Config = cfg
 
 	// Set localization
 	err = gotrans.InitLocales(cfg.Localization.Path)
@@ -82,8 +82,8 @@ func main() {
 	go updates.HandleUpdates(listener)
 
 	// Start the posting manager
-	posting.Start(&cfg, debug)
-	log.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, edition %s", Version, Build, posting.GetPostingManager().GetEditionName()))
+	posting.Start(cfg, debug)
+	log.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, algorithm %s channelname %s", Version, Build, cfg.Autoposting.Algorithm, posting.GetChannelHandle()))
 	posting.Listen()
 
 }

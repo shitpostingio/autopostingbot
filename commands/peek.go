@@ -1,10 +1,13 @@
 package commands
 
 import (
+	"fmt"
 	"github.com/shitpostingio/autopostingbot/api"
 	"github.com/shitpostingio/autopostingbot/documentstore/dbwrapper"
 	l "github.com/shitpostingio/autopostingbot/localization"
+	"github.com/shitpostingio/autopostingbot/posting"
 	"github.com/zelenin/go-tdlib/client"
+	"strings"
 )
 
 // PeekCommandHandler represents the handler of the /peek command.
@@ -22,10 +25,15 @@ func (PeekCommandHandler) Handle(_ string, message, _ *client.Message) error {
 	}
 
 	//
-	ft, err := api.GetFormattedText(nextPost.Caption)
+	caption := nextPost.Caption
+	if !strings.Contains(nextPost.Caption, "@"+ posting.GetChannelHandle()) {
+		caption = fmt.Sprintf("%s\n\n@%s", caption, posting.GetChannelHandle())
+	}
+
+	ft, err := api.GetFormattedText(caption)
 	if err != nil {
 		ft = &client.FormattedText{
-			Text:     nextPost.Caption,
+			Text:     caption,
 			Entities: nil,
 		}
 	}

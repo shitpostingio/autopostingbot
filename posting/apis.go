@@ -2,7 +2,7 @@ package posting
 
 import (
 	"github.com/shitpostingio/autopostingbot/documentstore/entities"
-	"github.com/shitpostingio/autopostingbot/posting/edition"
+	"github.com/shitpostingio/autopostingbot/posting/algorithm"
 	"time"
 )
 
@@ -64,10 +64,16 @@ func GetNextPostTime() time.Time {
 	return m.nextPostScheduled
 }
 
-// GetPostingManager returns the current posting manager edition.
-func GetPostingManager() edition.Edition {
+// GetPostingManager returns the current posting manager algorithm.
+func GetPostingManager() algorithm.Algorithm {
 	return m.e
 }
+
+// GetChannelHandle returns the channel name
+func GetChannelHandle() string {
+	return m.config.Autoposting.ChannelHandle
+}
+
 
 // ForcePostScheduling forces a new post scheduling.
 func ForcePostScheduling() {

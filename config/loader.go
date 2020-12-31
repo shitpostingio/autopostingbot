@@ -5,8 +5,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+var (
+	cfg *structs.Config
+	err error
+)
+
 // Load reads a configuration file and returns its config instance.
-func Load(path string) (cfg structs.Config, err error) {
+func Load(path string) (*structs.Config, error) {
 
 	//
 	setDefaultValuesForOptionalFields()
@@ -25,13 +30,13 @@ func Load(path string) (cfg structs.Config, err error) {
 	}
 
 	//
-	err = checkMandatoryFields(false, cfg)
+	err = checkMandatoryFields(false, *cfg)
 	if err != nil {
 		return cfg, err
 	}
 
 	//
 	err = viper.WriteConfig()
-	return
+	return cfg, err
 
 }

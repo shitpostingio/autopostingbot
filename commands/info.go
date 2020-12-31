@@ -63,7 +63,7 @@ func (InfoCommandHandler) Handle(_ string, message, replyToMessage *client.Messa
 
 		//
 		reply = fmt.Sprintf(l.GetString(l.COMMANDS_INFO_ALREADY_POSTED),
-			post.AddedBy, name, utility.FormatDate(post.AddedAt), utility.FormatDate(*post.PostedAt), posting.GetPostingManager().GetEditionName(), post.MessageID)
+			post.AddedBy, name, utility.FormatDate(post.AddedAt), utility.FormatDate(*post.PostedAt), posting.GetChannelHandle(), post.MessageID)
 
 		//
 		ft, err := api.GetFormattedText(reply)

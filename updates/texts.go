@@ -23,6 +23,7 @@ var (
 		"thanks":  commands.ThanksCommandHandler{},
 		"preview": commands.PreviewCommandHandler{},
 		"credit":  commands.CreditCommandHandler{},
+		"setchannelname": commands.SetChannelNameCommandHandler{},
 	}
 )
 

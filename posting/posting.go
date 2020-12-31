@@ -26,8 +26,8 @@ func tryPosting(post *entities.Post) error {
 
 	// Prepare caption
 	caption := post.Caption
-	if !strings.Contains(post.Caption, "@"+m.e.GetEditionName()) {
-		caption = fmt.Sprintf("%s\n\n@%s", caption, m.e.GetEditionName())
+	if !strings.Contains(post.Caption, "@"+ GetChannelHandle()) {
+		caption = fmt.Sprintf("%s\n\n@%s", caption, GetChannelHandle())
 	}
 
 	ft, err := api.GetFormattedText(caption)

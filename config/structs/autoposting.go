@@ -28,6 +28,9 @@ type AutopostingConfiguration struct {
 	// whether two pictures are similar enough or not.
 	SimilarityThreshold int `type:"optional"`
 
-	// Edition represents the edition that will be run.
-	Edition string
+	// Algorithm represents the algorithm that will be run.
+	Algorithm string
+
+	// ChannelHandle represents the tag for the channel
+	ChannelHandle string
 }

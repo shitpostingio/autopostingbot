@@ -2,13 +2,13 @@ package posting
 
 import (
 	"github.com/shitpostingio/autopostingbot/config/structs"
-	"github.com/shitpostingio/autopostingbot/posting/edition"
+	"github.com/shitpostingio/autopostingbot/posting/algorithm"
 	log "github.com/sirupsen/logrus"
 	"time"
 )
 
 // Manager is the posting manager.
-// It contains information on posting rates, scheduling and the running edition.
+// It contains information on posting rates, scheduling and the running algorithm.
 type Manager struct {
 	config      *structs.Config
 	isDebugging bool
@@ -20,7 +20,7 @@ type Manager struct {
 	postingRate       time.Duration
 
 	//
-	e edition.Edition
+	e algorithm.Algorithm
 
 	//
 	timer *time.Timer
@@ -32,9 +32,9 @@ type Manager struct {
 
 var (
 	m        Manager
-	editions = map[string]edition.Edition{
-		"shitpost":  edition.ShitpostEdition{},
-		"sushiporn": edition.SushiPornEdition{},
+	editions = map[string]algorithm.Algorithm{
+		"queuelengthaware":  algorithm.QueueLengthAwareAlgorithm{},
+		"randomhourly": algorithm.RandomHourlyAlgorithm{},
 	}
 )
 
@@ -47,9 +47,9 @@ func Start(config *structs.Config, debug bool) {
 
 	//
 	var found bool
-	m.e, found = editions[config.Autoposting.Edition]
+	m.e, found = editions[config.Autoposting.Algorithm]
 	if !found {
-		log.Fatal("edition not found")
+		log.Fatal("algorithm not found")
 	}
 
 	//

@@ -3,6 +3,9 @@
 
   "commands_reply_to_media_file": "This command needs to be used in reply to a media file",
   "commands_add_error": "Error while trying to add the post",
+  "commands_channel_handle_missing": "You need to specify a channel handle.\nUsage: /setchannelname handle",
+  "commands_channel_handle_too_short": "Channel handles must be at least 4 characters long",
+  "commands_channel_handle_updated": "Channel handle updated to @%s",
   "commands_credit_unable_to_credit": "Unable to credit correctly",
   "commands_credit_caption_with_url": "[By <a href=\"%s\">%s</a>]",
   "commands_credit_caption_without_url": "[By %s]",

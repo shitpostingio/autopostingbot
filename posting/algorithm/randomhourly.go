@@ -1,27 +1,22 @@
-package edition
+package algorithm
 
 import (
 	"math/rand"
 	"time"
 )
 
-// SushiPornEdition represents the Shitpost posting algorithm.
-type SushiPornEdition struct{}
-
-// GetEditionName returns the name of the edition.
-func (SushiPornEdition) GetEditionName() string {
-	return "sushiporn"
-}
+// RandomHourlyAlgorithm represents the Sushiporn posting algorithm.
+type RandomHourlyAlgorithm struct{}
 
 // GetNewPostingRate returns the new posting rate according to the algorithm
 // and the queue length.
-func (e SushiPornEdition) GetNewPostingRate(queueLength int) time.Duration {
-	return e.timeToNextPost(queueLength)
+func (a RandomHourlyAlgorithm) GetNewPostingRate(queueLength int) time.Duration {
+	return a.timeToNextPost(queueLength)
 }
 
 // timeToNextPost returns the estimate time until the next post, given
 // the queue length.
-func (SushiPornEdition) timeToNextPost(queueLength int) time.Duration {
+func (RandomHourlyAlgorithm) timeToNextPost(queueLength int) time.Duration {
 
 	if queueLength == 0 {
 		return 0
@@ -35,7 +30,7 @@ func (SushiPornEdition) timeToNextPost(queueLength int) time.Duration {
 
 // postsPerHour returns how many posts per hour there will be
 // in the next 24 hours period, based on the queue length.
-func (SushiPornEdition) postsPerHour(queueLength int) int {
+func (RandomHourlyAlgorithm) postsPerHour(queueLength int) int {
 
 	if queueLength == 0 {
 		return 0
@@ -53,12 +48,16 @@ func (SushiPornEdition) postsPerHour(queueLength int) int {
 
 // EstimatePostTime estimates the amount of time that will pass before
 // being able to post a certain media.
-func (e SushiPornEdition) EstimatePostTime(queueLength int) (totalDuration time.Duration) {
+func (a RandomHourlyAlgorithm) EstimatePostTime(queueLength int) (totalDuration time.Duration) {
 
 	for i := queueLength; i > 0; i-- {
-		totalDuration += e.timeToNextPost(i)
+		totalDuration += a.timeToNextPost(i)
 	}
 
 	return
 
+}
+
+func (RandomHourlyAlgorithm) GetAlgorithmName() string {
+	return "random hourly"
 }

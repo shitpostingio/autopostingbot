@@ -9,6 +9,7 @@ const (
 	defaultAutopostingPostAlertThreshold  = 10
 	defaultAutopostingMediaApproximation  = 0.08
 	defaultAutopostingSimilarityThreshold = 6
+	defaultAutopostingChannelHandle       = "shitpost"
 
 	// DocumentStore
 	defaultDocumentStoreHosts             = "localhost:27017"
@@ -39,6 +40,7 @@ func setDefaultValuesForOptionalFields() {
 	viper.SetDefault("autoposting.postalertthreshold", defaultAutopostingPostAlertThreshold)
 	viper.SetDefault("autoposting.mediaapproximation", defaultAutopostingMediaApproximation)
 	viper.SetDefault("autoposting.similaritythreshold", defaultAutopostingSimilarityThreshold)
+	viper.SetDefault("autoposting.channelhandle", defaultAutopostingChannelHandle)
 
 	// DocumentStore
 	viper.SetDefault("documentstore.hosts", []string{defaultDocumentStoreHosts})
