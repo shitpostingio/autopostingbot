@@ -25,7 +25,7 @@ func ShareAnimation(chatID, replyToMessageID int64, remoteFileID, caption string
 
 }
 
-// UploadAnimation shares an animation to a certain chat.
+// UploadAnimation uploads an animation to a certain chat.
 // If replyToMessageID is not 0, the animation will be in reply to that message id.
 // caption and entities can be used to attach a message with markdown.
 func UploadAnimation(chatID, replyToMessageID int64, localFilePath, caption string, entities []*client.TextEntity) (*client.Message, error) {

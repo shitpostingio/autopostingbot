@@ -27,7 +27,7 @@ func ShareVideo(chatID, replyToMessageID int64, remoteFileID, caption string, en
 
 }
 
-// UploadVideo shares a video to a certain chat.
+// UploadVideo uploads a video to a certain chat.
 // If replyToMessageID is not 0, the video will be in reply to that message id.
 // caption and entities can be used to attach a message with markdown.
 func UploadVideo(chatID, replyToMessageID int64, localFilePath, caption string, entities []*client.TextEntity) (*client.Message, error) {

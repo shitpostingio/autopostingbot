@@ -27,7 +27,7 @@ func SharePhoto(chatID, replyToMessageID int64, remoteFileID, caption string, en
 
 }
 
-// UploadPhoto shares a photo to a certain chat.
+// UploadPhoto uploads a photo to a certain chat.
 // If replyToMessageID is not 0, the photo will be in reply to that message id.
 // caption and entities can be used to attach a message with markdown.
 func UploadPhoto(chatID, replyToMessageID int64, localFilePath, caption string, entities []*client.TextEntity) (*client.Message, error) {

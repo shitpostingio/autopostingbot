@@ -26,6 +26,9 @@ var (
 	}
 )
 
+// SendMedia shares or uploads a media to a certain chat.
+// If replyToMessageID is not 0, the media will be in reply to that message id.
+// caption and entities can be used to attach a message with markdown.
 func SendMedia(mediaType string, chatID, replyToMessageID int64, remoteFileID, localFilePath, caption string, entities []*client.TextEntity) (*client.Message, error) {
 
 	msg, err := ShareMedia(mediaType, chatID, replyToMessageID, remoteFileID, caption, entities)
@@ -51,7 +54,7 @@ func ShareMedia(mediaType string, chatID, replyToMessageID int64, remoteFileID, 
 
 }
 
-// UploadMedia shares a media file to a certain chat.
+// UploadMedia uploads a media file to a certain chat.
 // If replyToMessageID is not 0, the media will be in reply to that message id.
 // caption and entities can be used to attach a message with markdown.
 func UploadMedia(mediaType string, chatID, replyToMessageID int64, localFilePath, caption string, entities []*client.TextEntity) (*client.Message, error) {
