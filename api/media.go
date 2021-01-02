@@ -6,7 +6,6 @@ import (
 )
 
 var (
-
 	uploadFunctions = map[string]func(int64, int64, string, string, []*client.TextEntity) (*client.Message, error){
 		client.TypeAnimation: UploadAnimation,
 		client.TypePhoto:     UploadPhoto,
@@ -99,5 +98,22 @@ func GetMediaFormattedText(message *client.Message) *client.FormattedText {
 	default:
 		return nil
 	}
+
+}
+
+// GetMediaTypeFromMessageType returns the media type given a
+// message containing a media file.
+func GetMediaTypeFromMessageType(message *client.Message) string {
+
+	switch message.Content.MessageContentType() {
+	case client.TypeMessageAnimation:
+		return client.TypeAnimation
+	case client.TypeMessagePhoto:
+		return client.TypePhoto
+	case client.TypeMessageVideo:
+		return client.TypeVideo
+	}
+
+	return ""
 
 }
