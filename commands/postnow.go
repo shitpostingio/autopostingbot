@@ -37,6 +37,19 @@ func (PostNowCommandHandler) Handle(_ string, message, replyToMessage *client.Me
 	}
 
 	//
+	fileInfo, err := api.GetMediaFileInfo(replyToMessage)
+	if err != nil {
+		return err
+	}
+
+	//
+	fileInfo, err = api.DownloadFile(fileInfo.Id)
+	if err != nil {
+		return err
+	}
+
+	//
+	post.Media.FileID = fileInfo.Remote.Id
 	err = posting.RequestPost(&post)
 	if err != nil {
 		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_POSTNOW_UNSUCCESSFUL))
