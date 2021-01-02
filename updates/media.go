@@ -120,7 +120,7 @@ func sendDuplicate(post *entities.Post, message *client.Message) error {
 
 			fileID = oldFileInfo.Remote.Id
 			path = oldFileInfo.Local.Path
-			
+
 		}
 
 	}
