@@ -40,9 +40,9 @@ func getDuplicateCaption(duplicatePost *entities.Post) (*client.FormattedText, e
 		// effectively removing the prefix -100
 		// We then need to convert the messageID from tdlib to normal telegram
 		// Since bots cannot call the getLink method, we need to divide
-		// our message id by the magic number and add 1
+		// our message id by the magic number
 		chatIDStr := strconv.FormatInt(repository.Config.Autoposting.ChannelID, 10)
-		link := fmt.Sprintf("t.me/c/%s/%d", chatIDStr[4:], duplicatePost.MessageID/telegramMessageIDConversionFactor+1)
+		link := fmt.Sprintf("t.me/c/%s/%d", chatIDStr[4:], duplicatePost.MessageID/telegramMessageIDConversionFactor)
 		captionEnd := fmt.Sprintf(l.GetString(l.UPDATES_DUPLICATE_DUPLICATE_ADDED_AT), utility.FormatDate(*duplicatePost.PostedAt), link)
 		caption = fmt.Sprintf("%s\n%s", caption, captionEnd)
 

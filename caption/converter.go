@@ -39,8 +39,11 @@ func ToHTMLCaptionWithCustomStart(ft *client.FormattedText, index int) string {
 	text = strings.ReplaceAll(text, "<", "&lt;")
 	text = strings.ReplaceAll(text, ">", "&gt;")
 
-	//
-	if ft.Entities == nil {
+	// TODO:	hasMarkup is a workaround:
+	//			for some reason, emojis are represented by two UTF-16 characters
+	// 			and writing them one by one corrupts them. If we don't have any
+	//			meaningful entities, just return the full text
+	if !hasMarkup(ft) {
 		return text
 	}
 
@@ -126,4 +129,23 @@ func ToHTMLCaptionWithCustomStart(ft *client.FormattedText, index int) string {
 // string with HTML markup.
 func ToHTMLCaption(ft *client.FormattedText) string {
 	return ToHTMLCaptionWithCustomStart(ft, 0)
+}
+
+// hasMarkup returns true if the message contains
+// entities from the supported list
+func hasMarkup(ft *client.FormattedText) bool {
+
+	if ft.Entities == nil {
+		return false
+	}
+
+	for _, e := range ft.Entities {
+		_, found := openingTags[e.Type.TextEntityTypeType()]
+		if found {
+			return true
+		}
+	}
+
+	return false
+
 }

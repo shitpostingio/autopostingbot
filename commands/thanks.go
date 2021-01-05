@@ -36,6 +36,7 @@ func (ThanksCommandHandler) Handle(arguments string, message, replyToMessage *cl
 	if err != nil {
 		thankError := fmt.Sprintf(l.GetString(l.COMMANDS_THANK_UNABLE_TO_THANK), err)
 		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, thankError)
+		return err
 	}
 
 	//
@@ -81,6 +82,10 @@ func getComment(arguments string, message *client.Message) string {
 // getThanks thanks the user that originally sent the media.
 // It will not thank bots or channels.
 func getThanks(message *client.Message) (string, error) {
+
+	if message.ForwardInfo == nil {
+		return "", errors.New("not a forward")
+	}
 
 	if message.ForwardInfo.Origin.MessageForwardOriginType() == client.TypeMessageForwardOriginChannel {
 		return "", errors.New(l.GetString(l.COMMANDS_THANK_CANT_THANK_CHANNELS))

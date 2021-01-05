@@ -8,6 +8,7 @@ import (
 	"github.com/shitpostingio/autopostingbot/documentstore/entities"
 	l "github.com/shitpostingio/autopostingbot/localization"
 	"github.com/shitpostingio/autopostingbot/posting"
+	"github.com/shitpostingio/autopostingbot/repository"
 	log "github.com/sirupsen/logrus"
 	"github.com/zelenin/go-tdlib/client"
 )
@@ -46,15 +47,10 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 			post, err = dbwrapper.FindPostByFeatures(fingerprint.Histogram, fingerprint.PHash)
 		}
 
+		// Only in case we found a duplicate
 		if err == nil {
 			log.Debugln("Match found: ", post)
-			formattedText, err := getDuplicateCaption(&post)
-			if err != nil {
-				_, _ = api.SendMedia(mediatype, message.ChatId, message.Id, post.Media.FileID, fileInfo.Local.Path, l.GetString(l.UPDATES_MEDIA_UNABLE_TO_GET_DUPLICATE_CAPTION), nil)
-			} else {
-				_, _ = api.SendMedia(mediatype, message.ChatId, message.Id, post.Media.FileID, fileInfo.Local.Path, formattedText.Text, formattedText.Entities)
-			}
-
+			_ = sendDuplicate(&post, message)
 			return
 		}
 
@@ -93,5 +89,55 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 	if dbwrapper.GetQueueLength() == 1 {
 		posting.ForcePostScheduling()
 	}
+
+}
+
+func sendDuplicate(post *entities.Post, message *client.Message) error {
+
+	fileID := post.Media.FileID
+	path := ""
+
+	// If the post has already been sent on the channel, we can get the message
+	// and download it. By doing this, we can send it more reliably.
+	if post.MessageID != 0 {
+
+		oldMessage, err := api.GetMessage(repository.Config.Autoposting.ChannelID, post.MessageID)
+		if err == nil {
+
+			//
+			oldFileInfo, err := api.GetMediaFileInfo(oldMessage)
+			if err != nil {
+				log.Error("sendDuplicate: ", err)
+				return err
+			}
+
+			//
+			oldFileInfo, err = api.DownloadFile(oldFileInfo.Id)
+			if err != nil {
+				log.Error("sendDuplicate: ", err)
+				return err
+			}
+
+			fileID = oldFileInfo.Remote.Id
+			path = oldFileInfo.Local.Path
+
+		}
+
+	}
+
+	formattedText, err := getDuplicateCaption(post)
+	if err != nil {
+		formattedText = &client.FormattedText{
+			Text:     l.GetString(l.UPDATES_MEDIA_UNABLE_TO_GET_DUPLICATE_CAPTION),
+			Entities: nil,
+		}
+	}
+
+	_, err = api.SendMedia(post.Media.Type, message.ChatId, message.Id, fileID, path, formattedText.Text, formattedText.Entities)
+	if err != nil {
+		_, err = api.SendText(message.ChatId, message.Id, formattedText.Text, formattedText.Entities)
+	}
+
+	return err
 
 }

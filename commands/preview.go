@@ -45,7 +45,19 @@ func (PreviewCommandHandler) Handle(_ string, message, replyToMessage *client.Me
 	}
 
 	//
-	_, err = api.ShareMedia(post.Media.Type, message.ChatId, message.Id, post.Media.FileID, ft.Text, ft.Entities)
+	fileInfo, err := api.GetMediaFileInfo(replyToMessage)
+	if err != nil {
+		return err
+	}
+
+	//
+	fileInfo, err = api.DownloadFile(fileInfo.Id)
+	if err != nil {
+		return err
+	}
+
+	//
+	_, err = api.SendMedia(post.Media.Type, message.ChatId, message.Id, post.Media.FileID, fileInfo.Local.Path, ft.Text, ft.Entities)
 	return err
 
 }

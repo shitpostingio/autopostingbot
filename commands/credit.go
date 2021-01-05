@@ -37,7 +37,7 @@ func (CreditCommandHandler) Handle(arguments string, message, replyToMessage *cl
 	credit, err := getCreditCaption(arguments, message, replyToMessage)
 	if err != nil {
 		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_CREDIT_UNABLE_TO_CREDIT))
-		credit = ""
+		return err
 	}
 
 	//
@@ -107,6 +107,10 @@ func creditCaptionWithoutURL(arguments string, message, replyToMessage *client.M
 	msgLengthDifference := len(text.Text) - len(arguments)
 	newCaption := caption.ToHTMLCaption(text)
 	newCaption = newCaption[msgLengthDifference:]
+
+	if replyToMessage.ForwardInfo == nil {
+		return "", errors.New("no url and not a forward")
+	}
 
 	// Channel forwards shouldn't be credited
 	if replyToMessage.ForwardInfo.Origin.MessageForwardOriginType() == client.TypeMessageForwardOriginChannel {

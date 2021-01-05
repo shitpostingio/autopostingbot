@@ -76,6 +76,12 @@ func main() {
 		log.Fatal("Error while getting information on self from Telegram: ", err)
 	}
 
+	// Get the channel chat
+	_, err = api.GetChat(cfg.Autoposting.ChannelID)
+	if err != nil {
+		log.Fatal("Unable to get channel chat")
+	}
+
 	// Start listening for updates
 	listener := tdlibClient.GetListener()
 	defer listener.Close()
