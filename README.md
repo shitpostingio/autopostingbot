@@ -31,6 +31,7 @@ Currently supported languages are:
 - Russian (thanks to [Rutori](https://github.com/Rutori))
 - Brazilian Portuguese (thanks to [Hellstrike12](https://github.com/hellstrike12))
 - Spanish (thanks to [Alvaro P.](https://t.me/Tag_if_magic_stones_dont_drop))
+- Arabic (thanks to [TMDR](https://github.com/TMDR))
 
 ## How to build
 
