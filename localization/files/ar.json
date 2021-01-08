@@ -1,0 +1,40 @@
+{
+  "analysis_no_media_fingerprint": "لا يمكن الحصول على معلومات الوسائط",
+
+  "commands_reply_to_media_file": "يجب استخدام هذا الأمر في رد الى ملف وسائط",
+  "commands_add_error": "خطأ خلال محاولة اضافة المقال", 
+  "commands_channel_handle_missing": "يجب أن تحدد اسم المستخدم لقناة \n /setchannelname طريقة الإستخدام: اسم المستخدم ",
+  "commands_channel_handle_too_short": "يجب أن يكون اسم المستخدم للقناة 4 أحرف أو أكثر",
+  "commands_channel_handle_updated": "@%s تم تجديد اسم المستخدم للقناة ل",
+  "commands_credit_unable_to_credit": "لا يمكن كتابة الشكر بشكل صحيح",
+  "commands_credit_caption_with_url": "[<a href=\"%s\">%s</a> من قبل]",
+  "commands_credit_caption_without_url": "[%s من قبل]",
+  "commands_delete_deleted_correctly": "تمت إزالة المقال بنجاح",
+  "commands_delete_unable_to_delete": "لا يمكن إزالة المقال",
+  "commands_info_post_already_posted": "<a href=\"tg://user?id=%d\">%s</a> مقال من قبل %s في  \n  %s منشور على \n t.me/%s/%d :رابط",
+  "commands_info_post_not_yet_posted": "📋  هذا المقال هو الرقم %d في الصف \n 👤مضاف من قبل <a href=\"tg://user?id=%d\">%s</a> في %s \n\n 🕜 ستنشر تقريبا خلال %s \n 📅 في %s",
+  "commands_pause_unsuccessful": "%s لا يمكن ايقاف النشر",
+  "commands_peek_no_post_found":  "ا يمكن ايجاد المنشور التالي. هل الصف فارغ؟ ",
+  "commands_postnow_successful": "تمّ!",
+  "commands_postnow_unsuccessful": "لا يمكن النشر!",
+  "commands_status_posts_enqueued": "📋 المنشورات مصفوفة: %d \n %s 🕜 معدل النشر: \n\n 🔮 المنشور التالي خلال : %s (%s)",
+  "commands_thanks_unable_to_thank": "%s : لا يمكن الشكر بشكل صحيح",
+  "commands_thanks_cant_thank_channels": "لا يمكن شكر قنوات",
+  "commands_thanks_cant_thank_bots": "لا يمكن شكر بوت",
+  "commands_thanks_unsupported_forward_type": "نوع اعادة توجيه غير مدعوم",
+  "commands_thanks_thank_caption": "[%s شكرا ل]",
+  "database_unable_to_find_post": "ا يمكن ايجاد المنشور",
+
+  "media_added_correctly": "تم اضافة الوسائط",
+
+  "posting_alerts_low_posts": "سننفذ من المقالات!🚨\n %d في الصف",
+  "posting_posting_previous_post_too_close": "فقط منذ آخر منشور %s مرّ",
+  "posting_posting_unable_to_parse_caption": " %s : لا يمكن تحليل العنوان",
+  "posting_posting_previous_pause_too_close": "فقط منذ آخر ايقاف %s مرّ",
+
+  "updates_duplicates_duplicate_added_by": "🚨 منشور مكرر! 🚨\n\n منشور من قبل <a href=\"tg://user?id=%d\">%s</a>\n في %s ",
+  "updates_duplicates_duplicate_posted_at_link": " منشورة في %s \n رابط: %s ",
+  "updates_texts_command_unimplemented": "غير مضافة",
+  "updates_texts_unable_to_get_reply_message": "لا يمكن الحصول على الرسالة الهدف لهذا الأمر",
+  "updates_media_unable_to_get_duplicate_caption": "لا يمكن الحصول على العنوان المتكرر, لكن هذه الوسائط المتكررة"
+}
