@@ -88,7 +88,9 @@ func schedulePosting(postTime time.Time) {
 	if !m.timer.Stop() {
 		select {
 		case <-m.timer.C:
+			log.Debugln("Drained timer")
 		default:
+			log.Debugln("Timer already drained")
 		}
 	}
 
@@ -96,11 +98,13 @@ func schedulePosting(postTime time.Time) {
 	queueLength := dbwrapper.GetQueueLength()
 	newRate := m.e.GetNewPostingRate(int(queueLength))
 	m.postingRate = newRate
-	m.timer = time.NewTimer(newRate)
+	m.timer.Reset(newRate)
+	log.Debugln("New rate: ", newRate)
 
 	//
 	m.previousPostTime = postTime
 	m.nextPostScheduled = time.Now().Add(newRate)
+	log.Debugln("Next post scheduled at: ", m.nextPostScheduled)
 
 	// Send alerts if there are less than X amount of posts enqueued
 	if int(queueLength) < m.config.Autoposting.PostAlertThreshold {
