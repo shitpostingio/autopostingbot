@@ -35,6 +35,7 @@ var (
 	editions = map[string]algorithm.Algorithm{
 		"queuelengthaware": algorithm.QueueLengthAwareAlgorithm{},
 		"randomhourly":     algorithm.RandomHourlyAlgorithm{},
+		"debug":            algorithm.MinuteDebugAlgorithm{},
 	}
 )
 
