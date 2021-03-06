@@ -3,6 +3,9 @@
 
   "commands_reply_to_media_file": "Данную команду необходимо использовать отвечая на пост",
   "commands_add_error": "Во время добавления поста произошла ошибка",
+  "commands_channel_handle_missing": "Необходимо указать имя канала (@handle).\nПример: /setchannelname handle",
+  "commands_channel_handle_too_short": "Имя канала должно быть длиннее 4 символов",
+  "commands_channel_handle_updated": "Имя канало установлено как @%s",
   "commands_credit_unable_to_credit": "Невозможно отметить указанного пользователя как источник",
   "commands_credit_caption_with_url": "[Прислано <a href=\"%s\">%s</a>]",
   "commands_credit_caption_without_url": "[Прислано %s]",
@@ -20,7 +23,6 @@
   "commands_thanks_cant_thank_bots": "невозможно отблагодарить бота за предложку",
   "commands_thanks_unsupported_forward_type": "Тип пересланного сообщения не поддерживается",
   "commands_thanks_thank_caption": "[Спасибо %s]",
-
   "database_unable_to_find_post": "Невозможно найти пост",
 
   "media_added_correctly": "Файл добавлен успешно",
