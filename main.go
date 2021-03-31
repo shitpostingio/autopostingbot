@@ -40,30 +40,32 @@ func main() {
 		log.SetLevel(log.DebugLevel)
 	}
 
+	var err error
 	// Load configuration file
-	cfg, err := config.Load(configFilePath)
+	repository.Config, err = config.Load(configFilePath)
 	if err != nil {
 		log.Fatal("Error while loading configuration: ", err)
 	}
 
-	repository.Config = cfg
-
 	// Set localization
-	err = gotrans.InitLocales(cfg.Localization.Path)
+	err = gotrans.InitLocales(repository.Config.Localization.Path)
 	if err != nil {
 		log.Fatal("Error while initializing language files:", err)
 	}
 
-	localization.SetLanguage(cfg.Localization.Language)
+	localization.SetLanguage(repository.Config.Localization.Language)
 
 	// Configure analysis adapter
-	analysisadapter.Start(cfg.AnalysisAPI)
+	analysisadapter.Start(repository.Config.AnalysisAPI)
 
 	// Connect to the database
-	documentstore.Connect(&cfg.DocumentStore, cfg.Autoposting.MediaApproximation, cfg.Autoposting.SimilarityThreshold)
+	documentstore.Connect(
+		&repository.Config.DocumentStore,
+		repository.Config.Autoposting.MediaApproximation,
+		repository.Config.Autoposting.SimilarityThreshold)
 
 	// Authorize on tdlib
-	tdlibClient, err := api.Authorize(cfg.Autoposting.BotToken, &cfg.Tdlib)
+	tdlibClient, err := api.Authorize(repository.Config.Autoposting.BotToken, &repository.Config.Tdlib)
 	if err != nil {
 		log.Fatal("Error while authorizing the bot via tdlib: ", err)
 	}
@@ -77,7 +79,7 @@ func main() {
 	}
 
 	// Get the channel chat
-	_, err = api.GetChat(cfg.Autoposting.ChannelID)
+	_, err = api.GetChat(repository.Config.Autoposting.ChannelID)
 	if err != nil {
 		log.Fatal("Unable to get channel chat")
 	}
@@ -88,8 +90,8 @@ func main() {
 	go updates.HandleUpdates(listener)
 
 	// Start the posting manager
-	posting.Start(cfg, debug)
-	log.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, algorithm %s channelname %s", Version, Build, cfg.Autoposting.Algorithm, posting.GetChannelHandle()))
+	posting.Start(repository.Config, debug)
+	log.Info(fmt.Sprintf("Shitposting autoposting-bot version v%s, build %s, algorithm %s channelname %s", Version, Build, repository.Config.Autoposting.Algorithm, posting.GetChannelHandle()))
 	posting.Listen()
 
 }
