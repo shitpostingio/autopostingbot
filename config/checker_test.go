@@ -17,7 +17,7 @@ type TestingStruct struct {
 	Optional int `type:"optional"`
 	Webhook  int `type:"webhook"` //same as optional in this context
 
-	Reloadable int `type:"reloadable"`
+	Reloadable int `reloadable:"true"`
 
 	SliceOfPrimitives []int
 	SliceOfStructs    []EmbeddedStruct
@@ -339,6 +339,20 @@ func Test_checkStruct(t *testing.T) {
 				}),
 			},
 			wantErrors: []error{},
+		},
+		{
+			name: "reloadable empty",
+			args: args{
+				isReload:    true,
+				parent:      "test",
+				typeToCheck: reflect.TypeOf(TestingStruct{}),
+				valueToCheck: reflect.ValueOf(TestingStruct{
+					Reloadable: 0,
+				}),
+			},
+			wantErrors: []error{
+				fmt.Errorf("non optional field Reloadable in section test had zero value"),
+			},
 		},
 		{
 			name: "empty slice in embedded",
