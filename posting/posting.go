@@ -24,6 +24,9 @@ func tryPosting(post *entities.Post) error {
 		return fmt.Errorf(l.GetString(l.POSTING_POSTING_PREVIOUS_POST_TOO_CLOSE), time.Since(m.previousPostTime))
 	}
 
+	//
+	defer schedulePosting(time.Now())
+
 	// Prepare caption
 	caption := post.Caption
 	if GetChannelHandle() != "" && !strings.Contains(post.Caption, "@"+GetChannelHandle()) {
@@ -47,9 +50,6 @@ func tryPosting(post *entities.Post) error {
 	if err != nil {
 		log.Error("Unable to mark post ", post.ID, " as posted")
 	}
-
-	//
-	schedulePosting(time.Now())
 
 	//
 	_ = moveToDirectory(post)
