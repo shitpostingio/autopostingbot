@@ -39,24 +39,37 @@ func ToHTMLCaptionWithCustomStart(ft *client.FormattedText, index int) string {
 	text = strings.ReplaceAll(text, "<", "&lt;")
 	text = strings.ReplaceAll(text, ">", "&gt;")
 
-	// TODO:	hasMarkup is a workaround:
-	//			for some reason, emojis are represented by two UTF-16 characters
-	// 			and writing them one by one corrupts them. If we don't have any
-	//			meaningful entities, just return the full text
-	if !hasMarkup(ft) {
-		return text
-	}
-
 	//
 	u16Text := utf16.Encode([]rune(ft.Text))
 	b := strings.Builder{}
 
-	//
-	for i, v := range u16Text {
+	// Change the offsets and the length from UTF-16 to UTF-8
+	utf8Index := len(utf16.Decode(u16Text[:index]))
+	utf8Entities := make([]client.TextEntity, len(ft.Entities))
+
+	for i, e := range ft.Entities {
+
+		//
+		entityStart := len(string(utf16.Decode(u16Text[:e.Offset])))
+		entityLength := len(string(utf16.Decode(u16Text[:e.Offset + e.Length]))) - entityStart
+
+		// Only save the numerical values, we will use actual
+		// entities for the rest
+		entity := client.TextEntity{
+			Offset: int32(entityStart),
+			Length: int32(entityLength),
+		}
+
+		utf8Entities[i] = entity
+
+	}
+
+	// Iterate over the UTF-8 text runes
+	for i, r := range ft.Text {
 
 		// If it's before the start, ignore all entities
-		if i < index {
-			b.WriteString(string(utf16.Decode([]uint16{v})))
+		if i < utf8Index {
+			b.WriteRune(r)
 			continue
 		}
 
@@ -64,7 +77,7 @@ func ToHTMLCaptionWithCustomStart(ft *client.FormattedText, index int) string {
 		for j := 0; j < len(ft.Entities); j++ {
 
 			// Check start of entity
-			if ft.Entities[j].Offset == int32(i) {
+			if utf8Entities[j].Offset == int32(i) {
 
 				// We need to add this entity
 				// Special check for links
@@ -90,7 +103,7 @@ func ToHTMLCaptionWithCustomStart(ft *client.FormattedText, index int) string {
 		for j := len(ft.Entities) - 1; j >= 0; j-- {
 
 			// Check end of entity
-			if ft.Entities[j].Offset+ft.Entities[j].Length == int32(i) {
+			if utf8Entities[j].Offset + utf8Entities[j].Length == int32(i) {
 
 				tag, found := closingTags[ft.Entities[j].Type.TextEntityTypeType()]
 				if found {
@@ -101,7 +114,7 @@ func ToHTMLCaptionWithCustomStart(ft *client.FormattedText, index int) string {
 
 		}
 
-		b.WriteString(string(utf16.Decode([]uint16{v})))
+		b.WriteRune(r)
 
 	}
 
