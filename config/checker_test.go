@@ -183,7 +183,7 @@ func Test_checkStruct(t *testing.T) {
 					SliceOptional: []int{1},
 				}),
 			},
-			wantErrors: []error{},
+			wantErrors: nil,
 		},
 		{
 			name: "primitive missing",
@@ -271,7 +271,7 @@ func Test_checkStruct(t *testing.T) {
 					},
 				}),
 			},
-			wantErrors: []error{},
+			wantErrors: nil,
 		},
 		{
 			name: "webhook field missing",
@@ -298,7 +298,7 @@ func Test_checkStruct(t *testing.T) {
 					},
 				}),
 			},
-			wantErrors: []error{},
+			wantErrors: nil,
 		},
 		{
 			name: "field missing in embedded struct",
@@ -338,7 +338,7 @@ func Test_checkStruct(t *testing.T) {
 					Reloadable: 1,
 				}),
 			},
-			wantErrors: []error{},
+			wantErrors: nil,
 		},
 		{
 			name: "reloadable empty",

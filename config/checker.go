@@ -11,16 +11,16 @@ import (
 // mandatory fields with zero value.
 // When using with isReload flag, only checks for fields with reloadable:"true" tag
 func checkMandatoryFields(isReload bool, config structs.Config) error {
-	errors := ""
+	resultingError := ""
 	for _, err := range checkStruct(isReload, "root", reflect.TypeOf(config), reflect.ValueOf(config)) {
-		errors += fmt.Sprintln(err.Error())
+		resultingError = fmt.Sprintf("%s\n%s", resultingError, err.Error())
 	}
 
-	if errors != "" {
-		return fmt.Errorf("\n%s", errors)
+	if resultingError == "" {
+		return nil
 	}
 
-	return nil
+	return fmt.Errorf("%s", resultingError)
 }
 
 // checkStruct explores structures recursively and checks if
@@ -54,10 +54,14 @@ func checkStruct(isReload bool, parent string, typeToCheck reflect.Type, valueTo
 		}
 	}
 
-	return errors
+	if len(errors) != 0 {
+		return errors
+	}
+
+	return nil
 }
 
-// checkStruct explores slices recursively and checks they have a zero value.
+// checkSlice explores slices recursively and checks they have a zero value.
 func checkSlice(isReload bool, parent string, typeToCheck reflect.StructField, sliceToCheck reflect.Value) []error {
 
 	//only check reloadable fields if isReload is true
@@ -79,28 +83,27 @@ func checkSlice(isReload bool, parent string, typeToCheck reflect.StructField, s
 		return []error{fmt.Errorf("non optional slice field %s in %s had zero length", typeToCheck.Name, parent)}
 	}
 
-	err := make([]error, 0)
+	errors := make([]error, 0)
 	for i := 0; i < sliceToCheck.Len(); i++ {
 		item := sliceToCheck.Index(i)
 		if item.Kind() == reflect.Struct {
 			if errs := checkStruct(isReload, parent, reflect.TypeOf(item.Interface()), reflect.ValueOf(item.Interface())); errs != nil {
-				err = append(err, errs...)
+				errors = append(errors, errs...)
 			}
 			continue
 		}
 
 		zeroValue := reflect.Zero(item.Type())
 		if item.Interface() == zeroValue.Interface() {
-			err = append(err, fmt.Errorf("non optional field %s had zero value at index %d", typeToCheck.Name, i))
+			errors = append(errors, fmt.Errorf("non optional field %s had zero value at index %d", typeToCheck.Name, i))
 		}
 	}
 
-	if err != nil {
-		return err
+	if len(errors) != 0 {
+		return errors
 	}
 
 	return nil
-
 }
 
 // checkField checks if a field is optional or a webhook field
