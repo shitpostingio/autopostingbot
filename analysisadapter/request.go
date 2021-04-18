@@ -3,7 +3,7 @@ package analysisadapter
 import (
 	"errors"
 	analysis "github.com/shitpostingio/analysis-api/api/client"
-	"github.com/shitpostingio/analysis-api/services/structs"
+	"github.com/shitpostingio/analysis-commons/structs"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"strings"

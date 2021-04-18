@@ -3,31 +3,32 @@ module github.com/shitpostingio/autopostingbot
 go 1.15
 
 require (
-	github.com/bykovme/gotrans v1.0.0
-	github.com/corona10/goimagehash v1.0.2 // indirect
-	github.com/fsnotify/fsnotify v1.4.7
-	github.com/golang/snappy v0.0.2-0.20200707131729-196ae77b8a26 // indirect
-	github.com/hako/durafmt v0.0.0-20180520121703-7b7ae1e72ead
-	github.com/klauspost/compress v1.10.10 // indirect
-	github.com/pelletier/go-toml v1.6.0 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
-	github.com/shitpostingio/analysis-api v0.0.0-20201010155659-21e41fa11df6
+	github.com/aws/aws-sdk-go v1.38.21 // indirect
+	github.com/bykovme/gotrans v1.1.0
+	github.com/corona10/goimagehash v1.0.3 // indirect
+	github.com/fsnotify/fsnotify v1.4.9
+	github.com/hako/durafmt v0.0.0-20210316092057-3a2c319c1acd
+	github.com/klauspost/compress v1.12.1 // indirect
+	github.com/magiconair/properties v1.8.5 // indirect
+	github.com/mitchellh/mapstructure v1.4.1 // indirect
+	github.com/pelletier/go-toml v1.9.0 // indirect
+	github.com/shitpostingio/analysis-api v0.0.0-20210106183055-1cf3d2837f75
+	github.com/shitpostingio/analysis-commons v0.0.0-20210103110506-3853e65ffbe1
 	github.com/shitpostingio/image-fingerprinting v0.0.0-20201010152210-bf01bf1648ef
-	github.com/sirupsen/logrus v1.6.0
-	github.com/spf13/afero v1.2.2 // indirect
+	github.com/sirupsen/logrus v1.8.1
+	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/spf13/viper v1.6.2
-	github.com/stretchr/testify v1.4.0 // indirect
-	github.com/xdg/stringprep v1.0.1-0.20180714160509-73f8eece6fdc // indirect
+	github.com/spf13/viper v1.7.1
+	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
 	github.com/zelenin/go-tdlib v0.4.0
-	go.mongodb.org/mongo-driver v1.3.5
-	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
-	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208 // indirect
-	golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae // indirect
-	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543
-	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
-	gopkg.in/ini.v1 v1.52.0 // indirect
-	gopkg.in/yaml.v2 v2.2.8 // indirect
+	go.mongodb.org/mongo-driver v1.5.1
+	golang.org/x/crypto v0.0.0-20210415154028-4f45737414dc // indirect
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
+	golang.org/x/sys v0.0.0-20210415045647-66c3f260301c // indirect
+	golang.org/x/text v0.3.6 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
+	gopkg.in/ini.v1 v1.62.0 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
