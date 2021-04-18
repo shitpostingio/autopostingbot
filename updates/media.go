@@ -77,7 +77,13 @@ func handleMedia(message *client.Message, mediatype string, skipDuplicateChecks 
 		PHash:            fingerprint.PHash,
 	}
 
-	err = dbwrapper.AddPost(message.SenderUserId, media, c)
+	senderUserID, err := api.GetSenderUserID(message)
+	if err != nil {
+		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, err.Error())
+		return
+	}
+
+	err = dbwrapper.AddPost(senderUserID, media, c)
 	if err != nil {
 		log.Error(err)
 	}

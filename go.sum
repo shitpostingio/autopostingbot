@@ -191,6 +191,10 @@ github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 github.com/zelenin/go-tdlib v0.2.0 h1:i5H3zQLPKjiP5NjLwoU7K9gKkwfhjY2i1GIqxQe8NBA=
 github.com/zelenin/go-tdlib v0.2.0/go.mod h1:Xs8fXbk5n7VaPyrSs9DP7QYoBScWYsjX+lUcWmx1DIU=
+github.com/zelenin/go-tdlib v0.3.1 h1:Wrn39M7a8x7TfHx9ngCVljfA4fbSy5ZAQ1kUnmK752I=
+github.com/zelenin/go-tdlib v0.3.1/go.mod h1:Xs8fXbk5n7VaPyrSs9DP7QYoBScWYsjX+lUcWmx1DIU=
+github.com/zelenin/go-tdlib v0.4.0 h1:pCC930uZrVdfJm0X096E3PZH/LNxxB+GN9MmZEu4y0I=
+github.com/zelenin/go-tdlib v0.4.0/go.mod h1:Xs8fXbk5n7VaPyrSs9DP7QYoBScWYsjX+lUcWmx1DIU=
 gitlab.com/opennota/screengen v0.0.0-20190303011023-4c1f27a3452a/go.mod h1:aMJ5Zrz1DJL5RysiKMd20d/ndkMQU9Zeaei3z9KAmBQ=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.mongodb.org/mongo-driver v1.3.5 h1:S0ZOruh4YGHjD7JoN7mIsTrNjnQbOjrmgrx6l6pZN7I=

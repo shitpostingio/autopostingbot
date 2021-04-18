@@ -46,13 +46,18 @@ func (PauseCommandHandler) Handle(arguments string, message, replyToMessage *cli
 		return err
 	}
 
+	senderUserID, err := api.GetSenderUserID(replyToMessage)
+	if err != nil {
+		return err
+	}
+
 	//
 	var whoPaused string
-	user, err := api.GetUserByID(message.SenderUserId)
+	user, err := api.GetUserByID(senderUserID)
 	if err != nil {
 		whoPaused = telegram.GetNameFromUser(user)
 	} else {
-		whoPaused = strconv.Itoa(int(message.SenderUserId))
+		whoPaused = strconv.Itoa(int(senderUserID))
 	}
 	//
 

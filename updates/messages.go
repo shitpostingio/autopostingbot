@@ -12,15 +12,21 @@ import (
 // handleNewMessage handles incoming messages.
 func handleNewMessage(message *client.Message) {
 
+	senderUserID, err := api.GetSenderUserID(message)
+	if err != nil {
+		log.Debugln("Message not from a user")
+		return
+	}
+
 	// Tdlib delivers updates from self
-	if message.SenderUserId == repository.Me.Id {
+	if senderUserID == repository.Me.Id {
 		log.Debugln("Message from self")
 		return
 	}
 
 	// Users need to be authorized to talk to the bot
-	if !dbwrapper.UserIsAuthorized(message.SenderUserId) {
-		log.Println("Received message from unauthorized user with id ", message.SenderUserId)
+	if !dbwrapper.UserIsAuthorized(senderUserID) {
+		log.Println("Received message from unauthorized user with id ", senderUserID)
 		return
 	}
 
@@ -52,15 +58,21 @@ func handleUpdatedMessage(umc *client.UpdateMessageContent) {
 		return
 	}
 
+	senderUserID, err := api.GetSenderUserID(message)
+	if err != nil {
+		log.Debugln("Message not from a user")
+		return
+	}
+
 	// Tdlib delivers updates from self
-	if message.SenderUserId == repository.Me.Id {
+	if senderUserID == repository.Me.Id {
 		log.Debugln("Message from self")
 		return
 	}
 
 	// Users need to be authorized to talk to the bot
-	if !message.IsChannelPost && !dbwrapper.UserIsAuthorized(message.SenderUserId) {
-		log.Println("Received message from unauthorized user with id ", message.SenderUserId)
+	if !message.IsChannelPost && !dbwrapper.UserIsAuthorized(senderUserID) {
+		log.Println("Received message from unauthorized user with id ", senderUserID)
 		return
 	}
 

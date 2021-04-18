@@ -63,7 +63,12 @@ func (AddCommandHandler) Handle(_ string, message, replyToMessage *client.Messag
 		postCaption = caption.ToHTMLCaption(ft)
 	}
 
-	err = dbwrapper.AddPost(replyToMessage.SenderUserId, media, postCaption)
+	senderUserID, err := api.GetSenderUserID(replyToMessage)
+	if err != nil {
+		return err
+	}
+
+	err = dbwrapper.AddPost(senderUserID, media, postCaption)
 	if err != nil {
 		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_ADD_ERROR))
 	} else {
