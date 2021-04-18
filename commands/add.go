@@ -8,6 +8,7 @@ import (
 	"github.com/shitpostingio/autopostingbot/documentstore/dbwrapper"
 	"github.com/shitpostingio/autopostingbot/documentstore/entities"
 	l "github.com/shitpostingio/autopostingbot/localization"
+	"github.com/shitpostingio/autopostingbot/posting"
 	"github.com/zelenin/go-tdlib/client"
 )
 
@@ -73,6 +74,12 @@ func (AddCommandHandler) Handle(_ string, message, replyToMessage *client.Messag
 		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.COMMANDS_ADD_ERROR))
 	} else {
 		_, _ = api.SendPlainReplyText(message.ChatId, message.Id, l.GetString(l.MEDIA_ADDED_CORRECTLY))
+
+		// If the queue was empty, re-schedule
+		if dbwrapper.GetQueueLength() == 1 {
+			posting.ForcePostScheduling()
+		}
+
 	}
 
 	return err
