@@ -10,7 +10,7 @@ The bot is designed to support multiple users, assuming they're unaware of what 
 
 ## Key features
 
-- Feature-based image and video duplicate detection thanks to our custom Analysis API (to be released soon).
+- Feature-based image and video duplicate detection thanks to [our custom Analysis API](https://github.com/shitpostingio/analysis-api).
 
 - Queue length aware posting algorithm.
 
@@ -49,4 +49,3 @@ Pre-built artifacts are available in the GitHub Actions of the project: [https:/
 
 Contributions are welcome: suggest new features, add them yourself, translate the bot into new languages!
 
-### To be updated
